@@ -1,9 +1,9 @@
-import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import './App.css';
-
+import { useAccessToken } from '../src/lib/auth/useAccessToken';
 function App() {
-  const { isLoading, isAuthenticated, error, user, loginWithRedirect, logout } = useAuth0();
+  const { isAuthenticated, error, user, loginWithRedirect, logout } = useAuth0();
+  const [accessToken, isLoading] = useAccessToken();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -15,8 +15,13 @@ function App() {
   if (isAuthenticated) {
     return (
       <div>
-        Hello {user!.name}{' '}
+        Hello {user!.name}
         <button onClick={() => logout({ returnTo: window.location.origin })}>Log out</button>
+        {accessToken ? (
+          <pre>{JSON.stringify(accessToken, null, 2)}</pre>
+        ) : (
+          'No user metadata defined'
+        )}
       </div>
     );
   } else {
