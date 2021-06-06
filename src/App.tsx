@@ -1,32 +1,36 @@
-import { useAuth0 } from '@auth0/auth0-react';
-import './App.css';
-import { useAccessToken } from '../src/lib/auth/useAccessToken';
+import Layout from './shared/Layout';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Home } from './Home';
+import { Project } from './Project';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { ProjectsList } from './Projects';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#3F3D56',
+      light: '#F4F5F7',
+    },
+  },
+  typography: {
+    fontFamily: 'Ubuntu',
+  },
+});
+
 function App() {
-  const { isAuthenticated, error, user, loginWithRedirect, logout } = useAuth0();
-  const [accessToken, isLoading] = useAccessToken();
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>Oops... {error.message}</div>;
-  }
-
-  if (isAuthenticated) {
-    return (
-      <div>
-        Hello {user!.name}
-        <button onClick={() => logout({ returnTo: window.location.origin })}>Log out</button>
-        {accessToken ? (
-          <pre>{JSON.stringify(accessToken, null, 2)}</pre>
-        ) : (
-          'No user metadata defined'
-        )}
-      </div>
-    );
-  } else {
-    return <button onClick={loginWithRedirect}>Log in</button>;
-  }
+  return (
+    <ThemeProvider theme={theme}>
+      <Router>
+        <Layout>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/project/:id" component={Project} />
+            <Route path="/projects" component={ProjectsList} />
+          </Switch>
+        </Layout>
+      </Router>
+    </ThemeProvider>
+  );
 }
 
 export default App;
