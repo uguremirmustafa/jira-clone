@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import ApolloWrapper from './lib/apollo/client';
 import CustomAuth0Provider from './lib/auth/authProvider';
-
+import 'normalize.css';
 ReactDOM.render(
   <CustomAuth0Provider>
     <ApolloWrapper>
