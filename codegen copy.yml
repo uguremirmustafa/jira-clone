@@ -1,0 +1,12 @@
+overwrite: true
+schema:
+  - https://jira-clone.hasura.app/v1/graphql:
+      headers:
+        'x-hasura-admin-secret':
+documents: 'src/lib/graphql/**/*.ts'
+generates:
+  src/lib/generated/apolloComponents.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
