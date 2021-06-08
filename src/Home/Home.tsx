@@ -1,11 +1,18 @@
 import { useAuth0 } from '@auth0/auth0-react';
-import { makeStyles, Typography } from '@material-ui/core';
+import { Button, makeStyles, Typography } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import LoadSpinner from '../shared/Loader';
 
 const useStyles = makeStyles((theme) => {
   return {
     root: {
+      height: '70vh',
       padding: theme.spacing(4),
+      gap: '2rem',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   };
 });
@@ -26,6 +33,9 @@ export const Home = () => {
         <Typography variant="h5" component="h2">
           Welcome to the party {user?.nickname}
         </Typography>
+        <Button component={Link} to="/createProject" variant="contained" color="secondary">
+          Create Project
+        </Button>
       </div>
     );
   } else {

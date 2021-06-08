@@ -1,11 +1,7 @@
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import {
-  useGetProjectByIdQuery,
-  useUpdateProjectMutation,
-} from '../lib/generated/apolloComponents';
-import { FC, useEffect, useState } from 'react';
+import { useCreateProjectMutation } from '../lib/generated/apolloComponents';
+import { FC, useState } from 'react';
 import { Box, Button, makeStyles, TextField, Typography } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => {
@@ -13,6 +9,7 @@ const useStyles = makeStyles((theme) => {
     root: {
       maxWidth: 550,
       margin: 'auto',
+      paddingTop: theme.spacing(4),
     },
 
     form: {
@@ -36,40 +33,26 @@ interface IFormInput {
   description: string;
 }
 
-interface IProps {
-  id: string;
-}
-
-const Settings: FC<IProps> = ({ id }) => {
+export const CreateProject: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const c = useStyles();
-  const { data, loading, error } = useGetProjectByIdQuery({ variables: { id } });
 
-  let defaultValues = {
-    title: 'title',
-    description: 'description',
-  };
-
-  const [variables, setVariables] = useState({
-    id,
-    title: '',
-    description: '',
-  });
+  const [variables, setVariables] = useState<IFormInput>();
 
   const {
     control,
     handleSubmit,
-    reset,
     formState: { isSubmitting },
-  } = useForm<IFormInput>({ defaultValues });
-  const [updateProjectMutation] = useUpdateProjectMutation({ variables });
+  } = useForm<IFormInput>();
+
+  const [createProjectMutation] = useCreateProjectMutation({ variables });
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
-    setVariables({ ...formData, id });
-    const res = await updateProjectMutation();
+    setVariables(formData);
+    const res = await createProjectMutation();
 
     if (res.data) {
-      enqueueSnackbar('Changes saved successfully', {
+      enqueueSnackbar('Project is created successfully', {
         variant: 'success',
       });
     } else if (res.errors) {
@@ -77,32 +60,10 @@ const Settings: FC<IProps> = ({ id }) => {
     }
   };
 
-  useEffect(() => {
-    reset({
-      description: data?.projects_by_pk?.description || '',
-      title: data?.projects_by_pk?.title || '',
-    });
-  }, [data, reset]);
-
-  if (loading) {
-    return (
-      <Box className={c.root}>
-        <Skeleton animation="wave" width={180} height={80} />
-        <Skeleton animation="wave" height={70} />
-        <Skeleton animation="wave" height={70} />
-        <Skeleton animation="wave" width={140} height={50} />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return <div>{error.message}</div>;
-  }
-
   return (
     <Box className={c.root}>
       <Typography variant="h4" component="h2">
-        Project Details
+        Create A New Project
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)} className={c.form}>
         <Box className={c.inputBox}>
@@ -140,10 +101,9 @@ const Settings: FC<IProps> = ({ id }) => {
         </Box>
 
         <Button type="submit" variant="contained" color="secondary">
-          {isSubmitting ? 'loading' : 'save changes'}
+          {isSubmitting ? 'loading' : 'create the project'}
         </Button>
       </form>
     </Box>
   );
 };
-export default Settings;

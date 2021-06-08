@@ -14,6 +14,7 @@ const ApolloWrapper: FC = ({ children }) => {
     };
     getToken();
   }, [getAccessTokenSilently, isAuthenticated]);
+  console.log(bearerToken);
 
   const httpLink = new HttpLink({
     uri: process.env.REACT_APP_HASURA_GRAPHQL_ENDPOINT,
