@@ -13,6 +13,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
 import CategoryRoundedIcon from '@material-ui/icons/CategoryRounded';
 import SearchIcon from '@material-ui/icons/Search';
+import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import InputBase from '@material-ui/core/InputBase';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
@@ -91,6 +92,9 @@ const useStyles = makeStyles((theme) => {
       [theme.breakpoints.up('md')]: {
         width: '20ch',
       },
+    },
+    sorryText: {
+      padding: theme.spacing(1),
     },
   };
 });
@@ -178,20 +182,36 @@ const AuthenticatedNav = () => {
                           id="menu-list-grow"
                           onKeyDown={handleListKeyDown}
                         >
-                          {data?.projects.map((i) => (
-                            <MenuItem
-                              onClick={handleClose}
-                              className={c.listItem}
-                              component={Link}
-                              to={`/project/${i.id}/board`}
-                              key={i.id}
-                            >
-                              <ListItemIcon>
-                                <CategoryRoundedIcon fontSize="small" color="secondary" />
-                              </ListItemIcon>
-                              <Typography variant="inherit">{i.title}</Typography>
-                            </MenuItem>
-                          ))}
+                          {data?.projects[0] !== undefined ? (
+                            data?.projects.map((i) => (
+                              <MenuItem
+                                onClick={handleClose}
+                                className={c.listItem}
+                                component={Link}
+                                to={`/project/${i.id}/board`}
+                                key={i.id}
+                              >
+                                <ListItemIcon>
+                                  <CategoryRoundedIcon fontSize="small" color="secondary" />
+                                </ListItemIcon>
+                                <Typography variant="inherit">{i.title}</Typography>
+                              </MenuItem>
+                            ))
+                          ) : (
+                            <>
+                              <Typography className={c.sorryText}>
+                                You have no project :(
+                              </Typography>
+                              <Button
+                                color="secondary"
+                                endIcon={<AddRoundedIcon />}
+                                component={Link}
+                                to="/createProject"
+                              >
+                                create a new project
+                              </Button>
+                            </>
+                          )}
                         </MenuList>
                       </ClickAwayListener>
                     </Paper>
@@ -200,6 +220,14 @@ const AuthenticatedNav = () => {
               </Popper>
             </div>
           )}
+          <Button
+            color="secondary"
+            endIcon={<AddRoundedIcon />}
+            component={Link}
+            to="/createProject"
+          >
+            create project
+          </Button>
         </div>
         <div className={c.right}>
           <div className={c.search}>

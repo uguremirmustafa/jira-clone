@@ -3,6 +3,8 @@ import { useCreateProjectMutation } from '../lib/generated/apolloComponents';
 import { FC, useState } from 'react';
 import { Box, Button, makeStyles, TextField, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
+import { GetProjectsQuery } from '../lib/graphql/project/queries/getProjects';
+import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -34,10 +36,11 @@ interface IFormInput {
 }
 
 export const CreateProject: FC = () => {
+  const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const c = useStyles();
 
-  const [variables, setVariables] = useState<IFormInput>();
+  const [variables, setVariables] = useState<IFormInput>({ description: '', title: '' });
 
   const {
     control,
@@ -49,12 +52,22 @@ export const CreateProject: FC = () => {
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
     setVariables(formData);
-    const res = await createProjectMutation();
+    const res = await createProjectMutation({
+      // TODO: update the cache manually for saving a network request
+      refetchQueries: [{ query: GetProjectsQuery }],
+    });
 
     if (res.data) {
       enqueueSnackbar('Project is created successfully', {
         variant: 'success',
       });
+      enqueueSnackbar('Redirecting to the project', {
+        variant: 'success',
+      });
+      let projectId = res.data.insert_projects_one?.id;
+      setTimeout(() => {
+        history.push(`/project/${projectId}/board`);
+      }, 1000);
     } else if (res.errors) {
       enqueueSnackbar(res.errors[0].message, { variant: 'error' });
     }

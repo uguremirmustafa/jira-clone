@@ -68,12 +68,12 @@ const Settings: FC<IProps> = ({ id }) => {
     setVariables({ ...formData, id });
     const res = await updateProjectMutation();
 
-    if (res.data) {
+    if (res.data?.update_projects_by_pk !== null) {
       enqueueSnackbar('Changes saved successfully', {
         variant: 'success',
       });
-    } else if (res.errors) {
-      enqueueSnackbar(res.errors[0].message, { variant: 'error' });
+    } else if (res.errors || res.data?.update_projects_by_pk === null) {
+      enqueueSnackbar('Something went wrong', { variant: 'error' });
     }
   };
 

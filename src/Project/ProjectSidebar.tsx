@@ -1,13 +1,16 @@
 import {
+  Divider,
   Drawer,
   ListItemIcon,
   ListItemText,
   makeStyles,
   MenuItem,
   MenuList,
+  Typography,
 } from '@material-ui/core';
 import DashboardRoundedIcon from '@material-ui/icons/DashboardRounded';
 import ViewListRoundedIcon from '@material-ui/icons/ViewListRounded';
+import ReportProblemRoundedIcon from '@material-ui/icons/ReportProblemRounded';
 import { FC } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { appBarHeight, drawerWidth } from '../shared/Constants';
@@ -25,13 +28,17 @@ const useStyles = makeStyles((theme) => {
     list: {
       padding: '1rem',
     },
+    projectTitle: {
+      padding: theme.spacing(4),
+    },
   };
 });
 interface Props {
   id: string;
+  projectTitle: string | undefined;
 }
 
-export const ProjectSidebar: FC<Props> = ({ id }) => {
+export const ProjectSidebar: FC<Props> = ({ id, projectTitle }) => {
   const { pathname } = useLocation();
 
   const c = useStyles();
@@ -42,6 +49,11 @@ export const ProjectSidebar: FC<Props> = ({ id }) => {
       anchor="left"
       classes={{ paper: c.drawerPaper }}
     >
+      <Typography variant="h6" color="textPrimary" component="h1" className={c.projectTitle}>
+        {projectTitle}
+      </Typography>
+      <Divider />
+
       <MenuList className={c.list}>
         <MenuItem
           component={NavLink}
@@ -62,6 +74,16 @@ export const ProjectSidebar: FC<Props> = ({ id }) => {
             <DashboardRoundedIcon color="secondary" />
           </ListItemIcon>
           <ListItemText>Board</ListItemText>
+        </MenuItem>
+        <MenuItem
+          component={NavLink}
+          to={`/project/${id}/danger`}
+          selected={pathname === `/project/${id}/danger`}
+        >
+          <ListItemIcon>
+            <ReportProblemRoundedIcon color="secondary" />
+          </ListItemIcon>
+          <ListItemText color="secondary">Danger Zone</ListItemText>
         </MenuItem>
       </MenuList>
     </Drawer>

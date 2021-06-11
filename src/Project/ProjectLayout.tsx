@@ -33,11 +33,12 @@ const useStyles = makeStyles((theme) => {
   };
 });
 
-interface Props {
+interface IProps {
   id: string;
+  projectTitle: string | undefined;
 }
 
-const ProjectLayout: FC<Props> = ({ children, id }) => {
+const ProjectLayout: FC<IProps> = ({ children, id, projectTitle }) => {
   const { isAuthenticated, isLoading } = useAuth0();
 
   const c = useStyles();
@@ -51,7 +52,7 @@ const ProjectLayout: FC<Props> = ({ children, id }) => {
   return (
     <div>
       <div className={c.root}>
-        {isAuthenticated && <ProjectSidebar id={id} />}
+        {isAuthenticated && <ProjectSidebar id={id} projectTitle={projectTitle} />}
         <main className={c.main}>
           <div className={c.content}>{children}</div>
         </main>

@@ -29,7 +29,7 @@ function App() {
         maxSnack={3}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'center',
+          horizontal: 'right',
         }}
       >
         <Router>
