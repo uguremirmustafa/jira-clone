@@ -1,4 +1,4 @@
-import { Avatar, makeStyles, Typography } from '@material-ui/core';
+import { Avatar, makeStyles, Tooltip, Typography } from '@material-ui/core';
 import React, { FC } from 'react';
 import { GetProjectByIdQuery } from '../lib/generated/apolloComponents';
 import AddUserDialog from './AddUserDialog';
@@ -23,6 +23,7 @@ interface IProps {
 const Board: FC<IProps> = ({ project, id }) => {
   const c = useStyles();
   const title = project?.projects_by_pk?.title;
+  const users = project?.projects_by_pk?.project_members;
 
   return (
     <div>
@@ -32,9 +33,12 @@ const Board: FC<IProps> = ({ project, id }) => {
         </Typography>
       </div>
       <div className={c.users}>
-        <Avatar>A</Avatar>
-        <Avatar>B</Avatar>
-        <Avatar>C</Avatar>
+        {users?.map((item) => (
+          <Tooltip title={item.user?.email || 'user'} key={item.user_id}>
+            <Avatar>{item.user?.email.substring(0, 1).toUpperCase()}</Avatar>
+          </Tooltip>
+        ))}
+
         <AddUserDialog projectId={id} />
       </div>
     </div>

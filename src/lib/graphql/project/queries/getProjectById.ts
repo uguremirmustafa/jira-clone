@@ -6,6 +6,13 @@ export const GetProjectById = gql`
       id
       title
       description
+      project_members {
+        user_id
+        user {
+          id
+          email
+        }
+      }
     }
   }
 `;

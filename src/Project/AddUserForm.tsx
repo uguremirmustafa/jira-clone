@@ -12,19 +12,24 @@ import React, { FC, useEffect, useState } from 'react';
 import {
   useAddUserToProjectMutation,
   useSearchUsersByEmailLazyQuery,
-  SearchUsersByEmailQueryResult,
   AddUserToProjectMutationVariables,
 } from '../lib/generated/apolloComponents';
 import { Autocomplete } from '@material-ui/lab';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { useForm, Controller, NestedValue, UseFormReturn, UseFormSetValue } from 'react-hook-form';
-import { IProps } from './AddUserDialog';
 import { useSnackbar } from 'notistack';
+import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
 
 const useStyles = makeStyles((theme) => {
   return {
     formControl: {
       width: '100%',
+    },
+    submitBtn: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+      marginLeft: theme.spacing(2),
+      float: 'right',
     },
   };
 });
@@ -36,13 +41,12 @@ interface FormInput {
   };
   type: string;
 }
+export interface IProps {
+  projectId: string;
+  handleClose: () => void;
+}
 
-type Option = {
-  label: string;
-  value: string;
-};
-
-const AddUserForm: FC<IProps> = ({ projectId }) => {
+const AddUserForm: FC<IProps> = ({ projectId, handleClose }) => {
   const c = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -55,26 +59,36 @@ const AddUserForm: FC<IProps> = ({ projectId }) => {
   const [
     addUserToProjectMutation,
     { data: mutationData, loading: mutationLoading, error: mutationError },
-  ] = useAddUserToProjectMutation({ variables: addUserVariables });
+  ] = useAddUserToProjectMutation({
+    variables: addUserVariables,
+    refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+  });
 
   const { handleSubmit, control } = useForm<FormInput>({
     defaultValues: { email: {}, type: process.env.REACT_APP_VIEWER_TYPE_ID },
   });
 
   const onSubmit = async (formData: FormInput) => {
-    // alert(JSON.stringify(formData, null, 2));
     setAddUserVariables({
       userId: formData.email.value,
       typeId: formData.type,
       projectId,
     });
-    const res = await addUserToProjectMutation();
-    if (res.data?.insert_project_members_one?.id !== null) {
-      enqueueSnackbar('Changes saved successfully', {
-        variant: 'success',
+    try {
+      const res = await addUserToProjectMutation();
+      if (res.data?.insert_project_members_one?.id !== null) {
+        enqueueSnackbar('Changes saved successfully', {
+          variant: 'success',
+        });
+      } else if (res.data?.insert_project_members_one === null) {
+        enqueueSnackbar('Something went wrong', { variant: 'error' });
+      } else if (res.errors) {
+        enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
+      }
+    } catch (error) {
+      enqueueSnackbar(`${error.message}`, {
+        variant: 'warning',
       });
-    } else if (res.errors || res.data?.insert_project_members_one === null) {
-      enqueueSnackbar('Something went wrong', { variant: 'error' });
     }
   };
 
@@ -129,7 +143,12 @@ const AddUserForm: FC<IProps> = ({ projectId }) => {
             </Select>
           )}
         />
-        <Button type="submit">{mutationLoading ? 'submitting' : 'submit'}</Button>
+        <Button type="submit" className={c.submitBtn} variant="contained" color="secondary">
+          {mutationLoading ? 'submitting' : 'submit'}
+        </Button>
+        <Button onClick={handleClose} className={c.submitBtn} variant="outlined">
+          cancel
+        </Button>
       </form>
     </>
   );

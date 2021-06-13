@@ -78,16 +78,8 @@ const AddUserDialog: FC<IProps> = ({ projectId }) => {
           <DialogContentText id="alert-dialog-description">
             You can add other Jira-Clone users to this project for collaboration.
           </DialogContentText>
-          <AddUserForm projectId={projectId} />
+          <AddUserForm projectId={projectId} handleClose={handleClose} />
         </DialogContent>
-        {/* <DialogActions disableSpacing={false}>
-          <Button onClick={handleClose} color="secondary">
-            cancel
-          </Button>
-          <Button type="submit" autoFocus variant="outlined" color="secondary">
-            submit
-          </Button>
-        </DialogActions> */}
       </Dialog>
     </>
   );

@@ -942,7 +942,9 @@ export type Project_Members_Bool_Exp = {
 /** unique or primary key constraints on table "project_members" */
 export enum Project_Members_Constraint {
   /** unique or primary key constraint */
-  ProjectMembersPkey = 'project_members_pkey'
+  ProjectMembersPkey = 'project_members_pkey',
+  /** unique or primary key constraint */
+  ProjectMembersUnique = 'project_members_unique'
 }
 
 /** input type for inserting data into table "project_members" */
@@ -2334,6 +2336,14 @@ export type GetProjectByIdQuery = (
   & { projects_by_pk?: Maybe<(
     { __typename?: 'projects' }
     & Pick<Projects, 'id' | 'title' | 'description'>
+    & { project_members: Array<(
+      { __typename?: 'project_members' }
+      & Pick<Project_Members, 'user_id'>
+      & { user?: Maybe<(
+        { __typename?: 'users' }
+        & Pick<Users, 'id' | 'email'>
+      )> }
+    )> }
   )> }
 );
 
@@ -2349,6 +2359,23 @@ export type GetProjectsQuery = (
       { __typename?: 'users' }
       & Pick<Users, 'email'>
     ) }
+  )> }
+);
+
+export type GetAllProjectUsersQueryVariables = Exact<{
+  projectId: Scalars['uuid'];
+}>;
+
+
+export type GetAllProjectUsersQuery = (
+  { __typename?: 'query_root' }
+  & { project_members: Array<(
+    { __typename?: 'project_members' }
+    & Pick<Project_Members, 'type_id'>
+    & { user?: Maybe<(
+      { __typename?: 'users' }
+      & Pick<Users, 'id' | 'email'>
+    )> }
   )> }
 );
 
@@ -2533,6 +2560,13 @@ export const GetProjectByIdDocument = gql`
     id
     title
     description
+    project_members {
+      user_id
+      user {
+        id
+        email
+      }
+    }
   }
 }
     `;
@@ -2603,6 +2637,45 @@ export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
 export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
 export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetAllProjectUsersDocument = gql`
+    query GetAllProjectUsers($projectId: uuid!) {
+  project_members(where: {project_id: {_eq: $projectId}}) {
+    user {
+      id
+      email
+    }
+    type_id
+  }
+}
+    `;
+
+/**
+ * __useGetAllProjectUsersQuery__
+ *
+ * To run a query within a React component, call `useGetAllProjectUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllProjectUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllProjectUsersQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useGetAllProjectUsersQuery(baseOptions: Apollo.QueryHookOptions<GetAllProjectUsersQuery, GetAllProjectUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllProjectUsersQuery, GetAllProjectUsersQueryVariables>(GetAllProjectUsersDocument, options);
+      }
+export function useGetAllProjectUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllProjectUsersQuery, GetAllProjectUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllProjectUsersQuery, GetAllProjectUsersQueryVariables>(GetAllProjectUsersDocument, options);
+        }
+export type GetAllProjectUsersQueryHookResult = ReturnType<typeof useGetAllProjectUsersQuery>;
+export type GetAllProjectUsersLazyQueryHookResult = ReturnType<typeof useGetAllProjectUsersLazyQuery>;
+export type GetAllProjectUsersQueryResult = Apollo.QueryResult<GetAllProjectUsersQuery, GetAllProjectUsersQueryVariables>;
 export const GetUsersDocument = gql`
     query GetUsers {
   users {
