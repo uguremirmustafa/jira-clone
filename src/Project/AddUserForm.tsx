@@ -1,0 +1,138 @@
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  makeStyles,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from '@material-ui/core';
+import React, { FC, useEffect, useState } from 'react';
+import {
+  useAddUserToProjectMutation,
+  useSearchUsersByEmailLazyQuery,
+  SearchUsersByEmailQueryResult,
+  AddUserToProjectMutationVariables,
+} from '../lib/generated/apolloComponents';
+import { Autocomplete } from '@material-ui/lab';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useForm, Controller, NestedValue, UseFormReturn, UseFormSetValue } from 'react-hook-form';
+import { IProps } from './AddUserDialog';
+import { useSnackbar } from 'notistack';
+
+const useStyles = makeStyles((theme) => {
+  return {
+    formControl: {
+      width: '100%',
+    },
+  };
+});
+
+interface FormInput {
+  email: {
+    label: string;
+    value: string;
+  };
+  type: string;
+}
+
+type Option = {
+  label: string;
+  value: string;
+};
+
+const AddUserForm: FC<IProps> = ({ projectId }) => {
+  const c = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const [searchUser, { loading, error, data }] = useSearchUsersByEmailLazyQuery({
+    fetchPolicy: 'network-only',
+  });
+
+  const [addUserVariables, setAddUserVariables] = useState<AddUserToProjectMutationVariables>();
+
+  const [
+    addUserToProjectMutation,
+    { data: mutationData, loading: mutationLoading, error: mutationError },
+  ] = useAddUserToProjectMutation({ variables: addUserVariables });
+
+  const { handleSubmit, control } = useForm<FormInput>({
+    defaultValues: { email: {}, type: process.env.REACT_APP_VIEWER_TYPE_ID },
+  });
+
+  const onSubmit = async (formData: FormInput) => {
+    // alert(JSON.stringify(formData, null, 2));
+    setAddUserVariables({
+      userId: formData.email.value,
+      typeId: formData.type,
+      projectId,
+    });
+    const res = await addUserToProjectMutation();
+    if (res.data?.insert_project_members_one?.id !== null) {
+      enqueueSnackbar('Changes saved successfully', {
+        variant: 'success',
+      });
+    } else if (res.errors || res.data?.insert_project_members_one === null) {
+      enqueueSnackbar('Something went wrong', { variant: 'error' });
+    }
+  };
+
+  return (
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          name="email"
+          control={control}
+          render={(props) => (
+            <Autocomplete
+              {...props}
+              id="search-users"
+              options={
+                data ? data.search_users.map((user) => ({ label: user.email, value: user.id })) : []
+              }
+              getOptionLabel={(option) => option.label}
+              getOptionSelected={(option, value) => {
+                return option.value === value.value;
+              }}
+              onChange={(_, data) => props.field.onChange(data)}
+              style={{ marginBottom: '1rem' }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Search users to add"
+                  variant="filled"
+                  color="secondary"
+                  onChange={(e) => searchUser({ variables: { email: e.target.value } })}
+                />
+              )}
+            />
+          )}
+        />
+        <Controller
+          name="type"
+          control={control}
+          render={({
+            field: { onChange, onBlur, value, name, ref },
+            fieldState: { invalid, isTouched, isDirty, error },
+            formState,
+          }) => (
+            <Select
+              variant="filled"
+              color="secondary"
+              className={c.formControl}
+              value={value}
+              onChange={onChange}
+            >
+              <MenuItem value={process.env.REACT_APP_MEMBER_TYPE_ID}>Member</MenuItem>
+              <MenuItem value={process.env.REACT_APP_VIEWER_TYPE_ID}>Viewer</MenuItem>
+            </Select>
+          )}
+        />
+        <Button type="submit">{mutationLoading ? 'submitting' : 'submit'}</Button>
+      </form>
+    </>
+  );
+};
+
+export default AddUserForm;

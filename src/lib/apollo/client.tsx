@@ -2,7 +2,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink } from '@apollo/c
 import { setContext } from '@apollo/client/link/context';
 import { useAuth0 } from '@auth0/auth0-react';
 import React, { FC, useEffect, useState } from 'react';
-
+export { gql } from '@apollo/client';
 const ApolloWrapper: FC = ({ children }) => {
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [bearerToken, setBearerToken] = useState('');

@@ -530,6 +530,8 @@ export type Mutation_Root = {
   delete_projects?: Maybe<Projects_Mutation_Response>;
   /** delete single row from the table: "projects" */
   delete_projects_by_pk?: Maybe<Projects>;
+  /** delete data from the table: "user_private" */
+  delete_user_private?: Maybe<User_Private_Mutation_Response>;
   /** delete data from the table: "user_type" */
   delete_user_type?: Maybe<User_Type_Mutation_Response>;
   /** delete single row from the table: "user_type" */
@@ -554,6 +556,10 @@ export type Mutation_Root = {
   insert_projects?: Maybe<Projects_Mutation_Response>;
   /** insert a single row into the table: "projects" */
   insert_projects_one?: Maybe<Projects>;
+  /** insert data into the table: "user_private" */
+  insert_user_private?: Maybe<User_Private_Mutation_Response>;
+  /** insert a single row into the table: "user_private" */
+  insert_user_private_one?: Maybe<User_Private>;
   /** insert data into the table: "user_type" */
   insert_user_type?: Maybe<User_Type_Mutation_Response>;
   /** insert a single row into the table: "user_type" */
@@ -578,6 +584,8 @@ export type Mutation_Root = {
   update_projects?: Maybe<Projects_Mutation_Response>;
   /** update single row of the table: "projects" */
   update_projects_by_pk?: Maybe<Projects>;
+  /** update data of the table: "user_private" */
+  update_user_private?: Maybe<User_Private_Mutation_Response>;
   /** update data of the table: "user_type" */
   update_user_type?: Maybe<User_Type_Mutation_Response>;
   /** update single row of the table: "user_type" */
@@ -634,6 +642,12 @@ export type Mutation_RootDelete_ProjectsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Projects_By_PkArgs = {
   id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_User_PrivateArgs = {
+  where: User_Private_Bool_Exp;
 };
 
 
@@ -718,6 +732,18 @@ export type Mutation_RootInsert_Projects_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_User_PrivateArgs = {
+  objects: Array<User_Private_Insert_Input>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_User_Private_OneArgs = {
+  object: User_Private_Insert_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_User_TypeArgs = {
   objects: Array<User_Type_Insert_Input>;
   on_conflict?: Maybe<User_Type_On_Conflict>;
@@ -798,6 +824,13 @@ export type Mutation_RootUpdate_ProjectsArgs = {
 export type Mutation_RootUpdate_Projects_By_PkArgs = {
   _set?: Maybe<Projects_Set_Input>;
   pk_columns: Projects_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_User_PrivateArgs = {
+  _set?: Maybe<User_Private_Set_Input>;
+  where: User_Private_Bool_Exp;
 };
 
 
@@ -1315,6 +1348,14 @@ export type Query_Root = {
   projects_aggregate: Projects_Aggregate;
   /** fetch data from the table: "projects" using primary key columns */
   projects_by_pk?: Maybe<Projects>;
+  /** execute function "search_users" which returns "users" */
+  search_users: Array<Users>;
+  /** execute function "search_users" and query aggregates on result of table type "users" */
+  search_users_aggregate: Users_Aggregate;
+  /** fetch data from the table: "user_private" */
+  user_private: Array<User_Private>;
+  /** fetch aggregated fields from the table: "user_private" */
+  user_private_aggregate: User_Private_Aggregate;
   /** fetch data from the table: "user_type" */
   user_type: Array<User_Type>;
   /** fetch aggregated fields from the table: "user_type" */
@@ -1422,6 +1463,44 @@ export type Query_RootProjects_By_PkArgs = {
 };
 
 
+export type Query_RootSearch_UsersArgs = {
+  args: Search_Users_Args;
+  distinct_on?: Maybe<Array<Users_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Users_Order_By>>;
+  where?: Maybe<Users_Bool_Exp>;
+};
+
+
+export type Query_RootSearch_Users_AggregateArgs = {
+  args: Search_Users_Args;
+  distinct_on?: Maybe<Array<Users_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Users_Order_By>>;
+  where?: Maybe<Users_Bool_Exp>;
+};
+
+
+export type Query_RootUser_PrivateArgs = {
+  distinct_on?: Maybe<Array<User_Private_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<User_Private_Order_By>>;
+  where?: Maybe<User_Private_Bool_Exp>;
+};
+
+
+export type Query_RootUser_Private_AggregateArgs = {
+  distinct_on?: Maybe<Array<User_Private_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<User_Private_Order_By>>;
+  where?: Maybe<User_Private_Bool_Exp>;
+};
+
+
 export type Query_RootUser_TypeArgs = {
   distinct_on?: Maybe<Array<User_Type_Select_Column>>;
   limit?: Maybe<Scalars['Int']>;
@@ -1467,6 +1546,10 @@ export type Query_RootUsers_By_PkArgs = {
   id: Scalars['String'];
 };
 
+export type Search_Users_Args = {
+  useremail?: Maybe<Scalars['String']>;
+};
+
 export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** An array relationship */
@@ -1493,6 +1576,14 @@ export type Subscription_Root = {
   projects_aggregate: Projects_Aggregate;
   /** fetch data from the table: "projects" using primary key columns */
   projects_by_pk?: Maybe<Projects>;
+  /** execute function "search_users" which returns "users" */
+  search_users: Array<Users>;
+  /** execute function "search_users" and query aggregates on result of table type "users" */
+  search_users_aggregate: Users_Aggregate;
+  /** fetch data from the table: "user_private" */
+  user_private: Array<User_Private>;
+  /** fetch aggregated fields from the table: "user_private" */
+  user_private_aggregate: User_Private_Aggregate;
   /** fetch data from the table: "user_type" */
   user_type: Array<User_Type>;
   /** fetch aggregated fields from the table: "user_type" */
@@ -1600,6 +1691,44 @@ export type Subscription_RootProjects_By_PkArgs = {
 };
 
 
+export type Subscription_RootSearch_UsersArgs = {
+  args: Search_Users_Args;
+  distinct_on?: Maybe<Array<Users_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Users_Order_By>>;
+  where?: Maybe<Users_Bool_Exp>;
+};
+
+
+export type Subscription_RootSearch_Users_AggregateArgs = {
+  args: Search_Users_Args;
+  distinct_on?: Maybe<Array<Users_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Users_Order_By>>;
+  where?: Maybe<Users_Bool_Exp>;
+};
+
+
+export type Subscription_RootUser_PrivateArgs = {
+  distinct_on?: Maybe<Array<User_Private_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<User_Private_Order_By>>;
+  where?: Maybe<User_Private_Bool_Exp>;
+};
+
+
+export type Subscription_RootUser_Private_AggregateArgs = {
+  distinct_on?: Maybe<Array<User_Private_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<User_Private_Order_By>>;
+  where?: Maybe<User_Private_Bool_Exp>;
+};
+
+
 export type Subscription_RootUser_TypeArgs = {
   distinct_on?: Maybe<Array<User_Type_Select_Column>>;
   limit?: Maybe<Scalars['Int']>;
@@ -1657,6 +1786,93 @@ export type Timestamptz_Comparison_Exp = {
   _lte?: Maybe<Scalars['timestamptz']>;
   _neq?: Maybe<Scalars['timestamptz']>;
   _nin?: Maybe<Array<Scalars['timestamptz']>>;
+};
+
+/** columns and relationships of "user_private" */
+export type User_Private = {
+  __typename?: 'user_private';
+  email?: Maybe<Scalars['String']>;
+  user_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "user_private" */
+export type User_Private_Aggregate = {
+  __typename?: 'user_private_aggregate';
+  aggregate?: Maybe<User_Private_Aggregate_Fields>;
+  nodes: Array<User_Private>;
+};
+
+/** aggregate fields of "user_private" */
+export type User_Private_Aggregate_Fields = {
+  __typename?: 'user_private_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<User_Private_Max_Fields>;
+  min?: Maybe<User_Private_Min_Fields>;
+};
+
+
+/** aggregate fields of "user_private" */
+export type User_Private_Aggregate_FieldsCountArgs = {
+  columns?: Maybe<Array<User_Private_Select_Column>>;
+  distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "user_private". All fields are combined with a logical 'AND'. */
+export type User_Private_Bool_Exp = {
+  _and?: Maybe<Array<User_Private_Bool_Exp>>;
+  _not?: Maybe<User_Private_Bool_Exp>;
+  _or?: Maybe<Array<User_Private_Bool_Exp>>;
+  email?: Maybe<String_Comparison_Exp>;
+  user_id?: Maybe<String_Comparison_Exp>;
+};
+
+/** input type for inserting data into table "user_private" */
+export type User_Private_Insert_Input = {
+  email?: Maybe<Scalars['String']>;
+  user_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type User_Private_Max_Fields = {
+  __typename?: 'user_private_max_fields';
+  email?: Maybe<Scalars['String']>;
+  user_id?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type User_Private_Min_Fields = {
+  __typename?: 'user_private_min_fields';
+  email?: Maybe<Scalars['String']>;
+  user_id?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "user_private" */
+export type User_Private_Mutation_Response = {
+  __typename?: 'user_private_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<User_Private>;
+};
+
+/** Ordering options when selecting data from "user_private". */
+export type User_Private_Order_By = {
+  email?: Maybe<Order_By>;
+  user_id?: Maybe<Order_By>;
+};
+
+/** select columns of table "user_private" */
+export enum User_Private_Select_Column {
+  /** column name */
+  Email = 'email',
+  /** column name */
+  UserId = 'user_id'
+}
+
+/** input type for updating data in table "user_private" */
+export type User_Private_Set_Input = {
+  email?: Maybe<Scalars['String']>;
+  user_id?: Maybe<Scalars['String']>;
 };
 
 /** columns and relationships of "user_type" */
@@ -1775,6 +1991,10 @@ export enum User_Type_Update_Column {
 /** columns and relationships of "users" */
 export type Users = {
   __typename?: 'users';
+  /** An array relationship */
+  comments: Array<Comments>;
+  /** An aggregate relationship */
+  comments_aggregate: Comments_Aggregate;
   email: Scalars['String'];
   first_name?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -1792,6 +2012,26 @@ export type Users = {
   projects: Array<Projects>;
   /** An aggregate relationship */
   projects_aggregate: Projects_Aggregate;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersCommentsArgs = {
+  distinct_on?: Maybe<Array<Comments_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Comments_Order_By>>;
+  where?: Maybe<Comments_Bool_Exp>;
+};
+
+
+/** columns and relationships of "users" */
+export type UsersComments_AggregateArgs = {
+  distinct_on?: Maybe<Array<Comments_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Comments_Order_By>>;
+  where?: Maybe<Comments_Bool_Exp>;
 };
 
 
@@ -1881,6 +2121,7 @@ export type Users_Bool_Exp = {
   _and?: Maybe<Array<Users_Bool_Exp>>;
   _not?: Maybe<Users_Bool_Exp>;
   _or?: Maybe<Array<Users_Bool_Exp>>;
+  comments?: Maybe<Comments_Bool_Exp>;
   email?: Maybe<String_Comparison_Exp>;
   first_name?: Maybe<String_Comparison_Exp>;
   id?: Maybe<String_Comparison_Exp>;
@@ -1899,6 +2140,7 @@ export enum Users_Constraint {
 
 /** input type for inserting data into table "users" */
 export type Users_Insert_Input = {
+  comments?: Maybe<Comments_Arr_Rel_Insert_Input>;
   email?: Maybe<Scalars['String']>;
   first_name?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
@@ -1954,6 +2196,7 @@ export type Users_On_Conflict = {
 
 /** Ordering options when selecting data from "users". */
 export type Users_Order_By = {
+  comments_aggregate?: Maybe<Comments_Aggregate_Order_By>;
   email?: Maybe<Order_By>;
   first_name?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
@@ -2019,6 +2262,25 @@ export type Uuid_Comparison_Exp = {
   _neq?: Maybe<Scalars['uuid']>;
   _nin?: Maybe<Array<Scalars['uuid']>>;
 };
+
+export type AddUserToProjectMutationVariables = Exact<{
+  userId: Scalars['String'];
+  projectId: Scalars['uuid'];
+  typeId: Scalars['uuid'];
+}>;
+
+
+export type AddUserToProjectMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_project_members_one?: Maybe<(
+    { __typename?: 'project_members' }
+    & Pick<Project_Members, 'id'>
+    & { user?: Maybe<(
+      { __typename?: 'users' }
+      & Pick<Users, 'email'>
+    )> }
+  )> }
+);
 
 export type CreateProjectMutationVariables = Exact<{
   title: Scalars['String'];
@@ -2090,7 +2352,71 @@ export type GetProjectsQuery = (
   )> }
 );
 
+export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
+
+export type GetUsersQuery = (
+  { __typename?: 'query_root' }
+  & { users: Array<(
+    { __typename?: 'users' }
+    & Pick<Users, 'email' | 'id'>
+  )> }
+);
+
+export type SearchUsersByEmailQueryVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type SearchUsersByEmailQuery = (
+  { __typename?: 'query_root' }
+  & { search_users: Array<(
+    { __typename?: 'users' }
+    & Pick<Users, 'email' | 'id'>
+  )> }
+);
+
+
+export const AddUserToProjectDocument = gql`
+    mutation AddUserToProject($userId: String!, $projectId: uuid!, $typeId: uuid!) {
+  insert_project_members_one(
+    object: {user_id: $userId, project_id: $projectId, type_id: $typeId}
+  ) {
+    id
+    user {
+      email
+    }
+  }
+}
+    `;
+export type AddUserToProjectMutationFn = Apollo.MutationFunction<AddUserToProjectMutation, AddUserToProjectMutationVariables>;
+
+/**
+ * __useAddUserToProjectMutation__
+ *
+ * To run a mutation, you first call `useAddUserToProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserToProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserToProjectMutation, { data, loading, error }] = useAddUserToProjectMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      projectId: // value for 'projectId'
+ *      typeId: // value for 'typeId'
+ *   },
+ * });
+ */
+export function useAddUserToProjectMutation(baseOptions?: Apollo.MutationHookOptions<AddUserToProjectMutation, AddUserToProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddUserToProjectMutation, AddUserToProjectMutationVariables>(AddUserToProjectDocument, options);
+      }
+export type AddUserToProjectMutationHookResult = ReturnType<typeof useAddUserToProjectMutation>;
+export type AddUserToProjectMutationResult = Apollo.MutationResult<AddUserToProjectMutation>;
+export type AddUserToProjectMutationOptions = Apollo.BaseMutationOptions<AddUserToProjectMutation, AddUserToProjectMutationVariables>;
 export const CreateProjectDocument = gql`
     mutation CreateProject($title: String!, $description: String) {
   insert_projects_one(object: {title: $title, description: $description}) {
@@ -2277,3 +2603,74 @@ export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
 export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
 export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetUsersDocument = gql`
+    query GetUsers {
+  users {
+    email
+    id
+  }
+}
+    `;
+
+/**
+ * __useGetUsersQuery__
+ *
+ * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUsersQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
+      }
+export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersQuery, GetUsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(GetUsersDocument, options);
+        }
+export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
+export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
+export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export const SearchUsersByEmailDocument = gql`
+    query SearchUsersByEmail($email: String!) {
+  search_users(args: {useremail: $email}) {
+    email
+    id
+  }
+}
+    `;
+
+/**
+ * __useSearchUsersByEmailQuery__
+ *
+ * To run a query within a React component, call `useSearchUsersByEmailQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchUsersByEmailQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchUsersByEmailQuery({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useSearchUsersByEmailQuery(baseOptions: Apollo.QueryHookOptions<SearchUsersByEmailQuery, SearchUsersByEmailQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchUsersByEmailQuery, SearchUsersByEmailQueryVariables>(SearchUsersByEmailDocument, options);
+      }
+export function useSearchUsersByEmailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchUsersByEmailQuery, SearchUsersByEmailQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchUsersByEmailQuery, SearchUsersByEmailQueryVariables>(SearchUsersByEmailDocument, options);
+        }
+export type SearchUsersByEmailQueryHookResult = ReturnType<typeof useSearchUsersByEmailQuery>;
+export type SearchUsersByEmailLazyQueryHookResult = ReturnType<typeof useSearchUsersByEmailLazyQuery>;
+export type SearchUsersByEmailQueryResult = Apollo.QueryResult<SearchUsersByEmailQuery, SearchUsersByEmailQueryVariables>;
