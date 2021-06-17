@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import DeleteForeverRoundedIcon from '@material-ui/icons/DeleteForeverRounded';
 import { useDeleteProjectMutation } from '../lib/generated/apolloComponents';
 import { useSnackbar } from 'notistack';
-import { GetProjectsQuery } from '../lib/graphql/project/queries/getProjects';
+import { GetProjects } from '../lib/graphql/project/queries/getProjects';
 import { useHistory } from 'react-router';
 
 interface IProps {
@@ -19,7 +19,7 @@ const DangerZone: FC<IProps> = ({ id }) => {
   const handleDeleteProject = async () => {
     const res = await deleteProjectMutation({
       // TODO: update the cache manually for saving a network request
-      refetchQueries: [{ query: GetProjectsQuery }],
+      refetchQueries: [{ query: GetProjects }],
     });
     let returnedTitle = res.data?.delete_projects_by_pk?.title || '';
     if (returnedTitle !== '') {

@@ -16,6 +16,7 @@ export type Scalars = {
   uuid: any;
 };
 
+
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
   _eq?: Maybe<Scalars['String']>;
@@ -2311,6 +2312,22 @@ export type DeleteProjectMutation = (
   )> }
 );
 
+export type RemoveUserFromProjectMutationVariables = Exact<{
+  memberId: Scalars['uuid'];
+}>;
+
+
+export type RemoveUserFromProjectMutation = (
+  { __typename?: 'mutation_root' }
+  & { delete_project_members_by_pk?: Maybe<(
+    { __typename?: 'project_members' }
+    & { user?: Maybe<(
+      { __typename?: 'users' }
+      & Pick<Users, 'email'>
+    )> }
+  )> }
+);
+
 export type UpdateProjectMutationVariables = Exact<{
   id: Scalars['uuid'];
   title?: Maybe<Scalars['String']>;
@@ -2338,10 +2355,10 @@ export type GetProjectByIdQuery = (
     & Pick<Projects, 'id' | 'title' | 'description'>
     & { project_members: Array<(
       { __typename?: 'project_members' }
-      & Pick<Project_Members, 'user_id'>
+      & Pick<Project_Members, 'id' | 'user_id' | 'type_id'>
       & { user?: Maybe<(
         { __typename?: 'users' }
-        & Pick<Users, 'id' | 'email'>
+        & Pick<Users, 'email'>
       )> }
     )> }
   )> }
@@ -2362,6 +2379,24 @@ export type GetProjectsQuery = (
   )> }
 );
 
+export type UpdateProjectUserRoleMutationVariables = Exact<{
+  projectMemberId: Scalars['uuid'];
+  typeId: Scalars['uuid'];
+}>;
+
+
+export type UpdateProjectUserRoleMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_project_members_by_pk?: Maybe<(
+    { __typename?: 'project_members' }
+    & Pick<Project_Members, 'id' | 'type_id'>
+    & { user?: Maybe<(
+      { __typename?: 'users' }
+      & Pick<Users, 'email'>
+    )> }
+  )> }
+);
+
 export type GetAllProjectUsersQueryVariables = Exact<{
   projectId: Scalars['uuid'];
 }>;
@@ -2371,7 +2406,7 @@ export type GetAllProjectUsersQuery = (
   { __typename?: 'query_root' }
   & { project_members: Array<(
     { __typename?: 'project_members' }
-    & Pick<Project_Members, 'type_id'>
+    & Pick<Project_Members, 'id' | 'type_id'>
     & { user?: Maybe<(
       { __typename?: 'users' }
       & Pick<Users, 'id' | 'email'>
@@ -2514,6 +2549,41 @@ export function useDeleteProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteProjectMutationHookResult = ReturnType<typeof useDeleteProjectMutation>;
 export type DeleteProjectMutationResult = Apollo.MutationResult<DeleteProjectMutation>;
 export type DeleteProjectMutationOptions = Apollo.BaseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const RemoveUserFromProjectDocument = gql`
+    mutation RemoveUserFromProject($memberId: uuid!) {
+  delete_project_members_by_pk(id: $memberId) {
+    user {
+      email
+    }
+  }
+}
+    `;
+export type RemoveUserFromProjectMutationFn = Apollo.MutationFunction<RemoveUserFromProjectMutation, RemoveUserFromProjectMutationVariables>;
+
+/**
+ * __useRemoveUserFromProjectMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserFromProjectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserFromProjectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserFromProjectMutation, { data, loading, error }] = useRemoveUserFromProjectMutation({
+ *   variables: {
+ *      memberId: // value for 'memberId'
+ *   },
+ * });
+ */
+export function useRemoveUserFromProjectMutation(baseOptions?: Apollo.MutationHookOptions<RemoveUserFromProjectMutation, RemoveUserFromProjectMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveUserFromProjectMutation, RemoveUserFromProjectMutationVariables>(RemoveUserFromProjectDocument, options);
+      }
+export type RemoveUserFromProjectMutationHookResult = ReturnType<typeof useRemoveUserFromProjectMutation>;
+export type RemoveUserFromProjectMutationResult = Apollo.MutationResult<RemoveUserFromProjectMutation>;
+export type RemoveUserFromProjectMutationOptions = Apollo.BaseMutationOptions<RemoveUserFromProjectMutation, RemoveUserFromProjectMutationVariables>;
 export const UpdateProjectDocument = gql`
     mutation UpdateProject($id: uuid!, $title: String, $description: String) {
   update_projects_by_pk(
@@ -2561,11 +2631,12 @@ export const GetProjectByIdDocument = gql`
     title
     description
     project_members {
+      id
       user_id
       user {
-        id
         email
       }
+      type_id
     }
   }
 }
@@ -2637,9 +2708,51 @@ export function useGetProjectsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetProjectsQueryHookResult = ReturnType<typeof useGetProjectsQuery>;
 export type GetProjectsLazyQueryHookResult = ReturnType<typeof useGetProjectsLazyQuery>;
 export type GetProjectsQueryResult = Apollo.QueryResult<GetProjectsQuery, GetProjectsQueryVariables>;
+export const UpdateProjectUserRoleDocument = gql`
+    mutation UpdateProjectUserRole($projectMemberId: uuid!, $typeId: uuid!) {
+  update_project_members_by_pk(
+    pk_columns: {id: $projectMemberId}
+    _set: {type_id: $typeId}
+  ) {
+    id
+    type_id
+    user {
+      email
+    }
+  }
+}
+    `;
+export type UpdateProjectUserRoleMutationFn = Apollo.MutationFunction<UpdateProjectUserRoleMutation, UpdateProjectUserRoleMutationVariables>;
+
+/**
+ * __useUpdateProjectUserRoleMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectUserRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectUserRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProjectUserRoleMutation, { data, loading, error }] = useUpdateProjectUserRoleMutation({
+ *   variables: {
+ *      projectMemberId: // value for 'projectMemberId'
+ *      typeId: // value for 'typeId'
+ *   },
+ * });
+ */
+export function useUpdateProjectUserRoleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProjectUserRoleMutation, UpdateProjectUserRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProjectUserRoleMutation, UpdateProjectUserRoleMutationVariables>(UpdateProjectUserRoleDocument, options);
+      }
+export type UpdateProjectUserRoleMutationHookResult = ReturnType<typeof useUpdateProjectUserRoleMutation>;
+export type UpdateProjectUserRoleMutationResult = Apollo.MutationResult<UpdateProjectUserRoleMutation>;
+export type UpdateProjectUserRoleMutationOptions = Apollo.BaseMutationOptions<UpdateProjectUserRoleMutation, UpdateProjectUserRoleMutationVariables>;
 export const GetAllProjectUsersDocument = gql`
     query GetAllProjectUsers($projectId: uuid!) {
   project_members(where: {project_id: {_eq: $projectId}}) {
+    id
     user {
       id
       email

@@ -7,11 +7,12 @@ export const GetProjectById = gql`
       title
       description
       project_members {
+        id
         user_id
         user {
-          id
           email
         }
+        type_id
       }
     }
   }

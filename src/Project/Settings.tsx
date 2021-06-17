@@ -7,6 +7,7 @@ import { FC, useEffect, useState } from 'react';
 import { Box, Button, makeStyles, TextField, Typography } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import { useSnackbar } from 'notistack';
+import MemberCard from './MemberCard';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -43,7 +44,10 @@ interface IProps {
 const Settings: FC<IProps> = ({ id }) => {
   const { enqueueSnackbar } = useSnackbar();
   const c = useStyles();
-  const { data, loading, error } = useGetProjectByIdQuery({ variables: { id } });
+
+  const { data, loading, error } = useGetProjectByIdQuery({
+    variables: { id },
+  });
 
   let defaultValues = {
     title: 'title',
@@ -62,6 +66,7 @@ const Settings: FC<IProps> = ({ id }) => {
     reset,
     formState: { isSubmitting },
   } = useForm<IFormInput>({ defaultValues });
+
   const [updateProjectMutation] = useUpdateProjectMutation({ variables });
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
@@ -91,6 +96,7 @@ const Settings: FC<IProps> = ({ id }) => {
         <Skeleton animation="wave" height={70} />
         <Skeleton animation="wave" height={70} />
         <Skeleton animation="wave" width={140} height={50} />
+        <Skeleton animation="wave" width={180} height={80} />
       </Box>
     );
   }
@@ -138,11 +144,21 @@ const Settings: FC<IProps> = ({ id }) => {
             )}
           />
         </Box>
-
         <Button type="submit" variant="contained" color="secondary">
           {isSubmitting ? 'loading' : 'save changes'}
         </Button>
       </form>
+      <Box>
+        <Typography variant="h4" component="h3" style={{ margin: '2rem 0' }}>
+          {data?.projects_by_pk?.project_members[0] !== undefined
+            ? 'Project Members'
+            : 'Currently there is nobody in the project'}
+        </Typography>
+
+        {data?.projects_by_pk?.project_members.map((i) => (
+          <MemberCard member={i} id={id} key={i.id} />
+        ))}
+      </Box>
     </Box>
   );
 };

@@ -33,11 +33,17 @@ const Board: FC<IProps> = ({ project, id }) => {
         </Typography>
       </div>
       <div className={c.users}>
-        {users?.map((item) => (
-          <Tooltip title={item.user?.email || 'user'} key={item.user_id}>
-            <Avatar>{item.user?.email.substring(0, 1).toUpperCase()}</Avatar>
-          </Tooltip>
-        ))}
+        {users?.map((item) => {
+          let isMember = item.type_id === process.env.REACT_APP_MEMBER_TYPE_ID;
+          return (
+            <Tooltip
+              title={`${item.user?.email} | ${isMember ? 'member' : 'viewer'}`}
+              key={item.user_id}
+            >
+              <Avatar>{item.user?.email.substring(0, 1).toUpperCase()}</Avatar>
+            </Tooltip>
+          );
+        })}
 
         <AddUserDialog projectId={id} />
       </div>

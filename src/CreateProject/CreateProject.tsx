@@ -3,7 +3,7 @@ import { useCreateProjectMutation } from '../lib/generated/apolloComponents';
 import { FC, useState } from 'react';
 import { Box, Button, makeStyles, TextField, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
-import { GetProjectsQuery } from '../lib/graphql/project/queries/getProjects';
+import { GetProjects } from '../lib/graphql/project/queries/getProjects';
 import { useHistory } from 'react-router';
 
 const useStyles = makeStyles((theme) => {
@@ -54,7 +54,7 @@ export const CreateProject: FC = () => {
     setVariables(formData);
     const res = await createProjectMutation({
       // TODO: update the cache manually for saving a network request
-      refetchQueries: [{ query: GetProjectsQuery }],
+      refetchQueries: [{ query: GetProjects }],
     });
 
     if (res.data) {
