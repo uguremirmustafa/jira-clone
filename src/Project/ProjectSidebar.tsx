@@ -36,9 +36,10 @@ const useStyles = makeStyles((theme) => {
 interface Props {
   id: string;
   projectTitle: string | undefined;
+  isOwner: boolean;
 }
 
-export const ProjectSidebar: FC<Props> = ({ id, projectTitle }) => {
+export const ProjectSidebar: FC<Props> = ({ id, projectTitle, isOwner }) => {
   const { pathname } = useLocation();
 
   const c = useStyles();
@@ -75,16 +76,18 @@ export const ProjectSidebar: FC<Props> = ({ id, projectTitle }) => {
           </ListItemIcon>
           <ListItemText>Board</ListItemText>
         </MenuItem>
-        <MenuItem
-          component={NavLink}
-          to={`/project/${id}/danger`}
-          selected={pathname === `/project/${id}/danger`}
-        >
-          <ListItemIcon>
-            <ReportProblemRoundedIcon color="secondary" />
-          </ListItemIcon>
-          <ListItemText color="secondary">Danger Zone</ListItemText>
-        </MenuItem>
+        {isOwner && (
+          <MenuItem
+            component={NavLink}
+            to={`/project/${id}/danger`}
+            selected={pathname === `/project/${id}/danger`}
+          >
+            <ListItemIcon>
+              <ReportProblemRoundedIcon color="secondary" />
+            </ListItemIcon>
+            <ListItemText color="secondary">Danger Zone</ListItemText>
+          </MenuItem>
+        )}
       </MenuList>
     </Drawer>
   );

@@ -39,9 +39,10 @@ interface IFormInput {
 
 interface IProps {
   id: string;
+  isOwner: boolean;
 }
 
-const Settings: FC<IProps> = ({ id }) => {
+const Settings: FC<IProps> = ({ id, isOwner }) => {
   const { enqueueSnackbar } = useSnackbar();
   const c = useStyles();
 
@@ -107,56 +108,70 @@ const Settings: FC<IProps> = ({ id }) => {
 
   return (
     <Box className={c.root}>
-      <Typography variant="h4" component="h2">
+      <Typography variant="h4" component="h2" color="textSecondary" style={{ margin: '2rem 0' }}>
         Project Details
       </Typography>
-      <form onSubmit={handleSubmit(onSubmit)} className={c.form}>
-        <Box className={c.inputBox}>
-          <Controller
-            name="title"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                variant="filled"
-                label="Project Title"
-                className={c.input}
-                color="secondary"
-                helperText="What is the name of the project?"
-                required
-              />
-            )}
-          />
+      {isOwner ? (
+        <form onSubmit={handleSubmit(onSubmit)} className={c.form}>
+          <Box className={c.inputBox}>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant="filled"
+                  label="Project Title"
+                  className={c.input}
+                  color="secondary"
+                  helperText="What is the name of the project?"
+                  required
+                />
+              )}
+            />
+          </Box>
+          <Box className={c.inputBox}>
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  variant="filled"
+                  label="Project Description"
+                  className={c.input}
+                  color="secondary"
+                  helperText="Describe the main focus of the project"
+                />
+              )}
+            />
+          </Box>
+          <Button type="submit" variant="contained" color="secondary">
+            {isSubmitting ? 'loading' : 'save changes'}
+          </Button>
+        </form>
+      ) : (
+        <Box>
+          <Typography variant="subtitle1" color="textSecondary">
+            Title:
+          </Typography>
+          <Typography variant="h5" color="secondary">
+            {data?.projects_by_pk?.title}
+          </Typography>
+          <Typography variant="subtitle1" color="textSecondary">
+            Description:
+          </Typography>
+          <Typography>{data?.projects_by_pk?.description}</Typography>
         </Box>
-        <Box className={c.inputBox}>
-          <Controller
-            name="description"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                variant="filled"
-                label="Project Description"
-                className={c.input}
-                color="secondary"
-                helperText="Describe the main focus of the project"
-              />
-            )}
-          />
-        </Box>
-        <Button type="submit" variant="contained" color="secondary">
-          {isSubmitting ? 'loading' : 'save changes'}
-        </Button>
-      </form>
+      )}
       <Box>
-        <Typography variant="h4" component="h3" style={{ margin: '2rem 0' }}>
+        <Typography variant="h4" component="h3" style={{ margin: '2rem 0' }} color="textSecondary">
           {data?.projects_by_pk?.project_members[0] !== undefined
             ? 'Project Members'
             : 'Currently there is nobody in the project'}
         </Typography>
-
         {data?.projects_by_pk?.project_members.map((i) => (
-          <MemberCard member={i} id={id} key={i.id} />
+          <MemberCard member={i} id={id} key={i.id} ownerId={data?.projects_by_pk?.owner_id} />
         ))}
       </Box>
     </Box>

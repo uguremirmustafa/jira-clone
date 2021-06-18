@@ -27,6 +27,7 @@ import { useSnackbar } from 'notistack';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import { Alert } from '@material-ui/lab';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -61,9 +62,11 @@ interface IProps {
         | undefined;
     };
   id: string;
+  ownerId: string | undefined;
 }
 
-const MemberCard: FC<IProps> = ({ member, id }) => {
+const MemberCard: FC<IProps> = ({ member, id, ownerId }) => {
+  const { user } = useAuth0();
   const { enqueueSnackbar } = useSnackbar();
   const c = useStyles();
   const [type, setType] = useState(member.type_id);
@@ -146,6 +149,7 @@ const MemberCard: FC<IProps> = ({ member, id }) => {
   const handleClose = () => {
     setOpen(false);
   };
+  let isOwner = ownerId === user?.sub;
   let isMember = member.type_id === process.env.REACT_APP_MEMBER_TYPE_ID;
   return (
     <>
@@ -154,19 +158,21 @@ const MemberCard: FC<IProps> = ({ member, id }) => {
           <Typography gutterBottom>{member.user?.email}</Typography>
           <Chip label={isMember ? 'member' : 'viewer'} color={isMember ? 'secondary' : 'default'} />
         </CardContent>
-        <CardActions>
-          <Button
-            size="small"
-            color="secondary"
-            onClick={() => handleRemove(member.id)}
-            disabled={removeUserLoading}
-          >
-            Dismiss User
-          </Button>
-          <Button size="small" onClick={handleClickOpen}>
-            Edit User Type
-          </Button>
-        </CardActions>
+        {isOwner && (
+          <CardActions>
+            <Button
+              size="small"
+              color="secondary"
+              onClick={() => handleRemove(member.id)}
+              disabled={removeUserLoading}
+            >
+              Dismiss User
+            </Button>
+            <Button size="small" onClick={handleClickOpen}>
+              Edit User Type
+            </Button>
+          </CardActions>
+        )}
       </Card>
 
       <Dialog

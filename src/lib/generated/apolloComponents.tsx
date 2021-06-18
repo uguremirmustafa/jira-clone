@@ -2352,7 +2352,7 @@ export type GetProjectByIdQuery = (
   { __typename?: 'query_root' }
   & { projects_by_pk?: Maybe<(
     { __typename?: 'projects' }
-    & Pick<Projects, 'id' | 'title' | 'description'>
+    & Pick<Projects, 'id' | 'title' | 'description' | 'owner_id'>
     & { project_members: Array<(
       { __typename?: 'project_members' }
       & Pick<Project_Members, 'id' | 'user_id' | 'type_id'>
@@ -2374,7 +2374,7 @@ export type GetProjectsQuery = (
     & Pick<Projects, 'id' | 'title' | 'description'>
     & { project_owner: (
       { __typename?: 'users' }
-      & Pick<Users, 'email'>
+      & Pick<Users, 'email' | 'id'>
     ) }
   )> }
 );
@@ -2630,6 +2630,7 @@ export const GetProjectByIdDocument = gql`
     id
     title
     description
+    owner_id
     project_members {
       id
       user_id
@@ -2677,6 +2678,7 @@ export const GetProjectsDocument = gql`
     description
     project_owner {
       email
+      id
     }
   }
 }

@@ -5,26 +5,19 @@ import {
   Toolbar,
   Typography,
   fade,
-  CircularProgress,
   ListItemIcon,
   Avatar,
 } from '@material-ui/core';
 import { useAuth0 } from '@auth0/auth0-react';
-import ExpandMoreRoundedIcon from '@material-ui/icons/ExpandMoreRounded';
-import CategoryRoundedIcon from '@material-ui/icons/CategoryRounded';
 import SearchIcon from '@material-ui/icons/Search';
 import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import InputBase from '@material-ui/core/InputBase';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
 import { drawerWidth } from './Constants';
 import { useGetProjectsQuery } from '../lib/generated/apolloComponents';
+import Dropdown from './Dropdown';
+
 const useStyles = makeStyles((theme) => {
   return {
     appbar: {
@@ -105,38 +98,6 @@ const AuthenticatedNav = () => {
 
   const { data, loading, error } = useGetProjectsQuery();
 
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef<HTMLButtonElement>(null);
-
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
-
-  const handleClose = (event: React.MouseEvent<EventTarget>) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
-      return;
-    }
-
-    setOpen(false);
-  };
-
-  function handleListKeyDown(event: React.KeyboardEvent) {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      setOpen(false);
-    }
-  }
-
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-
-  React.useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current!.focus();
-    }
-    prevOpen.current = open;
-  }, [open]);
-
   if (error) {
     return <div>{error.message}</div>;
   }
@@ -147,79 +108,14 @@ const AuthenticatedNav = () => {
           <Typography className={c.brandName} variant="h6" component={Link} to="/">
             Jira Clone
           </Typography>
-          {loading ? (
-            <CircularProgress />
-          ) : (
-            <div>
-              <Button
-                ref={anchorRef}
-                aria-controls={open ? 'menu-list-grow' : undefined}
-                aria-haspopup="true"
-                onClick={handleToggle}
-                color="secondary"
-                endIcon={<ExpandMoreRoundedIcon />}
-              >
-                Your Projects
-              </Button>
-              <Popper
-                open={open}
-                anchorEl={anchorRef.current}
-                role={undefined}
-                transition
-                disablePortal
-              >
-                {({ TransitionProps, placement }) => (
-                  <Grow
-                    {...TransitionProps}
-                    style={{
-                      transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
-                    }}
-                  >
-                    <Paper className={c.listPaper}>
-                      <ClickAwayListener onClickAway={handleClose}>
-                        <MenuList
-                          autoFocusItem={open}
-                          id="menu-list-grow"
-                          onKeyDown={handleListKeyDown}
-                        >
-                          {data?.projects[0] !== undefined ? (
-                            data?.projects.map((i) => (
-                              <MenuItem
-                                onClick={handleClose}
-                                className={c.listItem}
-                                component={Link}
-                                to={`/project/${i.id}/board`}
-                                key={i.id}
-                              >
-                                <ListItemIcon>
-                                  <CategoryRoundedIcon fontSize="small" color="secondary" />
-                                </ListItemIcon>
-                                <Typography variant="inherit">{i.title}</Typography>
-                              </MenuItem>
-                            ))
-                          ) : (
-                            <>
-                              <Typography className={c.sorryText}>
-                                You have no project :(
-                              </Typography>
-                              <Button
-                                color="secondary"
-                                endIcon={<AddRoundedIcon />}
-                                component={Link}
-                                to="/createProject"
-                              >
-                                create a new project
-                              </Button>
-                            </>
-                          )}
-                        </MenuList>
-                      </ClickAwayListener>
-                    </Paper>
-                  </Grow>
-                )}
-              </Popper>
-            </div>
-          )}
+          <Dropdown
+            projects={data?.projects.filter((i) => i.project_owner.id === user?.sub)}
+            text="Owned Projects"
+          />
+          <Dropdown
+            projects={data?.projects.filter((i) => i.project_owner.id !== user?.sub)}
+            text="Participated Projects"
+          />
           <Button
             color="secondary"
             endIcon={<AddRoundedIcon />}
@@ -244,7 +140,6 @@ const AuthenticatedNav = () => {
             />
           </div>
           <Button onClick={Logout}>logout</Button>
-
           <Avatar alt={user?.name || user?.nickname} src={user?.picture} color="secondary" />
         </div>
       </Toolbar>

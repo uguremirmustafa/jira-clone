@@ -8,6 +8,7 @@ import Board from './Board';
 import { useGetProjectByIdQuery } from '../lib/generated/apolloComponents';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface IProps extends RouteComponentProps<{ id: string }> {}
 
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => {
 
 export const Project: FC<IProps> = ({ match }) => {
   const c = useStyles();
+  const { user, isLoading } = useAuth0();
   let projectId = match.params.id;
   const { data, loading, error } = useGetProjectByIdQuery({
     variables: {
@@ -44,7 +46,7 @@ export const Project: FC<IProps> = ({ match }) => {
     },
   });
 
-  if (loading) {
+  if (loading || isLoading) {
     return (
       <div className={c.skeletonWrapper}>
         <div className={c.skeletonColumn}>
@@ -66,21 +68,23 @@ export const Project: FC<IProps> = ({ match }) => {
   if (error) {
     return <div>{error.message}</div>;
   }
-
+  let isOwner = user?.sub === data?.projects_by_pk?.owner_id;
   return (
-    <ProjectLayout id={projectId} projectTitle={data?.projects_by_pk?.title}>
+    <ProjectLayout id={projectId} projectTitle={data?.projects_by_pk?.title} isOwner={isOwner}>
       <Route
-        component={() => <Settings id={projectId} />}
+        component={() => <Settings id={projectId} isOwner={isOwner} />}
         path={`/project/${projectId}/settings`}
       />
       <Route
         component={() => <Board id={projectId} project={data} />}
         path={`/project/${projectId}/board`}
       />
-      <Route
-        component={() => <DangerZone id={projectId} />}
-        path={`/project/${projectId}/danger`}
-      />
+      {isOwner && (
+        <Route
+          component={() => <DangerZone id={projectId} />}
+          path={`/project/${projectId}/danger`}
+        />
+      )}
     </ProjectLayout>
   );
 };

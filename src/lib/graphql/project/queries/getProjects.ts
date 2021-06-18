@@ -8,6 +8,7 @@ export const GetProjects = gql`
       description
       project_owner {
         email
+        id
       }
     }
   }

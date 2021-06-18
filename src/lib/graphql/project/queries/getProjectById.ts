@@ -6,6 +6,7 @@ export const GetProjectById = gql`
       id
       title
       description
+      owner_id
       project_members {
         id
         user_id
