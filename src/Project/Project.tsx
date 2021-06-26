@@ -76,7 +76,7 @@ export const Project: FC<IProps> = ({ match }) => {
         path={`/project/${projectId}/settings`}
       />
       <Route
-        component={() => <Board id={projectId} project={data} />}
+        component={() => <Board id={projectId} project={data} isOwner={isOwner} />}
         path={`/project/${projectId}/board`}
       />
       {isOwner && (

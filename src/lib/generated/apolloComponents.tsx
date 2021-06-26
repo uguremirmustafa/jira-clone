@@ -259,10 +259,12 @@ export type Issues = {
   /** An aggregate relationship */
   comments_aggregate: Comments_Aggregate;
   created_at: Scalars['timestamptz'];
-  description: Scalars['String'];
+  /** it is nullable for development purposes. in prod, it wont be nullable */
+  description?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
   /** An object relationship */
   issue_owner?: Maybe<Users>;
+  /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
   /** An object relationship */
   project: Projects;
@@ -356,9 +358,11 @@ export enum Issues_Constraint {
 export type Issues_Insert_Input = {
   comments?: Maybe<Comments_Arr_Rel_Insert_Input>;
   created_at?: Maybe<Scalars['timestamptz']>;
+  /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   issue_owner?: Maybe<Users_Obj_Rel_Insert_Input>;
+  /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
   project?: Maybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: Maybe<Scalars['uuid']>;
@@ -371,8 +375,10 @@ export type Issues_Insert_Input = {
 export type Issues_Max_Fields = {
   __typename?: 'issues_max_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
+  /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
   project_id?: Maybe<Scalars['uuid']>;
   status?: Maybe<Scalars['String']>;
@@ -383,8 +389,10 @@ export type Issues_Max_Fields = {
 /** order by max() on columns of table "issues" */
 export type Issues_Max_Order_By = {
   created_at?: Maybe<Order_By>;
+  /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  /** issue owner. creater of the issue. */
   owner_id?: Maybe<Order_By>;
   project_id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
@@ -396,8 +404,10 @@ export type Issues_Max_Order_By = {
 export type Issues_Min_Fields = {
   __typename?: 'issues_min_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
+  /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
   project_id?: Maybe<Scalars['uuid']>;
   status?: Maybe<Scalars['String']>;
@@ -408,8 +418,10 @@ export type Issues_Min_Fields = {
 /** order by min() on columns of table "issues" */
 export type Issues_Min_Order_By = {
   created_at?: Maybe<Order_By>;
+  /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  /** issue owner. creater of the issue. */
   owner_id?: Maybe<Order_By>;
   project_id?: Maybe<Order_By>;
   status?: Maybe<Order_By>;
@@ -483,8 +495,10 @@ export enum Issues_Select_Column {
 /** input type for updating data in table "issues" */
 export type Issues_Set_Input = {
   created_at?: Maybe<Scalars['timestamptz']>;
+  /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
   project_id?: Maybe<Scalars['uuid']>;
   status?: Maybe<Scalars['String']>;
@@ -2360,6 +2374,9 @@ export type GetProjectByIdQuery = (
         { __typename?: 'users' }
         & Pick<Users, 'email'>
       )> }
+    )>, issues: Array<(
+      { __typename?: 'issues' }
+      & Pick<Issues, 'title'>
     )> }
   )> }
 );
@@ -2638,6 +2655,9 @@ export const GetProjectByIdDocument = gql`
         email
       }
       type_id
+    }
+    issues {
+      title
     }
   }
 }

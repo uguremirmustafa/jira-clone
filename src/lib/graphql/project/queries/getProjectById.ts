@@ -15,6 +15,9 @@ export const GetProjectById = gql`
         }
         type_id
       }
+      issues {
+        title
+      }
     }
   }
 `;

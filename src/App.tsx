@@ -7,8 +7,8 @@ import { pink } from '@material-ui/core/colors';
 import Navbar from './shared/Navbar';
 import MainLayout from './shared/MainLayout';
 import { SnackbarProvider } from 'notistack';
-import Slide from '@material-ui/core/Slide';
 import { CreateProject } from './CreateProject';
+import { ProjectsList } from './Projects';
 
 const theme = createMuiTheme({
   palette: {
@@ -39,6 +39,7 @@ function App() {
               <Route exact path="/" component={Home} />
               <Route path="/createProject" component={CreateProject} />
               <Route path="/project/:id" component={Project} />
+              <Route path="/projects" component={ProjectsList} />
             </Switch>
           </MainLayout>
         </Router>

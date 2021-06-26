@@ -8,9 +8,11 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -25,8 +27,15 @@ export const ProjectsList = withAuthenticationRequired(() => {
   const c = useStyles();
 
   if (loading) {
-    return <div>loading</div>;
+    return (
+      <Box className={c.root}>
+        <Skeleton animation="wave" width={180} height={80} />
+        <Skeleton animation="wave" height={70} />
+        <Skeleton animation="wave" height={70} />
+      </Box>
+    );
   }
+
   if (error) {
     return <div>{error.message}</div>;
   }
