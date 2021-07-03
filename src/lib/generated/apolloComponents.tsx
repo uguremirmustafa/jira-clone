@@ -17,6 +17,19 @@ export type Scalars = {
 };
 
 
+/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
+export type Int_Comparison_Exp = {
+  _eq?: Maybe<Scalars['Int']>;
+  _gt?: Maybe<Scalars['Int']>;
+  _gte?: Maybe<Scalars['Int']>;
+  _in?: Maybe<Array<Scalars['Int']>>;
+  _is_null?: Maybe<Scalars['Boolean']>;
+  _lt?: Maybe<Scalars['Int']>;
+  _lte?: Maybe<Scalars['Int']>;
+  _neq?: Maybe<Scalars['Int']>;
+  _nin?: Maybe<Array<Scalars['Int']>>;
+};
+
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
   _eq?: Maybe<Scalars['String']>;
@@ -48,6 +61,319 @@ export type String_Comparison_Exp = {
   _regex?: Maybe<Scalars['String']>;
   /** does the column match the given SQL regular expression */
   _similar?: Maybe<Scalars['String']>;
+};
+
+/** columns and relationships of "columns" */
+export type Columns = {
+  __typename?: 'columns';
+  id: Scalars['uuid'];
+  index: Scalars['Int'];
+  /** An array relationship */
+  issues: Array<Issues>;
+  /** An aggregate relationship */
+  issues_aggregate: Issues_Aggregate;
+  name: Scalars['String'];
+  /** An object relationship */
+  project: Projects;
+  project_id: Scalars['uuid'];
+};
+
+
+/** columns and relationships of "columns" */
+export type ColumnsIssuesArgs = {
+  distinct_on?: Maybe<Array<Issues_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issues_Order_By>>;
+  where?: Maybe<Issues_Bool_Exp>;
+};
+
+
+/** columns and relationships of "columns" */
+export type ColumnsIssues_AggregateArgs = {
+  distinct_on?: Maybe<Array<Issues_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issues_Order_By>>;
+  where?: Maybe<Issues_Bool_Exp>;
+};
+
+/** aggregated selection of "columns" */
+export type Columns_Aggregate = {
+  __typename?: 'columns_aggregate';
+  aggregate?: Maybe<Columns_Aggregate_Fields>;
+  nodes: Array<Columns>;
+};
+
+/** aggregate fields of "columns" */
+export type Columns_Aggregate_Fields = {
+  __typename?: 'columns_aggregate_fields';
+  avg?: Maybe<Columns_Avg_Fields>;
+  count: Scalars['Int'];
+  max?: Maybe<Columns_Max_Fields>;
+  min?: Maybe<Columns_Min_Fields>;
+  stddev?: Maybe<Columns_Stddev_Fields>;
+  stddev_pop?: Maybe<Columns_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Columns_Stddev_Samp_Fields>;
+  sum?: Maybe<Columns_Sum_Fields>;
+  var_pop?: Maybe<Columns_Var_Pop_Fields>;
+  var_samp?: Maybe<Columns_Var_Samp_Fields>;
+  variance?: Maybe<Columns_Variance_Fields>;
+};
+
+
+/** aggregate fields of "columns" */
+export type Columns_Aggregate_FieldsCountArgs = {
+  columns?: Maybe<Array<Columns_Select_Column>>;
+  distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "columns" */
+export type Columns_Aggregate_Order_By = {
+  avg?: Maybe<Columns_Avg_Order_By>;
+  count?: Maybe<Order_By>;
+  max?: Maybe<Columns_Max_Order_By>;
+  min?: Maybe<Columns_Min_Order_By>;
+  stddev?: Maybe<Columns_Stddev_Order_By>;
+  stddev_pop?: Maybe<Columns_Stddev_Pop_Order_By>;
+  stddev_samp?: Maybe<Columns_Stddev_Samp_Order_By>;
+  sum?: Maybe<Columns_Sum_Order_By>;
+  var_pop?: Maybe<Columns_Var_Pop_Order_By>;
+  var_samp?: Maybe<Columns_Var_Samp_Order_By>;
+  variance?: Maybe<Columns_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "columns" */
+export type Columns_Arr_Rel_Insert_Input = {
+  data: Array<Columns_Insert_Input>;
+  /** on conflict condition */
+  on_conflict?: Maybe<Columns_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Columns_Avg_Fields = {
+  __typename?: 'columns_avg_fields';
+  index?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "columns" */
+export type Columns_Avg_Order_By = {
+  index?: Maybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "columns". All fields are combined with a logical 'AND'. */
+export type Columns_Bool_Exp = {
+  _and?: Maybe<Array<Columns_Bool_Exp>>;
+  _not?: Maybe<Columns_Bool_Exp>;
+  _or?: Maybe<Array<Columns_Bool_Exp>>;
+  id?: Maybe<Uuid_Comparison_Exp>;
+  index?: Maybe<Int_Comparison_Exp>;
+  issues?: Maybe<Issues_Bool_Exp>;
+  name?: Maybe<String_Comparison_Exp>;
+  project?: Maybe<Projects_Bool_Exp>;
+  project_id?: Maybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "columns" */
+export enum Columns_Constraint {
+  /** unique or primary key constraint */
+  ColumnsPkey = 'columns_pkey'
+}
+
+/** input type for incrementing numeric columns in table "columns" */
+export type Columns_Inc_Input = {
+  index?: Maybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "columns" */
+export type Columns_Insert_Input = {
+  id?: Maybe<Scalars['uuid']>;
+  index?: Maybe<Scalars['Int']>;
+  issues?: Maybe<Issues_Arr_Rel_Insert_Input>;
+  name?: Maybe<Scalars['String']>;
+  project?: Maybe<Projects_Obj_Rel_Insert_Input>;
+  project_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate max on columns */
+export type Columns_Max_Fields = {
+  __typename?: 'columns_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+  index?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  project_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "columns" */
+export type Columns_Max_Order_By = {
+  id?: Maybe<Order_By>;
+  index?: Maybe<Order_By>;
+  name?: Maybe<Order_By>;
+  project_id?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Columns_Min_Fields = {
+  __typename?: 'columns_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+  index?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  project_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "columns" */
+export type Columns_Min_Order_By = {
+  id?: Maybe<Order_By>;
+  index?: Maybe<Order_By>;
+  name?: Maybe<Order_By>;
+  project_id?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "columns" */
+export type Columns_Mutation_Response = {
+  __typename?: 'columns_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Columns>;
+};
+
+/** input type for inserting object relation for remote table "columns" */
+export type Columns_Obj_Rel_Insert_Input = {
+  data: Columns_Insert_Input;
+  /** on conflict condition */
+  on_conflict?: Maybe<Columns_On_Conflict>;
+};
+
+/** on conflict condition type for table "columns" */
+export type Columns_On_Conflict = {
+  constraint: Columns_Constraint;
+  update_columns?: Array<Columns_Update_Column>;
+  where?: Maybe<Columns_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "columns". */
+export type Columns_Order_By = {
+  id?: Maybe<Order_By>;
+  index?: Maybe<Order_By>;
+  issues_aggregate?: Maybe<Issues_Aggregate_Order_By>;
+  name?: Maybe<Order_By>;
+  project?: Maybe<Projects_Order_By>;
+  project_id?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: columns */
+export type Columns_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "columns" */
+export enum Columns_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Index = 'index',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  ProjectId = 'project_id'
+}
+
+/** input type for updating data in table "columns" */
+export type Columns_Set_Input = {
+  id?: Maybe<Scalars['uuid']>;
+  index?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  project_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate stddev on columns */
+export type Columns_Stddev_Fields = {
+  __typename?: 'columns_stddev_fields';
+  index?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "columns" */
+export type Columns_Stddev_Order_By = {
+  index?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Columns_Stddev_Pop_Fields = {
+  __typename?: 'columns_stddev_pop_fields';
+  index?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "columns" */
+export type Columns_Stddev_Pop_Order_By = {
+  index?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Columns_Stddev_Samp_Fields = {
+  __typename?: 'columns_stddev_samp_fields';
+  index?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "columns" */
+export type Columns_Stddev_Samp_Order_By = {
+  index?: Maybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Columns_Sum_Fields = {
+  __typename?: 'columns_sum_fields';
+  index?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "columns" */
+export type Columns_Sum_Order_By = {
+  index?: Maybe<Order_By>;
+};
+
+/** update columns of table "columns" */
+export enum Columns_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Index = 'index',
+  /** column name */
+  Name = 'name',
+  /** column name */
+  ProjectId = 'project_id'
+}
+
+/** aggregate var_pop on columns */
+export type Columns_Var_Pop_Fields = {
+  __typename?: 'columns_var_pop_fields';
+  index?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "columns" */
+export type Columns_Var_Pop_Order_By = {
+  index?: Maybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Columns_Var_Samp_Fields = {
+  __typename?: 'columns_var_samp_fields';
+  index?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "columns" */
+export type Columns_Var_Samp_Order_By = {
+  index?: Maybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Columns_Variance_Fields = {
+  __typename?: 'columns_variance_fields';
+  index?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "columns" */
+export type Columns_Variance_Order_By = {
+  index?: Maybe<Order_By>;
 };
 
 /** columns and relationships of "comments" */
@@ -254,6 +580,9 @@ export enum Comments_Update_Column {
 /** columns and relationships of "issues" */
 export type Issues = {
   __typename?: 'issues';
+  /** An object relationship */
+  column?: Maybe<Columns>;
+  column_id?: Maybe<Scalars['uuid']>;
   /** An array relationship */
   comments: Array<Comments>;
   /** An aggregate relationship */
@@ -262,15 +591,18 @@ export type Issues = {
   /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
+  index?: Maybe<Scalars['Int']>;
   /** An object relationship */
   issue_owner?: Maybe<Users>;
   /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
+  priority: Scalars['Int'];
   /** An object relationship */
   project: Projects;
   project_id: Scalars['uuid'];
-  status: Scalars['String'];
   title: Scalars['String'];
+  /** bug, enhancement, first issue, etc. */
+  type?: Maybe<Scalars['String']>;
   updated_at: Scalars['timestamptz'];
 };
 
@@ -304,9 +636,17 @@ export type Issues_Aggregate = {
 /** aggregate fields of "issues" */
 export type Issues_Aggregate_Fields = {
   __typename?: 'issues_aggregate_fields';
+  avg?: Maybe<Issues_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Issues_Max_Fields>;
   min?: Maybe<Issues_Min_Fields>;
+  stddev?: Maybe<Issues_Stddev_Fields>;
+  stddev_pop?: Maybe<Issues_Stddev_Pop_Fields>;
+  stddev_samp?: Maybe<Issues_Stddev_Samp_Fields>;
+  sum?: Maybe<Issues_Sum_Fields>;
+  var_pop?: Maybe<Issues_Var_Pop_Fields>;
+  var_samp?: Maybe<Issues_Var_Samp_Fields>;
+  variance?: Maybe<Issues_Variance_Fields>;
 };
 
 
@@ -318,9 +658,17 @@ export type Issues_Aggregate_FieldsCountArgs = {
 
 /** order by aggregate values of table "issues" */
 export type Issues_Aggregate_Order_By = {
+  avg?: Maybe<Issues_Avg_Order_By>;
   count?: Maybe<Order_By>;
   max?: Maybe<Issues_Max_Order_By>;
   min?: Maybe<Issues_Min_Order_By>;
+  stddev?: Maybe<Issues_Stddev_Order_By>;
+  stddev_pop?: Maybe<Issues_Stddev_Pop_Order_By>;
+  stddev_samp?: Maybe<Issues_Stddev_Samp_Order_By>;
+  sum?: Maybe<Issues_Sum_Order_By>;
+  var_pop?: Maybe<Issues_Var_Pop_Order_By>;
+  var_samp?: Maybe<Issues_Var_Samp_Order_By>;
+  variance?: Maybe<Issues_Variance_Order_By>;
 };
 
 /** input type for inserting array relation for remote table "issues" */
@@ -330,21 +678,38 @@ export type Issues_Arr_Rel_Insert_Input = {
   on_conflict?: Maybe<Issues_On_Conflict>;
 };
 
+/** aggregate avg on columns */
+export type Issues_Avg_Fields = {
+  __typename?: 'issues_avg_fields';
+  index?: Maybe<Scalars['Float']>;
+  priority?: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "issues" */
+export type Issues_Avg_Order_By = {
+  index?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
+};
+
 /** Boolean expression to filter rows from the table "issues". All fields are combined with a logical 'AND'. */
 export type Issues_Bool_Exp = {
   _and?: Maybe<Array<Issues_Bool_Exp>>;
   _not?: Maybe<Issues_Bool_Exp>;
   _or?: Maybe<Array<Issues_Bool_Exp>>;
+  column?: Maybe<Columns_Bool_Exp>;
+  column_id?: Maybe<Uuid_Comparison_Exp>;
   comments?: Maybe<Comments_Bool_Exp>;
   created_at?: Maybe<Timestamptz_Comparison_Exp>;
   description?: Maybe<String_Comparison_Exp>;
   id?: Maybe<Uuid_Comparison_Exp>;
+  index?: Maybe<Int_Comparison_Exp>;
   issue_owner?: Maybe<Users_Bool_Exp>;
   owner_id?: Maybe<String_Comparison_Exp>;
+  priority?: Maybe<Int_Comparison_Exp>;
   project?: Maybe<Projects_Bool_Exp>;
   project_id?: Maybe<Uuid_Comparison_Exp>;
-  status?: Maybe<String_Comparison_Exp>;
   title?: Maybe<String_Comparison_Exp>;
+  type?: Maybe<String_Comparison_Exp>;
   updated_at?: Maybe<Timestamptz_Comparison_Exp>;
 };
 
@@ -354,78 +719,105 @@ export enum Issues_Constraint {
   IssuesPkey = 'issues_pkey'
 }
 
+/** input type for incrementing numeric columns in table "issues" */
+export type Issues_Inc_Input = {
+  index?: Maybe<Scalars['Int']>;
+  priority?: Maybe<Scalars['Int']>;
+};
+
 /** input type for inserting data into table "issues" */
 export type Issues_Insert_Input = {
+  column?: Maybe<Columns_Obj_Rel_Insert_Input>;
+  column_id?: Maybe<Scalars['uuid']>;
   comments?: Maybe<Comments_Arr_Rel_Insert_Input>;
   created_at?: Maybe<Scalars['timestamptz']>;
   /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  index?: Maybe<Scalars['Int']>;
   issue_owner?: Maybe<Users_Obj_Rel_Insert_Input>;
   /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   project?: Maybe<Projects_Obj_Rel_Insert_Input>;
   project_id?: Maybe<Scalars['uuid']>;
-  status?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  /** bug, enhancement, first issue, etc. */
+  type?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
 /** aggregate max on columns */
 export type Issues_Max_Fields = {
   __typename?: 'issues_max_fields';
+  column_id?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  index?: Maybe<Scalars['Int']>;
   /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   project_id?: Maybe<Scalars['uuid']>;
-  status?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  /** bug, enhancement, first issue, etc. */
+  type?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
 /** order by max() on columns of table "issues" */
 export type Issues_Max_Order_By = {
+  column_id?: Maybe<Order_By>;
   created_at?: Maybe<Order_By>;
   /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  index?: Maybe<Order_By>;
   /** issue owner. creater of the issue. */
   owner_id?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
   project_id?: Maybe<Order_By>;
-  status?: Maybe<Order_By>;
   title?: Maybe<Order_By>;
+  /** bug, enhancement, first issue, etc. */
+  type?: Maybe<Order_By>;
   updated_at?: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Issues_Min_Fields = {
   __typename?: 'issues_min_fields';
+  column_id?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  index?: Maybe<Scalars['Int']>;
   /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   project_id?: Maybe<Scalars['uuid']>;
-  status?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  /** bug, enhancement, first issue, etc. */
+  type?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
 };
 
 /** order by min() on columns of table "issues" */
 export type Issues_Min_Order_By = {
+  column_id?: Maybe<Order_By>;
   created_at?: Maybe<Order_By>;
   /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  index?: Maybe<Order_By>;
   /** issue owner. creater of the issue. */
   owner_id?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
   project_id?: Maybe<Order_By>;
-  status?: Maybe<Order_By>;
   title?: Maybe<Order_By>;
+  /** bug, enhancement, first issue, etc. */
+  type?: Maybe<Order_By>;
   updated_at?: Maybe<Order_By>;
 };
 
@@ -454,16 +846,20 @@ export type Issues_On_Conflict = {
 
 /** Ordering options when selecting data from "issues". */
 export type Issues_Order_By = {
+  column?: Maybe<Columns_Order_By>;
+  column_id?: Maybe<Order_By>;
   comments_aggregate?: Maybe<Comments_Aggregate_Order_By>;
   created_at?: Maybe<Order_By>;
   description?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
+  index?: Maybe<Order_By>;
   issue_owner?: Maybe<Users_Order_By>;
   owner_id?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
   project?: Maybe<Projects_Order_By>;
   project_id?: Maybe<Order_By>;
-  status?: Maybe<Order_By>;
   title?: Maybe<Order_By>;
+  type?: Maybe<Order_By>;
   updated_at?: Maybe<Order_By>;
 };
 
@@ -475,39 +871,103 @@ export type Issues_Pk_Columns_Input = {
 /** select columns of table "issues" */
 export enum Issues_Select_Column {
   /** column name */
+  ColumnId = 'column_id',
+  /** column name */
   CreatedAt = 'created_at',
   /** column name */
   Description = 'description',
   /** column name */
   Id = 'id',
   /** column name */
+  Index = 'index',
+  /** column name */
   OwnerId = 'owner_id',
+  /** column name */
+  Priority = 'priority',
   /** column name */
   ProjectId = 'project_id',
   /** column name */
-  Status = 'status',
-  /** column name */
   Title = 'title',
+  /** column name */
+  Type = 'type',
   /** column name */
   UpdatedAt = 'updated_at'
 }
 
 /** input type for updating data in table "issues" */
 export type Issues_Set_Input = {
+  column_id?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   /** it is nullable for development purposes. in prod, it wont be nullable */
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
+  index?: Maybe<Scalars['Int']>;
   /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
+  priority?: Maybe<Scalars['Int']>;
   project_id?: Maybe<Scalars['uuid']>;
-  status?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  /** bug, enhancement, first issue, etc. */
+  type?: Maybe<Scalars['String']>;
   updated_at?: Maybe<Scalars['timestamptz']>;
+};
+
+/** aggregate stddev on columns */
+export type Issues_Stddev_Fields = {
+  __typename?: 'issues_stddev_fields';
+  index?: Maybe<Scalars['Float']>;
+  priority?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "issues" */
+export type Issues_Stddev_Order_By = {
+  index?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Issues_Stddev_Pop_Fields = {
+  __typename?: 'issues_stddev_pop_fields';
+  index?: Maybe<Scalars['Float']>;
+  priority?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "issues" */
+export type Issues_Stddev_Pop_Order_By = {
+  index?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Issues_Stddev_Samp_Fields = {
+  __typename?: 'issues_stddev_samp_fields';
+  index?: Maybe<Scalars['Float']>;
+  priority?: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "issues" */
+export type Issues_Stddev_Samp_Order_By = {
+  index?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Issues_Sum_Fields = {
+  __typename?: 'issues_sum_fields';
+  index?: Maybe<Scalars['Int']>;
+  priority?: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "issues" */
+export type Issues_Sum_Order_By = {
+  index?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
 };
 
 /** update columns of table "issues" */
 export enum Issues_Update_Column {
+  /** column name */
+  ColumnId = 'column_id',
   /** column name */
   CreatedAt = 'created_at',
   /** column name */
@@ -515,20 +975,67 @@ export enum Issues_Update_Column {
   /** column name */
   Id = 'id',
   /** column name */
+  Index = 'index',
+  /** column name */
   OwnerId = 'owner_id',
+  /** column name */
+  Priority = 'priority',
   /** column name */
   ProjectId = 'project_id',
   /** column name */
-  Status = 'status',
-  /** column name */
   Title = 'title',
+  /** column name */
+  Type = 'type',
   /** column name */
   UpdatedAt = 'updated_at'
 }
 
+/** aggregate var_pop on columns */
+export type Issues_Var_Pop_Fields = {
+  __typename?: 'issues_var_pop_fields';
+  index?: Maybe<Scalars['Float']>;
+  priority?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "issues" */
+export type Issues_Var_Pop_Order_By = {
+  index?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Issues_Var_Samp_Fields = {
+  __typename?: 'issues_var_samp_fields';
+  index?: Maybe<Scalars['Float']>;
+  priority?: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "issues" */
+export type Issues_Var_Samp_Order_By = {
+  index?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Issues_Variance_Fields = {
+  __typename?: 'issues_variance_fields';
+  index?: Maybe<Scalars['Float']>;
+  priority?: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "issues" */
+export type Issues_Variance_Order_By = {
+  index?: Maybe<Order_By>;
+  priority?: Maybe<Order_By>;
+};
+
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
+  /** delete data from the table: "columns" */
+  delete_columns?: Maybe<Columns_Mutation_Response>;
+  /** delete single row from the table: "columns" */
+  delete_columns_by_pk?: Maybe<Columns>;
   /** delete data from the table: "comments" */
   delete_comments?: Maybe<Comments_Mutation_Response>;
   /** delete single row from the table: "comments" */
@@ -555,6 +1062,10 @@ export type Mutation_Root = {
   delete_users?: Maybe<Users_Mutation_Response>;
   /** delete single row from the table: "users" */
   delete_users_by_pk?: Maybe<Users>;
+  /** insert data into the table: "columns" */
+  insert_columns?: Maybe<Columns_Mutation_Response>;
+  /** insert a single row into the table: "columns" */
+  insert_columns_one?: Maybe<Columns>;
   /** insert data into the table: "comments" */
   insert_comments?: Maybe<Comments_Mutation_Response>;
   /** insert a single row into the table: "comments" */
@@ -583,6 +1094,10 @@ export type Mutation_Root = {
   insert_users?: Maybe<Users_Mutation_Response>;
   /** insert a single row into the table: "users" */
   insert_users_one?: Maybe<Users>;
+  /** update data of the table: "columns" */
+  update_columns?: Maybe<Columns_Mutation_Response>;
+  /** update single row of the table: "columns" */
+  update_columns_by_pk?: Maybe<Columns>;
   /** update data of the table: "comments" */
   update_comments?: Maybe<Comments_Mutation_Response>;
   /** update single row of the table: "comments" */
@@ -609,6 +1124,18 @@ export type Mutation_Root = {
   update_users?: Maybe<Users_Mutation_Response>;
   /** update single row of the table: "users" */
   update_users_by_pk?: Maybe<Users>;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_ColumnsArgs = {
+  where: Columns_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Columns_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -687,6 +1214,20 @@ export type Mutation_RootDelete_UsersArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Users_By_PkArgs = {
   id: Scalars['String'];
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_ColumnsArgs = {
+  objects: Array<Columns_Insert_Input>;
+  on_conflict?: Maybe<Columns_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Columns_OneArgs = {
+  object: Columns_Insert_Input;
+  on_conflict?: Maybe<Columns_On_Conflict>;
 };
 
 
@@ -787,6 +1328,22 @@ export type Mutation_RootInsert_Users_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_ColumnsArgs = {
+  _inc?: Maybe<Columns_Inc_Input>;
+  _set?: Maybe<Columns_Set_Input>;
+  where: Columns_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Columns_By_PkArgs = {
+  _inc?: Maybe<Columns_Inc_Input>;
+  _set?: Maybe<Columns_Set_Input>;
+  pk_columns: Columns_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_CommentsArgs = {
   _set?: Maybe<Comments_Set_Input>;
   where: Comments_Bool_Exp;
@@ -802,6 +1359,7 @@ export type Mutation_RootUpdate_Comments_By_PkArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_IssuesArgs = {
+  _inc?: Maybe<Issues_Inc_Input>;
   _set?: Maybe<Issues_Set_Input>;
   where: Issues_Bool_Exp;
 };
@@ -809,6 +1367,7 @@ export type Mutation_RootUpdate_IssuesArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Issues_By_PkArgs = {
+  _inc?: Maybe<Issues_Inc_Input>;
   _set?: Maybe<Issues_Set_Input>;
   pk_columns: Issues_Pk_Columns_Input;
 };
@@ -1072,6 +1631,10 @@ export enum Project_Members_Update_Column {
 /** columns and relationships of "projects" */
 export type Projects = {
   __typename?: 'projects';
+  /** An array relationship */
+  columns: Array<Columns>;
+  /** An aggregate relationship */
+  columns_aggregate: Columns_Aggregate;
   created_at: Scalars['timestamptz'];
   description?: Maybe<Scalars['String']>;
   id: Scalars['uuid'];
@@ -1089,6 +1652,26 @@ export type Projects = {
   title: Scalars['String'];
   updated_at?: Maybe<Scalars['timestamptz']>;
   url?: Maybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsColumnsArgs = {
+  distinct_on?: Maybe<Array<Columns_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Columns_Order_By>>;
+  where?: Maybe<Columns_Bool_Exp>;
+};
+
+
+/** columns and relationships of "projects" */
+export type ProjectsColumns_AggregateArgs = {
+  distinct_on?: Maybe<Array<Columns_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Columns_Order_By>>;
+  where?: Maybe<Columns_Bool_Exp>;
 };
 
 
@@ -1172,6 +1755,7 @@ export type Projects_Bool_Exp = {
   _and?: Maybe<Array<Projects_Bool_Exp>>;
   _not?: Maybe<Projects_Bool_Exp>;
   _or?: Maybe<Array<Projects_Bool_Exp>>;
+  columns?: Maybe<Columns_Bool_Exp>;
   created_at?: Maybe<Timestamptz_Comparison_Exp>;
   description?: Maybe<String_Comparison_Exp>;
   id?: Maybe<Uuid_Comparison_Exp>;
@@ -1192,6 +1776,7 @@ export enum Projects_Constraint {
 
 /** input type for inserting data into table "projects" */
 export type Projects_Insert_Input = {
+  columns?: Maybe<Columns_Arr_Rel_Insert_Input>;
   created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
@@ -1275,6 +1860,7 @@ export type Projects_On_Conflict = {
 
 /** Ordering options when selecting data from "projects". */
 export type Projects_Order_By = {
+  columns_aggregate?: Maybe<Columns_Aggregate_Order_By>;
   created_at?: Maybe<Order_By>;
   description?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
@@ -1342,6 +1928,12 @@ export enum Projects_Update_Column {
 export type Query_Root = {
   __typename?: 'query_root';
   /** An array relationship */
+  columns: Array<Columns>;
+  /** An aggregate relationship */
+  columns_aggregate: Columns_Aggregate;
+  /** fetch data from the table: "columns" using primary key columns */
+  columns_by_pk?: Maybe<Columns>;
+  /** An array relationship */
   comments: Array<Comments>;
   /** An aggregate relationship */
   comments_aggregate: Comments_Aggregate;
@@ -1385,6 +1977,29 @@ export type Query_Root = {
   users_aggregate: Users_Aggregate;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
+};
+
+
+export type Query_RootColumnsArgs = {
+  distinct_on?: Maybe<Array<Columns_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Columns_Order_By>>;
+  where?: Maybe<Columns_Bool_Exp>;
+};
+
+
+export type Query_RootColumns_AggregateArgs = {
+  distinct_on?: Maybe<Array<Columns_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Columns_Order_By>>;
+  where?: Maybe<Columns_Bool_Exp>;
+};
+
+
+export type Query_RootColumns_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -1570,6 +2185,12 @@ export type Search_Users_Args = {
 export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** An array relationship */
+  columns: Array<Columns>;
+  /** An aggregate relationship */
+  columns_aggregate: Columns_Aggregate;
+  /** fetch data from the table: "columns" using primary key columns */
+  columns_by_pk?: Maybe<Columns>;
+  /** An array relationship */
   comments: Array<Comments>;
   /** An aggregate relationship */
   comments_aggregate: Comments_Aggregate;
@@ -1613,6 +2234,29 @@ export type Subscription_Root = {
   users_aggregate: Users_Aggregate;
   /** fetch data from the table: "users" using primary key columns */
   users_by_pk?: Maybe<Users>;
+};
+
+
+export type Subscription_RootColumnsArgs = {
+  distinct_on?: Maybe<Array<Columns_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Columns_Order_By>>;
+  where?: Maybe<Columns_Bool_Exp>;
+};
+
+
+export type Subscription_RootColumns_AggregateArgs = {
+  distinct_on?: Maybe<Array<Columns_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Columns_Order_By>>;
+  where?: Maybe<Columns_Bool_Exp>;
+};
+
+
+export type Subscription_RootColumns_By_PkArgs = {
+  id: Scalars['uuid'];
 };
 
 
@@ -2299,6 +2943,38 @@ export type AddUserToProjectMutation = (
   )> }
 );
 
+export type CreateColumnMutationVariables = Exact<{
+  projectId: Scalars['uuid'];
+  name: Scalars['String'];
+  index: Scalars['Int'];
+}>;
+
+
+export type CreateColumnMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_columns_one?: Maybe<(
+    { __typename?: 'columns' }
+    & Pick<Columns, 'id'>
+  )> }
+);
+
+export type CreateIssueMutationVariables = Exact<{
+  projectId: Scalars['uuid'];
+  title: Scalars['String'];
+  priority?: Maybe<Scalars['Int']>;
+  description?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CreateIssueMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_issues_one?: Maybe<(
+    { __typename?: 'issues' }
+    & Pick<Issues, 'id'>
+  )> }
+);
+
 export type CreateProjectMutationVariables = Exact<{
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -2374,9 +3050,13 @@ export type GetProjectByIdQuery = (
         { __typename?: 'users' }
         & Pick<Users, 'email'>
       )> }
-    )>, issues: Array<(
-      { __typename?: 'issues' }
-      & Pick<Issues, 'title'>
+    )>, columns: Array<(
+      { __typename?: 'columns' }
+      & Pick<Columns, 'id' | 'name' | 'index'>
+      & { issues: Array<(
+        { __typename?: 'issues' }
+        & Pick<Issues, 'title' | 'description' | 'type' | 'project_id' | 'priority' | 'column_id'>
+      )> }
     )> }
   )> }
 );
@@ -2496,6 +3176,80 @@ export function useAddUserToProjectMutation(baseOptions?: Apollo.MutationHookOpt
 export type AddUserToProjectMutationHookResult = ReturnType<typeof useAddUserToProjectMutation>;
 export type AddUserToProjectMutationResult = Apollo.MutationResult<AddUserToProjectMutation>;
 export type AddUserToProjectMutationOptions = Apollo.BaseMutationOptions<AddUserToProjectMutation, AddUserToProjectMutationVariables>;
+export const CreateColumnDocument = gql`
+    mutation CreateColumn($projectId: uuid!, $name: String!, $index: Int!) {
+  insert_columns_one(object: {index: $index, project_id: $projectId, name: $name}) {
+    id
+  }
+}
+    `;
+export type CreateColumnMutationFn = Apollo.MutationFunction<CreateColumnMutation, CreateColumnMutationVariables>;
+
+/**
+ * __useCreateColumnMutation__
+ *
+ * To run a mutation, you first call `useCreateColumnMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateColumnMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createColumnMutation, { data, loading, error }] = useCreateColumnMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      name: // value for 'name'
+ *      index: // value for 'index'
+ *   },
+ * });
+ */
+export function useCreateColumnMutation(baseOptions?: Apollo.MutationHookOptions<CreateColumnMutation, CreateColumnMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateColumnMutation, CreateColumnMutationVariables>(CreateColumnDocument, options);
+      }
+export type CreateColumnMutationHookResult = ReturnType<typeof useCreateColumnMutation>;
+export type CreateColumnMutationResult = Apollo.MutationResult<CreateColumnMutation>;
+export type CreateColumnMutationOptions = Apollo.BaseMutationOptions<CreateColumnMutation, CreateColumnMutationVariables>;
+export const CreateIssueDocument = gql`
+    mutation CreateIssue($projectId: uuid!, $title: String!, $priority: Int, $description: String, $type: String) {
+  insert_issues_one(
+    object: {title: $title, project_id: $projectId, priority: $priority, description: $description, type: $type}
+  ) {
+    id
+  }
+}
+    `;
+export type CreateIssueMutationFn = Apollo.MutationFunction<CreateIssueMutation, CreateIssueMutationVariables>;
+
+/**
+ * __useCreateIssueMutation__
+ *
+ * To run a mutation, you first call `useCreateIssueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateIssueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createIssueMutation, { data, loading, error }] = useCreateIssueMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      title: // value for 'title'
+ *      priority: // value for 'priority'
+ *      description: // value for 'description'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useCreateIssueMutation(baseOptions?: Apollo.MutationHookOptions<CreateIssueMutation, CreateIssueMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateIssueMutation, CreateIssueMutationVariables>(CreateIssueDocument, options);
+      }
+export type CreateIssueMutationHookResult = ReturnType<typeof useCreateIssueMutation>;
+export type CreateIssueMutationResult = Apollo.MutationResult<CreateIssueMutation>;
+export type CreateIssueMutationOptions = Apollo.BaseMutationOptions<CreateIssueMutation, CreateIssueMutationVariables>;
 export const CreateProjectDocument = gql`
     mutation CreateProject($title: String!, $description: String) {
   insert_projects_one(object: {title: $title, description: $description}) {
@@ -2656,8 +3410,18 @@ export const GetProjectByIdDocument = gql`
       }
       type_id
     }
-    issues {
-      title
+    columns {
+      id
+      name
+      index
+      issues {
+        title
+        description
+        type
+        project_id
+        priority
+        column_id
+      }
     }
   }
 }

@@ -69,6 +69,12 @@ export const Project: FC<IProps> = ({ match }) => {
     return <div>{error.message}</div>;
   }
   let isOwner = user?.sub === data?.projects_by_pk?.owner_id;
+  let isMember = data?.projects_by_pk?.project_members.find(
+    (e) => e.user_id === user?.sub && e.type_id === process.env.REACT_APP_MEMBER_TYPE_ID
+  )
+    ? true
+    : false;
+
   return (
     <ProjectLayout id={projectId} projectTitle={data?.projects_by_pk?.title} isOwner={isOwner}>
       <Route
@@ -76,7 +82,9 @@ export const Project: FC<IProps> = ({ match }) => {
         path={`/project/${projectId}/settings`}
       />
       <Route
-        component={() => <Board id={projectId} project={data} isOwner={isOwner} />}
+        component={() => (
+          <Board id={projectId} project={data} isOwner={isOwner} isMember={isMember} />
+        )}
         path={`/project/${projectId}/board`}
       />
       {isOwner && (

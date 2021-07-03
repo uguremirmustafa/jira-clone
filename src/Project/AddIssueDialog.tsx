@@ -6,11 +6,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import PersonAddRoundedIcon from '@material-ui/icons/PersonAddRounded';
 import { Button, makeStyles, Typography } from '@material-ui/core';
-
-import AddUserForm from './AddUserForm';
+import AddIssueForm from './AddIssueForm';
 
 const useStyles = makeStyles((theme) => {
   return {
+    createButton: {
+      marginBottom: theme.spacing(4),
+    },
     dialogTitle: {
       display: 'flex',
       alignItems: 'center',
@@ -40,7 +42,7 @@ export interface IProps {
   projectId: string;
 }
 
-const AddUserDialog: FC<IProps> = ({ projectId }) => {
+const AddIssueDialog: FC<IProps> = ({ projectId }) => {
   const c = useStyles();
 
   // control dialog state
@@ -57,14 +59,15 @@ const AddUserDialog: FC<IProps> = ({ projectId }) => {
   return (
     <>
       <Button
-        aria-label="add user"
+        aria-label="create issue"
         color="secondary"
-        size="small"
+        size="medium"
         variant="contained"
         onClick={handleClickOpen}
         startIcon={<AddCircleRoundedIcon />}
+        className={c.createButton}
       >
-        Add User to Project
+        Create Issue
       </Button>
       <Dialog
         open={open}
@@ -76,17 +79,17 @@ const AddUserDialog: FC<IProps> = ({ projectId }) => {
         <DialogTitle id="alert-dialog-title" className={c.dialogTitle} disableTypography={true}>
           <PersonAddRoundedIcon fontSize="large" />
           <Typography variant="h5" component="h4">
-            Add a new user to the project
+            Create Issue
           </Typography>
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            You can add other Jira-Clone users to this project for collaboration.
+            Create a new issue to track your project progress!
           </DialogContentText>
-          <AddUserForm projectId={projectId} handleClose={handleClose} />
+          <AddIssueForm projectId={projectId} handleClose={handleClose} />
         </DialogContent>
       </Dialog>
     </>
   );
 };
-export default AddUserDialog;
+export default AddIssueDialog;

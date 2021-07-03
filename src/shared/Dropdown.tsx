@@ -68,6 +68,7 @@ const Dropdown: FC<IProps> = ({ projects, text }) => {
         ) : projects !== undefined && projects[0] !== undefined ? (
           projects?.map((project) => (
             <MenuItem
+              key={project.id}
               onClick={handleClose}
               component={Link}
               to={`/project/${project.id}/board`}

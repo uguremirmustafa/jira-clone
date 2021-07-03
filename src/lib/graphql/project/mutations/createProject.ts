@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from '../../../apollo/client';
 
 export const CreateProject = gql`
   mutation CreateProject($title: String!, $description: String) {

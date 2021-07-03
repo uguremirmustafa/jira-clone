@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 // queries
 import { GetProjectByIdQuery } from '../lib/generated/apolloComponents';
 import AddUserDialog from './AddUserDialog';
+import AddIssueDialog from './AddIssueDialog';
+import KanbanBoard from './KanbanBoard';
 
 // styling
 const useStyles = makeStyles((theme) => {
@@ -37,6 +39,7 @@ const useStyles = makeStyles((theme) => {
       display: 'flex',
       alignItems: 'center',
       gap: theme.spacing(1),
+      marginBottom: theme.spacing(4),
     },
   };
 });
@@ -46,16 +49,18 @@ interface IProps {
   id: string;
   project: GetProjectByIdQuery | undefined;
   isOwner: boolean;
+  isMember: boolean;
 }
 
 // component
-const Board: FC<IProps> = ({ project, id, isOwner }) => {
+const Board: FC<IProps> = ({ project, id, isOwner, isMember }) => {
   const c = useStyles();
   const title = project?.projects_by_pk?.title;
   const users = project?.projects_by_pk?.project_members;
+  const columns = project?.projects_by_pk?.columns;
 
   return (
-    <div>
+    <>
       {/* breadcrumbs section */}
       <Breadcrumbs aria-label="breadcrumb" className={c.breadcrumbs}>
         <Typography color="inherit" className={c.link} component={Link} to="/projects">
@@ -103,10 +108,14 @@ const Board: FC<IProps> = ({ project, id, isOwner }) => {
       </div>
       {/* end of project users avatar list */}
 
-      {/* kanban board */}
+      {/* create issue button */}
+      {isMember && <AddIssueDialog projectId={id} />}
+      {/* end of create issue button */}
 
+      {/* kanban board */}
+      <KanbanBoard columns={columns} projectId={id} />
       {/* end of kanban board */}
-    </div>
+    </>
   );
 };
 

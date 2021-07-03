@@ -15,8 +15,18 @@ export const GetProjectById = gql`
         }
         type_id
       }
-      issues {
-        title
+      columns {
+        id
+        name
+        index
+        issues {
+          title
+          description
+          type
+          project_id
+          priority
+          column_id
+        }
       }
     }
   }
