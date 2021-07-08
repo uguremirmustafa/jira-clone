@@ -2989,6 +2989,19 @@ export type CreateProjectMutation = (
   )> }
 );
 
+export type DeleteColumnMutationVariables = Exact<{
+  id: Scalars['uuid'];
+}>;
+
+
+export type DeleteColumnMutation = (
+  { __typename?: 'mutation_root' }
+  & { delete_columns_by_pk?: Maybe<(
+    { __typename?: 'columns' }
+    & Pick<Columns, 'id'>
+  )> }
+);
+
 export type DeleteProjectMutationVariables = Exact<{
   id: Scalars['uuid'];
 }>;
@@ -3307,6 +3320,39 @@ export function useCreateProjectMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProjectMutationHookResult = ReturnType<typeof useCreateProjectMutation>;
 export type CreateProjectMutationResult = Apollo.MutationResult<CreateProjectMutation>;
 export type CreateProjectMutationOptions = Apollo.BaseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>;
+export const DeleteColumnDocument = gql`
+    mutation DeleteColumn($id: uuid!) {
+  delete_columns_by_pk(id: $id) {
+    id
+  }
+}
+    `;
+export type DeleteColumnMutationFn = Apollo.MutationFunction<DeleteColumnMutation, DeleteColumnMutationVariables>;
+
+/**
+ * __useDeleteColumnMutation__
+ *
+ * To run a mutation, you first call `useDeleteColumnMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteColumnMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteColumnMutation, { data, loading, error }] = useDeleteColumnMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteColumnMutation(baseOptions?: Apollo.MutationHookOptions<DeleteColumnMutation, DeleteColumnMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteColumnMutation, DeleteColumnMutationVariables>(DeleteColumnDocument, options);
+      }
+export type DeleteColumnMutationHookResult = ReturnType<typeof useDeleteColumnMutation>;
+export type DeleteColumnMutationResult = Apollo.MutationResult<DeleteColumnMutation>;
+export type DeleteColumnMutationOptions = Apollo.BaseMutationOptions<DeleteColumnMutation, DeleteColumnMutationVariables>;
 export const DeleteProjectDocument = gql`
     mutation DeleteProject($id: uuid!) {
   delete_projects_by_pk(id: $id) {
