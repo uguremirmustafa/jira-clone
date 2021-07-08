@@ -15,7 +15,7 @@ export const GetProjectById = gql`
         }
         type_id
       }
-      columns {
+      columns(order_by: { index: asc }) {
         id
         name
         index
@@ -26,6 +26,11 @@ export const GetProjectById = gql`
           project_id
           priority
           column_id
+        }
+      }
+      columns_aggregate {
+        aggregate {
+          count
         }
       }
     }

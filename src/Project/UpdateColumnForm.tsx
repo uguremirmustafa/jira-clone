@@ -6,8 +6,8 @@ import { useForm, Controller, NestedValue, UseFormReturn, UseFormSetValue } from
 import React, { FC, useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import {
-  CreateColumnMutationVariables,
-  useCreateColumnMutation,
+  UpdateColumnMutationVariables,
+  useUpdateColumnMutation,
 } from '../lib/generated/apolloComponents';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
 
@@ -21,38 +21,40 @@ const useStyles = makeStyles((theme) => {
 
 export interface IProps {
   projectId: string;
+  id: string;
   name?: string;
-  numOfColumns?: number;
+  index: number;
 }
 
-const AddColumnForm: FC<IProps> = ({ projectId, name, numOfColumns }) => {
+const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
   const c = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const [variables, setVariables] = useState<CreateColumnMutationVariables>();
-  const [createColumnMutation, { data, loading, error }] = useCreateColumnMutation({
+  const [variables, setVariables] = useState<UpdateColumnMutationVariables>();
+  const [updateColumnMutation, { data, loading, error }] = useUpdateColumnMutation({
     variables,
     refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
   });
 
-  const { handleSubmit, control } = useForm<CreateColumnMutationVariables>({
+  const { handleSubmit, control } = useForm<UpdateColumnMutationVariables>({
     defaultValues: {
       name,
-      projectId,
+      id,
+      index,
     },
   });
 
-  const onSubmit = async (formData: CreateColumnMutationVariables) => {
-    setVariables({ ...formData, index: numOfColumns || 0 });
+  const onSubmit = async (formData: UpdateColumnMutationVariables) => {
+    setVariables({ ...formData, index });
     try {
-      enqueueSnackbar('Creating column on database, wait...', {
+      enqueueSnackbar('Column updating, wait...', {
         variant: 'info',
       });
-      const res = await createColumnMutation();
-      if (res.data?.insert_columns_one?.id !== null) {
-        enqueueSnackbar('Column created successfully', {
+      const res = await updateColumnMutation();
+      if (res.data?.update_columns_by_pk?.id !== null) {
+        enqueueSnackbar('Column update successful', {
           variant: 'success',
         });
-      } else if (res.data.insert_columns_one === null) {
+      } else if (res.data.update_columns_by_pk === null) {
         enqueueSnackbar('Something went wrong', { variant: 'error' });
       } else if (res.errors) {
         enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
@@ -73,10 +75,10 @@ const AddColumnForm: FC<IProps> = ({ projectId, name, numOfColumns }) => {
           <TextField
             {...field}
             size="small"
-            label="Add Column +"
+            label="Column Title"
             className={c.input}
             color="secondary"
-            value={name}
+            placeholder={name}
           />
         )}
       />
@@ -84,4 +86,4 @@ const AddColumnForm: FC<IProps> = ({ projectId, name, numOfColumns }) => {
   );
 };
 
-export default AddColumnForm;
+export default UpdateColumnForm;

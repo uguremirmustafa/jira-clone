@@ -3018,6 +3018,21 @@ export type RemoveUserFromProjectMutation = (
   )> }
 );
 
+export type UpdateColumnMutationVariables = Exact<{
+  id: Scalars['uuid'];
+  name: Scalars['String'];
+  index?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type UpdateColumnMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_columns_by_pk?: Maybe<(
+    { __typename?: 'columns' }
+    & Pick<Columns, 'id'>
+  )> }
+);
+
 export type UpdateProjectMutationVariables = Exact<{
   id: Scalars['uuid'];
   title?: Maybe<Scalars['String']>;
@@ -3057,7 +3072,13 @@ export type GetProjectByIdQuery = (
         { __typename?: 'issues' }
         & Pick<Issues, 'title' | 'description' | 'type' | 'project_id' | 'priority' | 'column_id'>
       )> }
-    )> }
+    )>, columns_aggregate: (
+      { __typename?: 'columns_aggregate' }
+      & { aggregate?: Maybe<(
+        { __typename?: 'columns_aggregate_fields' }
+        & Pick<Columns_Aggregate_Fields, 'count'>
+      )> }
+    ) }
   )> }
 );
 
@@ -3355,6 +3376,41 @@ export function useRemoveUserFromProjectMutation(baseOptions?: Apollo.MutationHo
 export type RemoveUserFromProjectMutationHookResult = ReturnType<typeof useRemoveUserFromProjectMutation>;
 export type RemoveUserFromProjectMutationResult = Apollo.MutationResult<RemoveUserFromProjectMutation>;
 export type RemoveUserFromProjectMutationOptions = Apollo.BaseMutationOptions<RemoveUserFromProjectMutation, RemoveUserFromProjectMutationVariables>;
+export const UpdateColumnDocument = gql`
+    mutation UpdateColumn($id: uuid!, $name: String!, $index: Int) {
+  update_columns_by_pk(pk_columns: {id: $id}, _set: {name: $name, index: $index}) {
+    id
+  }
+}
+    `;
+export type UpdateColumnMutationFn = Apollo.MutationFunction<UpdateColumnMutation, UpdateColumnMutationVariables>;
+
+/**
+ * __useUpdateColumnMutation__
+ *
+ * To run a mutation, you first call `useUpdateColumnMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateColumnMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateColumnMutation, { data, loading, error }] = useUpdateColumnMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      name: // value for 'name'
+ *      index: // value for 'index'
+ *   },
+ * });
+ */
+export function useUpdateColumnMutation(baseOptions?: Apollo.MutationHookOptions<UpdateColumnMutation, UpdateColumnMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateColumnMutation, UpdateColumnMutationVariables>(UpdateColumnDocument, options);
+      }
+export type UpdateColumnMutationHookResult = ReturnType<typeof useUpdateColumnMutation>;
+export type UpdateColumnMutationResult = Apollo.MutationResult<UpdateColumnMutation>;
+export type UpdateColumnMutationOptions = Apollo.BaseMutationOptions<UpdateColumnMutation, UpdateColumnMutationVariables>;
 export const UpdateProjectDocument = gql`
     mutation UpdateProject($id: uuid!, $title: String, $description: String) {
   update_projects_by_pk(
@@ -3410,7 +3466,7 @@ export const GetProjectByIdDocument = gql`
       }
       type_id
     }
-    columns {
+    columns(order_by: {index: asc}) {
       id
       name
       index
@@ -3421,6 +3477,11 @@ export const GetProjectByIdDocument = gql`
         project_id
         priority
         column_id
+      }
+    }
+    columns_aggregate {
+      aggregate {
+        count
       }
     }
   }

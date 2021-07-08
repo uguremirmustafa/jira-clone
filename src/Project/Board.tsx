@@ -58,7 +58,7 @@ const Board: FC<IProps> = ({ project, id, isOwner, isMember }) => {
   const title = project?.projects_by_pk?.title;
   const users = project?.projects_by_pk?.project_members;
   const columns = project?.projects_by_pk?.columns;
-
+  const numOfColumns = project?.projects_by_pk?.columns_aggregate.aggregate?.count;
   return (
     <>
       {/* breadcrumbs section */}
@@ -113,7 +113,7 @@ const Board: FC<IProps> = ({ project, id, isOwner, isMember }) => {
       {/* end of create issue button */}
 
       {/* kanban board */}
-      <KanbanBoard columns={columns} projectId={id} />
+      <KanbanBoard columns={columns} numOfColumns={numOfColumns} projectId={id} />
       {/* end of kanban board */}
     </>
   );

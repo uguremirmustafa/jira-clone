@@ -4,6 +4,7 @@ import { FC } from 'react';
 import { Issues, Columns } from '../lib/generated/apolloComponents';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import AddColumnForm from './AddColumnForm';
+import UpdateColumnForm from './UpdateColumnForm';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -46,12 +47,12 @@ interface IProps {
           >)[];
         })[]
     | undefined;
+  numOfColumns: number | undefined;
   projectId: string;
 }
 
-const KanbanBoard: FC<IProps> = ({ columns, projectId }) => {
+const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
   const c = useStyles();
-
   const onDragEnd = (result: DropResult) => {
     //todo
     alert(JSON.stringify(result, null, 2));
@@ -62,11 +63,13 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId }) => {
       <Grid container className={c.root}>
         {columns?.map((col) => (
           <Grid item xs className={c.column} key={col.id}>
-            {/* <Typography variant="h6" component="h3" gutterBottom>
-              {col.name}
-            </Typography> */}
-            <AddColumnForm projectId={projectId} name={col?.name} />
-            <Droppable droppableId={col.id}>
+            <UpdateColumnForm
+              projectId={projectId}
+              name={col?.name}
+              id={col?.id}
+              index={col?.index}
+            />
+            <Droppable droppableId={col.id} key={col.id}>
               {(provided: any) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   {col?.issues.map((issue, index) => (
@@ -90,7 +93,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId }) => {
           </Grid>
         ))}
         <Grid item className={c.column}>
-          <AddColumnForm projectId={projectId} />
+          <AddColumnForm projectId={projectId} numOfColumns={numOfColumns} />
         </Grid>
       </Grid>
     </DragDropContext>
