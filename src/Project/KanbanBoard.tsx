@@ -63,6 +63,7 @@ interface IProps {
     | undefined;
   numOfColumns: number | undefined;
   projectId: string;
+  isOwnerOrMember: boolean;
 }
 
 const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
@@ -96,8 +97,8 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
         variant: 'info',
       });
       const res = await deleteColumnMutation({ variables: { id: columnId } });
-      if (res.data?.delete_columns_by_pk?.id !== null) {
-        enqueueSnackbar('Column deleted successfully!', {
+      if (res.data?.delete_columns_by_pk !== null) {
+        enqueueSnackbar(`Column deleted successfully`, {
           variant: 'success',
         });
       } else if (res.data.delete_columns_by_pk === null) {
@@ -141,9 +142,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
                 open={open}
                 onClose={handleClose}
               >
-                {col.id && (
-                  <MenuItem onClick={() => handleDelete(col.id)}>Delete Column {col?.id}</MenuItem>
-                )}
+                {col.id && <MenuItem onClick={() => handleDelete(col.id)}>Delete Column</MenuItem>}
               </Menu>
             </div>
             <Droppable droppableId={col.id} key={col.id}>

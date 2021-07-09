@@ -75,6 +75,7 @@ export const Project: FC<IProps> = ({ match }) => {
     ? true
     : false;
 
+  let isOwnerOrMember = isOwner || isMember;
   return (
     <ProjectLayout id={projectId} projectTitle={data?.projects_by_pk?.title} isOwner={isOwner}>
       <Route
@@ -83,7 +84,13 @@ export const Project: FC<IProps> = ({ match }) => {
       />
       <Route
         component={() => (
-          <Board id={projectId} project={data} isOwner={isOwner} isMember={isMember} />
+          <Board
+            id={projectId}
+            project={data}
+            isOwner={isOwner}
+            isMember={isMember}
+            isOwnerOrMember={isOwnerOrMember}
+          />
         )}
         path={`/project/${projectId}/board`}
       />

@@ -34,7 +34,7 @@ const AddColumnForm: FC<IProps> = ({ projectId, name, numOfColumns }) => {
     refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
   });
 
-  const { handleSubmit, control } = useForm<CreateColumnMutationVariables>({
+  const { handleSubmit, control, reset } = useForm<CreateColumnMutationVariables>({
     defaultValues: {
       name,
       projectId,
@@ -61,6 +61,7 @@ const AddColumnForm: FC<IProps> = ({ projectId, name, numOfColumns }) => {
       enqueueSnackbar(`${error.message}`, {
         variant: 'warning',
       });
+      reset();
     }
   };
 

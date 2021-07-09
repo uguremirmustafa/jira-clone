@@ -50,10 +50,11 @@ interface IProps {
   project: GetProjectByIdQuery | undefined;
   isOwner: boolean;
   isMember: boolean;
+  isOwnerOrMember: boolean;
 }
 
 // component
-const Board: FC<IProps> = ({ project, id, isOwner, isMember }) => {
+const Board: FC<IProps> = ({ project, id, isOwner, isMember, isOwnerOrMember }) => {
   const c = useStyles();
   const title = project?.projects_by_pk?.title;
   const users = project?.projects_by_pk?.project_members;
@@ -113,7 +114,12 @@ const Board: FC<IProps> = ({ project, id, isOwner, isMember }) => {
       {/* end of create issue button */}
 
       {/* kanban board */}
-      <KanbanBoard columns={columns} numOfColumns={numOfColumns} projectId={id} />
+      <KanbanBoard
+        columns={columns}
+        numOfColumns={numOfColumns}
+        projectId={id}
+        isOwnerOrMember={isOwnerOrMember}
+      />
       {/* end of kanban board */}
     </>
   );
