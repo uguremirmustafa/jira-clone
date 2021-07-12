@@ -1,8 +1,8 @@
 // material ui components
-import { makeStyles, TextField, InputAdornment, IconButton } from '@material-ui/core';
+import { IconButton, InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 // react hook form
-import { useForm, Controller, NestedValue, UseFormReturn, UseFormSetValue } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import React, { FC, useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import {
@@ -10,11 +10,16 @@ import {
   useUpdateColumnMutation,
 } from '../lib/generated/apolloComponents';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
+import { Send } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => {
   return {
+    title: {
+      width: '100%',
+      padding: theme.spacing(2, 0),
+    },
     input: {
-      // width: '100%',
+      margin: theme.spacing(2, 0),
     },
   };
 });
@@ -30,7 +35,7 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
   const c = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [variables, setVariables] = useState<UpdateColumnMutationVariables>();
-  const [updateColumnMutation, { data, loading, error }] = useUpdateColumnMutation({
+  const [updateColumnMutation] = useUpdateColumnMutation({
     variables,
     refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
   });
@@ -65,7 +70,7 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
       });
     }
   };
-
+  const [active, setActive] = useState(false);
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Controller
@@ -74,11 +79,24 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
         render={({ field }) => (
           <TextField
             {...field}
+            onMouseEnter={() => setActive(true)}
+            onMouseLeave={() => setActive(false)}
+            onFocus={() => setActive(true)}
             size="small"
-            label="Column Title"
-            className={c.input}
+            label={active && 'Edit column title'}
             color="secondary"
             placeholder={name}
+            className={!active ? c.input : ''}
+            InputProps={{
+              disableUnderline: !active,
+              endAdornment: active && (
+                <InputAdornment position="end">
+                  <IconButton type="submit">
+                    <Send fontSize="small" />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         )}
       />

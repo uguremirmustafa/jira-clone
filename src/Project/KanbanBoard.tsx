@@ -16,6 +16,8 @@ import UpdateColumnForm from './UpdateColumnForm';
 import { useSnackbar } from 'notistack';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
 import { confirmDialog } from '../shared/ConfirmDialog';
+import { MenuButton } from '../shared/MenuButton';
+import { ArrowRightTwoTone } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -36,10 +38,12 @@ const useStyles = makeStyles((theme) => {
       width: '100%',
       maxWidth: '280px',
       minWidth: '200px',
-      // border: '1px solid black',
+      position: 'relative',
     },
-    flex: {
-      display: 'flex',
+    dots: {
+      position: 'absolute',
+      right: 0,
+      bottom: 0,
     },
     paper: {
       backgroundColor: '#fff',
@@ -70,22 +74,16 @@ interface IProps {
 const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
   const c = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-
+  // set the index of latest column
+  let indexOfLastColumn = 0; // make ts happy
+  if (columns) {
+    if (columns.length > 0) {
+      indexOfLastColumn = columns[columns.length - 1].index;
+    }
+  }
   const onDragEnd = (result: DropResult) => {
     //todo
     alert(JSON.stringify(result, null, 2));
-  };
-
-  // menu state handle
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
   };
 
   // handle delete
@@ -93,7 +91,8 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
   });
   const handleDelete = async (columnId: any) => {
-    alert(columnId);
+    // console.log(event);
+    // let columnId;
     try {
       enqueueSnackbar('Deleting column from database, wait...', {
         variant: 'info',
@@ -108,12 +107,12 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
       } else if (res.errors) {
         enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
       }
-      handleClose();
+      // handleClose();
     } catch (error) {
       enqueueSnackbar(`${error.message}`, {
         variant: 'warning',
       });
-      handleClose();
+      // handleClose();
     }
     // alert('delete' + columnId);
   };
@@ -121,33 +120,31 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     <DragDropContext onDragEnd={onDragEnd}>
       <Grid container className={c.root}>
         {columns?.map((col) => (
-          <Grid item xs className={c.column} key={col.id}>
-            <div className={c.flex}>
-              <UpdateColumnForm
-                projectId={projectId}
-                name={col?.name}
-                id={col?.id}
-                index={col?.index}
+          <Grid item xs className={c.column} key={col?.id}>
+            <UpdateColumnForm
+              projectId={projectId}
+              name={col?.name}
+              id={col?.id}
+              index={col?.index}
+            />
+            <div className={c.dots}>
+              <MenuButton
+                icon={<MoreVertIcon />}
+                items={[
+                  {
+                    text: `Delete - ${col.id}`,
+                    func: () => {
+                      confirmDialog('Are you sure?', () => handleDelete(col.id));
+                    },
+                  },
+                  {
+                    text: `Details of column ${col.name}`,
+                    func: () => {
+                      alert('heyy');
+                    },
+                  },
+                ]}
               />
-              <IconButton
-                aria-label="more"
-                aria-controls="long-menu"
-                aria-haspopup="true"
-                onClick={handleClick}
-              >
-                <MoreVertIcon />
-              </IconButton>
-              <Menu id="long-menu" anchorEl={anchorEl} open={open} onClose={handleClose}>
-                <MenuItem
-                  key={col.id}
-                  onClick={() => {
-                    handleClose();
-                    confirmDialog('Are you sure?', () => handleDelete(col.id));
-                  }}
-                >
-                  Delete Column
-                </MenuItem>
-              </Menu>
             </div>
             <Droppable droppableId={col.id} key={col.id}>
               {(provided: any) => (
@@ -173,7 +170,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
           </Grid>
         ))}
         <Grid item className={c.column}>
-          <AddColumnForm projectId={projectId} numOfColumns={numOfColumns} />
+          <AddColumnForm projectId={projectId} indexOfLastColumn={indexOfLastColumn} />
         </Grid>
       </Grid>
     </DragDropContext>

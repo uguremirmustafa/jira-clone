@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme) => {
 export interface IProps {
   projectId: string;
   name?: string;
-  numOfColumns?: number;
+  indexOfLastColumn: number;
 }
 
-const AddColumnForm: FC<IProps> = ({ projectId, name, numOfColumns }) => {
+const AddColumnForm: FC<IProps> = ({ projectId, name, indexOfLastColumn }) => {
   const c = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [variables, setVariables] = useState<CreateColumnMutationVariables>();
@@ -42,7 +42,7 @@ const AddColumnForm: FC<IProps> = ({ projectId, name, numOfColumns }) => {
   });
 
   const onSubmit = async (formData: CreateColumnMutationVariables) => {
-    setVariables({ ...formData, index: numOfColumns || 0 });
+    setVariables({ ...formData, index: indexOfLastColumn + 1 });
     try {
       enqueueSnackbar('Creating column on database, wait...', {
         variant: 'info',
