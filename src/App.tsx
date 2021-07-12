@@ -9,6 +9,7 @@ import MainLayout from './shared/MainLayout';
 import { SnackbarProvider } from 'notistack';
 import { CreateProject } from './CreateProject';
 import { ProjectsList } from './Projects';
+import ConfirmDialog from './shared/ConfirmDialog';
 
 const theme = createMuiTheme({
   palette: {
@@ -35,6 +36,7 @@ function App() {
         <Router>
           <MainLayout>
             <Navbar />
+            <ConfirmDialog />
             <Switch>
               <Route exact path="/" component={Home} />
               <Route path="/createProject" component={CreateProject} />

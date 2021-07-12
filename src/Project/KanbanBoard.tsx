@@ -15,6 +15,7 @@ import AddColumnForm from './AddColumnForm';
 import UpdateColumnForm from './UpdateColumnForm';
 import { useSnackbar } from 'notistack';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
+import { confirmDialog } from '../shared/ConfirmDialog';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -92,6 +93,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
   });
   const handleDelete = async (columnId: any) => {
+    alert(columnId);
     try {
       enqueueSnackbar('Deleting column from database, wait...', {
         variant: 'info',
@@ -135,14 +137,16 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
               >
                 <MoreVertIcon />
               </IconButton>
-              <Menu
-                id="long-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={open}
-                onClose={handleClose}
-              >
-                {col.id && <MenuItem onClick={() => handleDelete(col.id)}>Delete Column</MenuItem>}
+              <Menu id="long-menu" anchorEl={anchorEl} open={open} onClose={handleClose}>
+                <MenuItem
+                  key={col.id}
+                  onClick={() => {
+                    handleClose();
+                    confirmDialog('Are you sure?', () => handleDelete(col.id));
+                  }}
+                >
+                  Delete Column
+                </MenuItem>
               </Menu>
             </div>
             <Droppable droppableId={col.id} key={col.id}>
