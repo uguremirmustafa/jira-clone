@@ -1,15 +1,8 @@
 // material ui
-import { MenuItem, Menu, IconButton, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-
-import React, { useState } from 'react';
 import { FC } from 'react';
-import {
-  Issues,
-  Columns,
-  useDeleteColumnMutation,
-  DeleteColumnMutationVariables,
-} from '../lib/generated/apolloComponents';
+import { Issues, Columns, useDeleteColumnMutation } from '../lib/generated/apolloComponents';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import AddColumnForm from './AddColumnForm';
 import UpdateColumnForm from './UpdateColumnForm';
@@ -17,21 +10,19 @@ import { useSnackbar } from 'notistack';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
 import { confirmDialog } from '../shared/ConfirmDialog';
 import { MenuButton } from '../shared/MenuButton';
-import { ArrowRightTwoTone } from '@material-ui/icons';
+import AddIssueWithTitleForm from './AddIssueWithTitleForm';
 
 const useStyles = makeStyles((theme) => {
   return {
     root: {
       minHeight: 300,
-      // backgroundColor: '#ededed',
-      // padding: '1rem',
+      height: '100%',
       gap: theme.spacing(2),
-      // border: '1px solid blue',
     },
     column: {
       backgroundColor: '#ededed',
       borderRadius: '8px',
-      padding: theme.spacing(2),
+      padding: theme.spacing(2, 2, 14, 2),
       display: 'flex',
       flexDirection: 'column',
       gap: '8px',
@@ -39,6 +30,7 @@ const useStyles = makeStyles((theme) => {
       maxWidth: '280px',
       minWidth: '200px',
       position: 'relative',
+      height: '100%',
     },
     dots: {
       position: 'absolute',
@@ -62,7 +54,7 @@ interface IProps {
             __typename?: 'issues' | undefined;
           } & Pick<
             Issues,
-            'title' | 'index' | 'description' | 'priority' | 'type' | 'column_id'
+            'id' | 'index' | 'title' | 'index' | 'description' | 'priority' | 'type' | 'column_id'
           >)[];
         })[]
     | undefined;
@@ -81,9 +73,29 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
       indexOfLastColumn = columns[columns.length - 1].index;
     }
   }
+  // set the index of latest issue of a column
+
+  // drag and drop logic
   const onDragEnd = (result: DropResult) => {
-    //todo
-    alert(JSON.stringify(result, null, 2));
+    const { destination, source, draggableId } = result;
+
+    // exit if no destination
+    if (!destination) {
+      return;
+    }
+
+    // exit if dropped to the same place
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+      return;
+    }
+
+    // make typescript happy
+    if (!columns) {
+      return;
+    }
+    // reorder
+    const [column] = columns.filter((col) => col.id === source.droppableId);
+    const newIssueIds = column.issues.map((issue) => issue.id);
   };
 
   // handle delete
@@ -91,8 +103,6 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
   });
   const handleDelete = async (columnId: any) => {
-    // console.log(event);
-    // let columnId;
     try {
       enqueueSnackbar('Deleting column from database, wait...', {
         variant: 'info',
@@ -107,14 +117,11 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
       } else if (res.errors) {
         enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
       }
-      // handleClose();
     } catch (error) {
       enqueueSnackbar(`${error.message}`, {
         variant: 'warning',
       });
-      // handleClose();
     }
-    // alert('delete' + columnId);
   };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -150,7 +157,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
               {(provided: any) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   {col?.issues.map((issue, index) => (
-                    <Draggable key={issue.title} draggableId={issue.title} index={index}>
+                    <Draggable key={issue.index} draggableId={issue.title} index={index}>
                       {(provided: any) => (
                         <Paper
                           {...provided.draggableProps}
@@ -158,7 +165,9 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
                           ref={provided.innerRef}
                           className={c.paper}
                         >
-                          <Typography>{issue.title}</Typography>
+                          <Typography>
+                            {issue.title}-{issue.index}
+                          </Typography>
                         </Paper>
                       )}
                     </Draggable>
@@ -167,6 +176,11 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
                 </div>
               )}
             </Droppable>
+            <AddIssueWithTitleForm
+              columnId={col.id}
+              projectId={projectId}
+              indexOfLastIssue={col?.issues[col.issues.length - 1]?.index || 0}
+            />
           </Grid>
         ))}
         <Grid item className={c.column}>

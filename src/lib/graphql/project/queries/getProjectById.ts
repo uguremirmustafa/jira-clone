@@ -19,7 +19,9 @@ export const GetProjectById = gql`
         id
         name
         index
-        issues {
+        issues(order_by: { index: asc }) {
+          id
+          index
           title
           description
           type

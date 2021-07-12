@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => {
       padding: theme.spacing(2, 0),
     },
     input: {
-      margin: theme.spacing(2, 0),
+      padding: theme.spacing(0, 0),
     },
   };
 });
@@ -83,10 +83,10 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
             onMouseLeave={() => setActive(false)}
             onFocus={() => setActive(true)}
             size="small"
-            label={active && 'Edit column title'}
+            label={active ? 'Edit column title' : '  '}
             color="secondary"
             placeholder={name}
-            className={!active ? c.input : ''}
+            className={c.input}
             InputProps={{
               disableUnderline: !active,
               endAdornment: active && (
@@ -100,6 +100,7 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
           />
         )}
       />
+      {/* {id} */}
     </form>
   );
 };

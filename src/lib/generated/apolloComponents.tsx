@@ -2975,6 +2975,22 @@ export type CreateIssueMutation = (
   )> }
 );
 
+export type CreateIssueWithTitleMutationVariables = Exact<{
+  projectId: Scalars['uuid'];
+  columnId: Scalars['uuid'];
+  title: Scalars['String'];
+  index: Scalars['Int'];
+}>;
+
+
+export type CreateIssueWithTitleMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_issues_one?: Maybe<(
+    { __typename?: 'issues' }
+    & Pick<Issues, 'id'>
+  )> }
+);
+
 export type CreateProjectMutationVariables = Exact<{
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -3083,7 +3099,7 @@ export type GetProjectByIdQuery = (
       & Pick<Columns, 'id' | 'name' | 'index'>
       & { issues: Array<(
         { __typename?: 'issues' }
-        & Pick<Issues, 'title' | 'description' | 'type' | 'project_id' | 'priority' | 'column_id'>
+        & Pick<Issues, 'id' | 'index' | 'title' | 'description' | 'type' | 'project_id' | 'priority' | 'column_id'>
       )> }
     )>, columns_aggregate: (
       { __typename?: 'columns_aggregate' }
@@ -3284,6 +3300,44 @@ export function useCreateIssueMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateIssueMutationHookResult = ReturnType<typeof useCreateIssueMutation>;
 export type CreateIssueMutationResult = Apollo.MutationResult<CreateIssueMutation>;
 export type CreateIssueMutationOptions = Apollo.BaseMutationOptions<CreateIssueMutation, CreateIssueMutationVariables>;
+export const CreateIssueWithTitleDocument = gql`
+    mutation CreateIssueWithTitle($projectId: uuid!, $columnId: uuid!, $title: String!, $index: Int!) {
+  insert_issues_one(
+    object: {project_id: $projectId, column_id: $columnId, title: $title, index: $index}
+  ) {
+    id
+  }
+}
+    `;
+export type CreateIssueWithTitleMutationFn = Apollo.MutationFunction<CreateIssueWithTitleMutation, CreateIssueWithTitleMutationVariables>;
+
+/**
+ * __useCreateIssueWithTitleMutation__
+ *
+ * To run a mutation, you first call `useCreateIssueWithTitleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateIssueWithTitleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createIssueWithTitleMutation, { data, loading, error }] = useCreateIssueWithTitleMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      columnId: // value for 'columnId'
+ *      title: // value for 'title'
+ *      index: // value for 'index'
+ *   },
+ * });
+ */
+export function useCreateIssueWithTitleMutation(baseOptions?: Apollo.MutationHookOptions<CreateIssueWithTitleMutation, CreateIssueWithTitleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateIssueWithTitleMutation, CreateIssueWithTitleMutationVariables>(CreateIssueWithTitleDocument, options);
+      }
+export type CreateIssueWithTitleMutationHookResult = ReturnType<typeof useCreateIssueWithTitleMutation>;
+export type CreateIssueWithTitleMutationResult = Apollo.MutationResult<CreateIssueWithTitleMutation>;
+export type CreateIssueWithTitleMutationOptions = Apollo.BaseMutationOptions<CreateIssueWithTitleMutation, CreateIssueWithTitleMutationVariables>;
 export const CreateProjectDocument = gql`
     mutation CreateProject($title: String!, $description: String) {
   insert_projects_one(object: {title: $title, description: $description}) {
@@ -3516,7 +3570,9 @@ export const GetProjectByIdDocument = gql`
       id
       name
       index
-      issues {
+      issues(order_by: {index: asc}) {
+        id
+        index
         title
         description
         type
