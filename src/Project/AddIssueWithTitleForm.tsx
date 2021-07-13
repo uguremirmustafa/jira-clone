@@ -48,7 +48,7 @@ const AddIssueWithTitleForm: FC<IProps> = ({ projectId, columnId, indexOfLastIss
   });
 
   const onSubmit = async (formData: CreateIssueWithTitleMutationVariables) => {
-    setVariables({ ...formData, index: indexOfLastIssue + 1 });
+    setVariables({ ...formData, index: indexOfLastIssue });
     try {
       enqueueSnackbar('Issue is submitting, wait...', {
         variant: 'info',

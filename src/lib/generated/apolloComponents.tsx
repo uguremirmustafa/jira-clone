@@ -3065,6 +3065,7 @@ export type UpdateColumnMutation = (
 export type UpdateIssuesOrderMutationVariables = Exact<{
   projectId: Scalars['uuid'];
   issues: Array<Issues_Insert_Input> | Issues_Insert_Input;
+  update_columns?: Maybe<Array<Issues_Update_Column> | Issues_Update_Column>;
 }>;
 
 
@@ -3526,10 +3527,10 @@ export type UpdateColumnMutationHookResult = ReturnType<typeof useUpdateColumnMu
 export type UpdateColumnMutationResult = Apollo.MutationResult<UpdateColumnMutation>;
 export type UpdateColumnMutationOptions = Apollo.BaseMutationOptions<UpdateColumnMutation, UpdateColumnMutationVariables>;
 export const UpdateIssuesOrderDocument = gql`
-    mutation UpdateIssuesOrder($projectId: uuid!, $issues: [issues_insert_input!]!) {
+    mutation UpdateIssuesOrder($projectId: uuid!, $issues: [issues_insert_input!]!, $update_columns: [issues_update_column!] = [index, column_id]) {
   insert_issues(
     objects: $issues
-    on_conflict: {constraint: issues_pkey, update_columns: [index, column_id], where: {project_id: {_eq: $projectId}}}
+    on_conflict: {constraint: issues_pkey, update_columns: $update_columns, where: {project_id: {_eq: $projectId}}}
   ) {
     affected_rows
   }
@@ -3552,6 +3553,7 @@ export type UpdateIssuesOrderMutationFn = Apollo.MutationFunction<UpdateIssuesOr
  *   variables: {
  *      projectId: // value for 'projectId'
  *      issues: // value for 'issues'
+ *      update_columns: // value for 'update_columns'
  *   },
  * });
  */

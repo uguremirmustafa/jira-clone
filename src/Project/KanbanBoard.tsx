@@ -1,8 +1,16 @@
+// react
+import { useState } from 'react';
 // material ui
 import { Button, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { FC } from 'react';
-import { Issues, Columns, useDeleteColumnMutation } from '../lib/generated/apolloComponents';
+import {
+  Issues,
+  Columns,
+  useDeleteColumnMutation,
+  useUpdateIssuesOrderMutation,
+  UpdateIssuesOrderMutationVariables,
+} from '../lib/generated/apolloComponents';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import AddColumnForm from './AddColumnForm';
 import UpdateColumnForm from './UpdateColumnForm';
@@ -74,9 +82,10 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     }
   }
   // update issues order mutation
-
+  const [variables, setVariables] = useState<UpdateIssuesOrderMutationVariables>();
+  const [updateIssuesOrderMutation] = useUpdateIssuesOrderMutation();
   // drag and drop logic
-  const onDragEnd = (result: DropResult) => {
+  const onDragEnd = async (result: DropResult) => {
     const { destination, source, draggableId } = result;
 
     // exit if no destination
@@ -93,9 +102,41 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     if (!columns) {
       return;
     }
-    // reorder
+    // reordering logic
+
+    //find the column
     const [column] = columns.filter((col) => col.id === source.droppableId);
-    const newIssueIds = column.issues.map((issue) => issue.id);
+    //find the issue
+    const [issue] = column.issues.filter((issue) => issue.id === draggableId);
+    //copy the issues
+    let newIssues = [
+      ...column.issues.map((issue) => ({
+        index: issue.index,
+        column_id: issue.column_id,
+        title: issue.title,
+        project_id: projectId,
+      })),
+    ];
+
+    newIssues.splice(source.index, 1);
+    newIssues.splice(destination.index, 0, {
+      index: issue.index,
+      column_id: issue.column_id,
+      title: issue.title,
+      project_id: projectId,
+    });
+
+    newIssues.map((issue, index) => ({ ...issue, index }));
+
+    // alert(JSON.stringify(newIssues, null, 2));
+    try {
+      const res = await updateIssuesOrderMutation({
+        variables: { projectId, issues: newIssues },
+        refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+      });
+    } catch (error) {
+      alert(error);
+    }
   };
 
   // handle delete
@@ -158,7 +199,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
               {(provided: any) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   {col?.issues.map((issue, index) => (
-                    <Draggable key={issue.index} draggableId={issue.title} index={index}>
+                    <Draggable key={issue.index} draggableId={issue.id} index={index}>
                       {(provided: any) => (
                         <Paper
                           {...provided.draggableProps}
@@ -167,7 +208,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
                           className={c.paper}
                         >
                           <Typography>
-                            {issue.title}-{issue.index}
+                            {issue.title}-{issue.index} - <br /> {issue.id}
                           </Typography>
                         </Paper>
                       )}
@@ -180,7 +221,8 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
             <AddIssueWithTitleForm
               columnId={col.id}
               projectId={projectId}
-              indexOfLastIssue={col?.issues[col.issues.length - 1]?.index || 0}
+              indexOfLastIssue={col?.issues.length || 0}
+              // indexOfLastIssue={col?.issues[col.issues.length - 1]?.index || 0}
             />
           </Grid>
         ))}
