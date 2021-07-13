@@ -3062,6 +3062,20 @@ export type UpdateColumnMutation = (
   )> }
 );
 
+export type UpdateIssuesOrderMutationVariables = Exact<{
+  projectId: Scalars['uuid'];
+  issues: Array<Issues_Insert_Input> | Issues_Insert_Input;
+}>;
+
+
+export type UpdateIssuesOrderMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_issues?: Maybe<(
+    { __typename?: 'issues_mutation_response' }
+    & Pick<Issues_Mutation_Response, 'affected_rows'>
+  )> }
+);
+
 export type UpdateProjectMutationVariables = Exact<{
   id: Scalars['uuid'];
   title?: Maybe<Scalars['String']>;
@@ -3511,6 +3525,43 @@ export function useUpdateColumnMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateColumnMutationHookResult = ReturnType<typeof useUpdateColumnMutation>;
 export type UpdateColumnMutationResult = Apollo.MutationResult<UpdateColumnMutation>;
 export type UpdateColumnMutationOptions = Apollo.BaseMutationOptions<UpdateColumnMutation, UpdateColumnMutationVariables>;
+export const UpdateIssuesOrderDocument = gql`
+    mutation UpdateIssuesOrder($projectId: uuid!, $issues: [issues_insert_input!]!) {
+  insert_issues(
+    objects: $issues
+    on_conflict: {constraint: issues_pkey, update_columns: [index, column_id], where: {project_id: {_eq: $projectId}}}
+  ) {
+    affected_rows
+  }
+}
+    `;
+export type UpdateIssuesOrderMutationFn = Apollo.MutationFunction<UpdateIssuesOrderMutation, UpdateIssuesOrderMutationVariables>;
+
+/**
+ * __useUpdateIssuesOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateIssuesOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateIssuesOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateIssuesOrderMutation, { data, loading, error }] = useUpdateIssuesOrderMutation({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *      issues: // value for 'issues'
+ *   },
+ * });
+ */
+export function useUpdateIssuesOrderMutation(baseOptions?: Apollo.MutationHookOptions<UpdateIssuesOrderMutation, UpdateIssuesOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateIssuesOrderMutation, UpdateIssuesOrderMutationVariables>(UpdateIssuesOrderDocument, options);
+      }
+export type UpdateIssuesOrderMutationHookResult = ReturnType<typeof useUpdateIssuesOrderMutation>;
+export type UpdateIssuesOrderMutationResult = Apollo.MutationResult<UpdateIssuesOrderMutation>;
+export type UpdateIssuesOrderMutationOptions = Apollo.BaseMutationOptions<UpdateIssuesOrderMutation, UpdateIssuesOrderMutationVariables>;
 export const UpdateProjectDocument = gql`
     mutation UpdateProject($id: uuid!, $title: String, $description: String) {
   update_projects_by_pk(

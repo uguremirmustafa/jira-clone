@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Home } from './Home';
 import { Project } from './Project';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { Button, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import './App.css';
 import { pink } from '@material-ui/core/colors';
 import Navbar from './shared/Navbar';

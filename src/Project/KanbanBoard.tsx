@@ -1,5 +1,5 @@
 // material ui
-import { Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Button, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { FC } from 'react';
 import { Issues, Columns, useDeleteColumnMutation } from '../lib/generated/apolloComponents';
@@ -73,7 +73,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
       indexOfLastColumn = columns[columns.length - 1].index;
     }
   }
-  // set the index of latest issue of a column
+  // update issues order mutation
 
   // drag and drop logic
   const onDragEnd = (result: DropResult) => {
@@ -153,6 +153,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
                 ]}
               />
             </div>
+
             <Droppable droppableId={col.id} key={col.id}>
               {(provided: any) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>

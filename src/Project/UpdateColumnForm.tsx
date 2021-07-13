@@ -100,7 +100,7 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
           />
         )}
       />
-      {/* {id} */}
+      {id}
     </form>
   );
 };
