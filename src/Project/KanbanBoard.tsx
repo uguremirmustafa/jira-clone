@@ -12,7 +12,7 @@ import {
   useDeleteColumnMutation,
   useUpdateIssuesOrderMutation,
   UpdateIssuesOrderMutationVariables,
-  Issues_Update_Column,
+  Issues_Insert_Input,
 } from '../lib/generated/apolloComponents';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import AddColumnForm from './AddColumnForm';
@@ -98,63 +98,72 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     const { destination, source, draggableId } = result;
 
     // exit if no destination
-    if (!destination) {
-      return;
-    }
+    if (!destination) return;
 
     // exit if dropped to the same place
-    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+    if (destination.droppableId === source.droppableId && destination.index === source.index)
       return;
-    }
 
     // make typescript happy
-    if (!columns) {
+    if (!columns) return;
+
+    //find the columns
+    const [startColumn] = columns.filter((col) => col.id === source.droppableId);
+    const [finishColumn] = columns.filter((col) => col.id === destination.droppableId);
+    let [issue] = startColumn.issues.filter((issue) => issue.id === draggableId);
+
+    // update data in db
+    const updateDataInDB = async (newestIssues: Issues_Insert_Input | Issues_Insert_Input[]) => {
+      enqueueSnackbar(`Updating the order in the db`, {
+        variant: 'info',
+      });
+      try {
+        const res = await updateIssuesOrderMutation({
+          variables: { projectId, issues: newestIssues },
+          refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+        });
+        enqueueSnackbar(`You nailed it`, {
+          variant: 'success',
+        });
+      } catch (error) {
+        enqueueSnackbar(`Ooops, something went wrong!`, {
+          variant: 'warning',
+        });
+      }
+    };
+
+    // moving in the same column
+    if (startColumn.id === finishColumn.id) {
+      //copy the issues
+      let newIssues = [...startColumn.issues];
+
+      newIssues.splice(source.index, 1);
+      newIssues.splice(destination.index, 0, issue);
+
+      let newest = newIssues.map((issue, index) => ({ ...issue, index }));
+      updateDataInDB(newest);
       return;
     }
-    // reordering logic
 
-    //find the column
-    const [column] = columns.filter((col) => col.id === source.droppableId);
-    //find the issue
-    const [issue] = column.issues.filter((issue) => issue.id === draggableId);
-    //copy the issues
-    let newIssues = [
-      ...column.issues.map((issue) => ({
-        id: issue.id,
-        index: issue.index,
-        column_id: issue.column_id,
-        title: issue.title,
-        project_id: projectId,
-      })),
-    ];
+    // moving between different columns
 
-    newIssues.splice(source.index, 1);
-    newIssues.splice(destination.index, 0, {
-      id: issue.id,
-      index: issue.index,
-      column_id: issue.column_id,
-      title: issue.title,
-      project_id: projectId,
+    // copy the start column issues
+    let startColumnIssues = [...startColumn.issues];
+    // remove the issue from the copied start column
+    startColumnIssues.splice(source.index, 1);
+    // reorder the start column
+    let newestStartColumn = startColumnIssues.map((issue, index) => ({ ...issue, index }));
+    // copy the finish column issues
+    let finishColumnIssues = [...finishColumn.issues];
+    // insert the issue to the copied finish column
+    finishColumnIssues.splice(destination.index, 0, {
+      ...issue,
+      column_id: destination.droppableId,
+      index: destination.index,
     });
-
-    let newest = newIssues.map((issue, index) => ({ ...issue, index }));
-    enqueueSnackbar(`Changin the orders`, {
-      variant: 'info',
-    });
-
-    try {
-      const res = await updateIssuesOrderMutation({
-        variables: { projectId, issues: newest },
-        refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
-      });
-      enqueueSnackbar(`${JSON.stringify(res, null, 2)}`, {
-        variant: 'success',
-      });
-    } catch (error) {
-      enqueueSnackbar(`${error.message}`, {
-        variant: 'warning',
-      });
-    }
+    // reorder the finish column
+    let newestFinishColumn = finishColumnIssues.map((issue, index) => ({ ...issue, index }));
+    updateDataInDB([...newestStartColumn, ...newestFinishColumn]);
   };
 
   // handle delete
@@ -225,7 +234,9 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
                           ref={provided.innerRef}
                           className={clsx(c.paper, snapshot.isDragging ? c.dragging : null)}
                         >
-                          <Typography>{issue.title}</Typography>
+                          <Typography>
+                            {issue.title} - {issue.index}
+                          </Typography>
                         </Paper>
                       )}
                     </Draggable>
