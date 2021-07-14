@@ -10,6 +10,7 @@ import {
   useDeleteColumnMutation,
   useUpdateIssuesOrderMutation,
   UpdateIssuesOrderMutationVariables,
+  Issues_Update_Column,
 } from '../lib/generated/apolloComponents';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import AddColumnForm from './AddColumnForm';
@@ -83,7 +84,10 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
   }
   // update issues order mutation
   const [variables, setVariables] = useState<UpdateIssuesOrderMutationVariables>();
-  const [updateIssuesOrderMutation] = useUpdateIssuesOrderMutation();
+  const [updateIssuesOrderMutation] = useUpdateIssuesOrderMutation({
+    variables,
+    refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+  });
   // drag and drop logic
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -111,7 +115,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     //copy the issues
     let newIssues = [
       ...column.issues.map((issue) => ({
-        index: issue.index,
+        id: issue.id,
         column_id: issue.column_id,
         title: issue.title,
         project_id: projectId,
@@ -120,22 +124,28 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
 
     newIssues.splice(source.index, 1);
     newIssues.splice(destination.index, 0, {
-      index: issue.index,
+      id: issue.id,
       column_id: issue.column_id,
       title: issue.title,
       project_id: projectId,
     });
 
-    newIssues.map((issue, index) => ({ ...issue, index }));
-
+    let newest = newIssues.map((issue, index) => ({ ...issue, index }));
+    // alert(JSON.stringify(newest, null, 2));
+    enqueueSnackbar(`${JSON.stringify(newest, null, 2)}`, {
+      variant: 'warning',
+    });
     // alert(JSON.stringify(newIssues, null, 2));
-    try {
-      const res = await updateIssuesOrderMutation({
-        variables: { projectId, issues: newIssues },
-        refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
-      });
-    } catch (error) {
-      alert(error);
+    setVariables({ projectId, issues: newest });
+    if (variables?.issues) {
+      try {
+        const res = await updateIssuesOrderMutation();
+        alert(JSON.stringify(res, null, 2));
+      } catch (error) {
+        enqueueSnackbar(`${error.message}`, {
+          variant: 'warning',
+        });
+      }
     }
   };
 
