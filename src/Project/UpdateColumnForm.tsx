@@ -1,5 +1,5 @@
 // material ui components
-import { IconButton, InputAdornment, makeStyles, TextField } from '@material-ui/core';
+import { Divider, IconButton, InputAdornment, makeStyles, TextField } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 // react hook form
 import { useForm, Controller } from 'react-hook-form';
@@ -100,7 +100,7 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
           />
         )}
       />
-      {id}
+      <Divider />
     </form>
   );
 };

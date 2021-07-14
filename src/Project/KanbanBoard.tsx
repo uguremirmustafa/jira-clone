@@ -1,7 +1,7 @@
 // react
 import { useState } from 'react';
 // material ui
-import { Button, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Button, Divider, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import clsx from 'clsx';
 // other stuff
@@ -89,9 +89,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     }
   }
   // update issues order mutation
-  const [updateIssuesOrderMutation] = useUpdateIssuesOrderMutation({
-    refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
-  });
+  const [updateIssuesOrderMutation] = useUpdateIssuesOrderMutation();
 
   // drag and drop logic
   const onDragEnd = async (result: DropResult) => {
@@ -112,8 +110,8 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     const [finishColumn] = columns.filter((col) => col.id === destination.droppableId);
     let [issue] = startColumn.issues.filter((issue) => issue.id === draggableId);
 
-    // update data in db
-    const updateDataInDB = async (newestIssues: Issues_Insert_Input | Issues_Insert_Input[]) => {
+    // update order in db
+    const updateOrderInDB = async (newestIssues: Issues_Insert_Input | Issues_Insert_Input[]) => {
       enqueueSnackbar(`Updating the order in the db`, {
         variant: 'info',
       });
@@ -141,7 +139,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
       newIssues.splice(destination.index, 0, issue);
 
       let newest = newIssues.map((issue, index) => ({ ...issue, index }));
-      updateDataInDB(newest);
+      updateOrderInDB(newest);
       return;
     }
 
@@ -163,7 +161,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     });
     // reorder the finish column
     let newestFinishColumn = finishColumnIssues.map((issue, index) => ({ ...issue, index }));
-    updateDataInDB([...newestStartColumn, ...newestFinishColumn]);
+    updateOrderInDB([...newestStartColumn, ...newestFinishColumn]);
   };
 
   // handle delete
@@ -207,7 +205,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
                 icon={<MoreVertIcon />}
                 items={[
                   {
-                    text: `Delete - ${col.id}`,
+                    text: `Delete Column`,
                     func: () => {
                       confirmDialog('Are you sure?', () => handleDelete(col.id));
                     },
@@ -245,6 +243,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
                 </div>
               )}
             </Droppable>
+
             <AddIssueWithTitleForm
               columnId={col.id}
               projectId={projectId}

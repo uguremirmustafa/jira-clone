@@ -10,7 +10,19 @@ export const UpdateIssuesOrder = gql`
         where: { project_id: { _eq: $projectId } }
       }
     ) {
-      affected_rows
+      returning {
+        column_id
+        created_at
+        description
+        id
+        index
+        owner_id
+        priority
+        project_id
+        title
+        type
+        updated_at
+      }
     }
   }
 `;
