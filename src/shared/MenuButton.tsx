@@ -38,6 +38,7 @@ export const MenuButton: FC<IProps> = ({ items, icon }) => {
       >
         {items.map((item) => (
           <MenuItem
+            key={item.text}
             onClick={() => {
               handleClose();
               // itemClick();

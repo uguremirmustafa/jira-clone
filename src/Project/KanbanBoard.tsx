@@ -3,6 +3,8 @@ import { useState } from 'react';
 // material ui
 import { Button, Grid, makeStyles, Paper, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import clsx from 'clsx';
+// other stuff
 import { FC } from 'react';
 import {
   Issues,
@@ -51,6 +53,10 @@ const useStyles = makeStyles((theme) => {
       padding: theme.spacing(2),
       marginBottom: theme.spacing(2),
     },
+    dragging: {
+      backgroundColor: theme.palette.secondary.main,
+      color: theme.palette.primary.light,
+    },
   };
 });
 
@@ -83,11 +89,10 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     }
   }
   // update issues order mutation
-  const [variables, setVariables] = useState<UpdateIssuesOrderMutationVariables>();
   const [updateIssuesOrderMutation] = useUpdateIssuesOrderMutation({
-    variables,
     refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
   });
+
   // drag and drop logic
   const onDragEnd = async (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -116,6 +121,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     let newIssues = [
       ...column.issues.map((issue) => ({
         id: issue.id,
+        index: issue.index,
         column_id: issue.column_id,
         title: issue.title,
         project_id: projectId,
@@ -125,27 +131,29 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
     newIssues.splice(source.index, 1);
     newIssues.splice(destination.index, 0, {
       id: issue.id,
+      index: issue.index,
       column_id: issue.column_id,
       title: issue.title,
       project_id: projectId,
     });
 
     let newest = newIssues.map((issue, index) => ({ ...issue, index }));
-    // alert(JSON.stringify(newest, null, 2));
-    enqueueSnackbar(`${JSON.stringify(newest, null, 2)}`, {
-      variant: 'warning',
+    enqueueSnackbar(`Changin the orders`, {
+      variant: 'info',
     });
-    // alert(JSON.stringify(newIssues, null, 2));
-    setVariables({ projectId, issues: newest });
-    if (variables?.issues) {
-      try {
-        const res = await updateIssuesOrderMutation();
-        alert(JSON.stringify(res, null, 2));
-      } catch (error) {
-        enqueueSnackbar(`${error.message}`, {
-          variant: 'warning',
-        });
-      }
+
+    try {
+      const res = await updateIssuesOrderMutation({
+        variables: { projectId, issues: newest },
+        refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+      });
+      enqueueSnackbar(`${JSON.stringify(res, null, 2)}`, {
+        variant: 'success',
+      });
+    } catch (error) {
+      enqueueSnackbar(`${error.message}`, {
+        variant: 'warning',
+      });
     }
   };
 
@@ -210,16 +218,14 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   {col?.issues.map((issue, index) => (
                     <Draggable key={issue.index} draggableId={issue.id} index={index}>
-                      {(provided: any) => (
+                      {(provided: any, snapshot: any) => (
                         <Paper
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           ref={provided.innerRef}
-                          className={c.paper}
+                          className={clsx(c.paper, snapshot.isDragging ? c.dragging : null)}
                         >
-                          <Typography>
-                            {issue.title}-{issue.index} - <br /> {issue.id}
-                          </Typography>
+                          <Typography>{issue.title}</Typography>
                         </Paper>
                       )}
                     </Draggable>
