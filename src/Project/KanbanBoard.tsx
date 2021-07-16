@@ -11,8 +11,9 @@ import {
   Columns,
   useDeleteColumnMutation,
   useUpdateIssuesOrderMutation,
-  UpdateIssuesOrderMutationVariables,
   Issues_Insert_Input,
+  GetProjectByIdQuery,
+  GetProjectIssuesByProjectIdQuery,
 } from '../lib/generated/apolloComponents';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import AddColumnForm from './AddColumnForm';
@@ -22,6 +23,7 @@ import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
 import { confirmDialog } from '../shared/ConfirmDialog';
 import { MenuButton } from '../shared/MenuButton';
 import AddIssueWithTitleForm from './AddIssueWithTitleForm';
+import { GetProjectIssuesByProjectId } from '../lib/graphql/project/queries/getProjectIssuesByProjectId';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -61,24 +63,27 @@ const useStyles = makeStyles((theme) => {
 });
 
 interface IProps {
-  columns:
-    | ({
-        __typename?: 'columns' | undefined;
-      } & Pick<Columns, 'id' | 'name' | 'index'> & {
-          issues: ({
-            __typename?: 'issues' | undefined;
-          } & Pick<
-            Issues,
-            'id' | 'index' | 'title' | 'index' | 'description' | 'priority' | 'type' | 'column_id'
-          >)[];
-        })[]
-    | undefined;
+  columns: Pick<Columns, 'id' | 'name' | 'index'>[] | undefined;
   numOfColumns: number | undefined;
   projectId: string;
   isOwnerOrMember: boolean;
+  issues:
+    | Pick<
+        Issues,
+        | 'title'
+        | 'id'
+        | 'description'
+        | 'owner_id'
+        | 'index'
+        | 'column_id'
+        | 'priority'
+        | 'project_id'
+        | 'type'
+      >[]
+    | undefined;
 }
 
-const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
+const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns, issues }) => {
   const c = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   // set the index of latest column
@@ -103,65 +108,79 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
       return;
 
     // make typescript happy
-    if (!columns) return;
+    if (!issues) return;
 
-    //find the columns
-    const [startColumn] = columns.filter((col) => col.id === source.droppableId);
-    const [finishColumn] = columns.filter((col) => col.id === destination.droppableId);
-    let [issue] = startColumn.issues.filter((issue) => issue.id === draggableId);
+    // in the same column
+    if (source.droppableId === destination.droppableId) {
+      // create an array of issues with start column
+      let issuesArray = issues.filter((issue) => issue.column_id === source.droppableId);
+      // find the dragging issue
 
-    // update order in db
-    const updateOrderInDB = async (newestIssues: Issues_Insert_Input | Issues_Insert_Input[]) => {
-      enqueueSnackbar(`Updating the order in the db`, {
+      let draggingIssue = issuesArray.find((issue) => issue.id === draggableId) || issuesArray[0];
+      // remove the dragging issue from the array
+      issuesArray.splice(source.index, 1);
+      // put the dragging issue into the new place
+      issuesArray.splice(destination.index, 0, draggingIssue);
+      let newestIssuesArray = issuesArray.map((issue, index) => ({ ...issue, index: index }));
+
+      // alert(JSON.stringify(newestIssuesArray, null, 2));
+
+      // update in the db
+      enqueueSnackbar(`Updating order in the db`, {
         variant: 'info',
       });
       try {
         const res = await updateIssuesOrderMutation({
-          variables: { projectId, issues: newestIssues },
-          refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+          // refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+          variables: { projectId, issues: newestIssuesArray },
+          update: (cache, { data: response }) => {
+            let cachedIssues = cache.readQuery<GetProjectIssuesByProjectIdQuery>({
+              query: GetProjectIssuesByProjectId,
+              variables: { projectId },
+            });
+
+            if (cachedIssues) {
+              if (cachedIssues.projects_by_pk) {
+                cache.writeQuery<GetProjectIssuesByProjectIdQuery>({
+                  query: GetProjectIssuesByProjectId,
+                  variables: { projectId },
+                  data: {
+                    projects_by_pk: {
+                      issues: {
+                        ...cachedIssues?.projects_by_pk.issues,
+                        ...response?.insert_issues?.returning,
+                      },
+                    },
+                  },
+                });
+              }
+            }
+          },
+          optimisticResponse: {
+            insert_issues: {
+              returning: {
+                ...newestIssuesArray,
+              },
+            },
+          },
         });
-        enqueueSnackbar(`You nailed it`, {
-          variant: 'success',
-        });
+        if (res.data?.insert_issues !== null) {
+          enqueueSnackbar(`Reordered issues in db successfully`, {
+            variant: 'success',
+          });
+        } else if (res.data.insert_issues === null) {
+          enqueueSnackbar('Something went wrong', { variant: 'error' });
+        } else if (res.errors) {
+          enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
+        }
       } catch (error) {
-        enqueueSnackbar(`Ooops, something went wrong!`, {
-          variant: 'warning',
+        enqueueSnackbar(`${error.message}`, {
+          variant: 'error',
         });
       }
-    };
-
-    // moving in the same column
-    if (startColumn.id === finishColumn.id) {
-      //copy the issues
-      let newIssues = [...startColumn.issues];
-
-      newIssues.splice(source.index, 1);
-      newIssues.splice(destination.index, 0, issue);
-
-      let newest = newIssues.map((issue, index) => ({ ...issue, index }));
-      updateOrderInDB(newest);
-      return;
     }
 
-    // moving between different columns
-
-    // copy the start column issues
-    let startColumnIssues = [...startColumn.issues];
-    // remove the issue from the copied start column
-    startColumnIssues.splice(source.index, 1);
-    // reorder the start column
-    let newestStartColumn = startColumnIssues.map((issue, index) => ({ ...issue, index }));
-    // copy the finish column issues
-    let finishColumnIssues = [...finishColumn.issues];
-    // insert the issue to the copied finish column
-    finishColumnIssues.splice(destination.index, 0, {
-      ...issue,
-      column_id: destination.droppableId,
-      index: destination.index,
-    });
-    // reorder the finish column
-    let newestFinishColumn = finishColumnIssues.map((issue, index) => ({ ...issue, index }));
-    updateOrderInDB([...newestStartColumn, ...newestFinishColumn]);
+    // between different columns
   };
 
   // handle delete
@@ -189,6 +208,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
       });
     }
   };
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Grid container className={c.root}>
@@ -223,22 +243,24 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
             <Droppable droppableId={col.id} key={col.id}>
               {(provided: any) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {col?.issues.map((issue, index) => (
-                    <Draggable key={issue.index} draggableId={issue.id} index={index}>
-                      {(provided: any, snapshot: any) => (
-                        <Paper
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
-                          className={clsx(c.paper, snapshot.isDragging ? c.dragging : null)}
-                        >
-                          <Typography>
-                            {issue.title} - {issue.index}
-                          </Typography>
-                        </Paper>
-                      )}
-                    </Draggable>
-                  ))}
+                  {issues
+                    ?.filter((issue) => issue.column_id === col.id)
+                    ?.map((issue: any, index: number) => (
+                      <Draggable key={issue.index} draggableId={issue.id} index={index}>
+                        {(provided: any, snapshot: any) => (
+                          <Paper
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                            className={clsx(c.paper, snapshot.isDragging ? c.dragging : null)}
+                          >
+                            <Typography>
+                              {issue.title} - {issue.index}
+                            </Typography>
+                          </Paper>
+                        )}
+                      </Draggable>
+                    ))}
                   {provided.placeholder}
                 </div>
               )}
@@ -247,7 +269,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, numOfColumns }) => {
             <AddIssueWithTitleForm
               columnId={col.id}
               projectId={projectId}
-              indexOfLastIssue={col?.issues.length || 0}
+              indexOfLastIssue={issues?.filter((issue) => issue.column_id === col.id).length || 0}
               // indexOfLastIssue={col?.issues[col.issues.length - 1]?.index || 0}
             />
           </Grid>

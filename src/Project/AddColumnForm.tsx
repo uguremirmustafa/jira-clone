@@ -7,6 +7,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import {
   CreateColumnMutationVariables,
+  GetProjectByIdQuery,
   useCreateColumnMutation,
 } from '../lib/generated/apolloComponents';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
@@ -28,11 +29,7 @@ export interface IProps {
 const AddColumnForm: FC<IProps> = ({ projectId, name, indexOfLastColumn }) => {
   const c = useStyles();
   const { enqueueSnackbar } = useSnackbar();
-  const [variables, setVariables] = useState<CreateColumnMutationVariables>();
-  const [createColumnMutation, { data, loading, error }] = useCreateColumnMutation({
-    variables,
-    refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
-  });
+  const [createColumnMutation] = useCreateColumnMutation();
 
   const { handleSubmit, control, reset } = useForm<CreateColumnMutationVariables>({
     defaultValues: {
@@ -42,12 +39,14 @@ const AddColumnForm: FC<IProps> = ({ projectId, name, indexOfLastColumn }) => {
   });
 
   const onSubmit = async (formData: CreateColumnMutationVariables) => {
-    setVariables({ ...formData, index: indexOfLastColumn + 1 });
     try {
       enqueueSnackbar('Creating column on database, wait...', {
         variant: 'info',
       });
-      const res = await createColumnMutation();
+      const res = await createColumnMutation({
+        variables: { ...formData, index: indexOfLastColumn + 1 },
+        refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+      });
       if (res.data?.insert_columns_one?.id !== null) {
         enqueueSnackbar('Column created successfully', {
           variant: 'success',

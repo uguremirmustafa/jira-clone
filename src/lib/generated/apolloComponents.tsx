@@ -65,7 +65,6 @@ export type String_Comparison_Exp = {
 
 /** columns and relationships of "columns" */
 export type Columns = {
-  __typename?: 'columns';
   id: Scalars['uuid'];
   index: Scalars['Int'];
   /** An array relationship */
@@ -100,14 +99,12 @@ export type ColumnsIssues_AggregateArgs = {
 
 /** aggregated selection of "columns" */
 export type Columns_Aggregate = {
-  __typename?: 'columns_aggregate';
   aggregate?: Maybe<Columns_Aggregate_Fields>;
   nodes: Array<Columns>;
 };
 
 /** aggregate fields of "columns" */
 export type Columns_Aggregate_Fields = {
-  __typename?: 'columns_aggregate_fields';
   avg?: Maybe<Columns_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Columns_Max_Fields>;
@@ -152,7 +149,6 @@ export type Columns_Arr_Rel_Insert_Input = {
 
 /** aggregate avg on columns */
 export type Columns_Avg_Fields = {
-  __typename?: 'columns_avg_fields';
   index?: Maybe<Scalars['Float']>;
 };
 
@@ -197,7 +193,6 @@ export type Columns_Insert_Input = {
 
 /** aggregate max on columns */
 export type Columns_Max_Fields = {
-  __typename?: 'columns_max_fields';
   id?: Maybe<Scalars['uuid']>;
   index?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
@@ -214,7 +209,6 @@ export type Columns_Max_Order_By = {
 
 /** aggregate min on columns */
 export type Columns_Min_Fields = {
-  __typename?: 'columns_min_fields';
   id?: Maybe<Scalars['uuid']>;
   index?: Maybe<Scalars['Int']>;
   name?: Maybe<Scalars['String']>;
@@ -231,7 +225,6 @@ export type Columns_Min_Order_By = {
 
 /** response of any mutation on the table "columns" */
 export type Columns_Mutation_Response = {
-  __typename?: 'columns_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
@@ -289,7 +282,6 @@ export type Columns_Set_Input = {
 
 /** aggregate stddev on columns */
 export type Columns_Stddev_Fields = {
-  __typename?: 'columns_stddev_fields';
   index?: Maybe<Scalars['Float']>;
 };
 
@@ -300,7 +292,6 @@ export type Columns_Stddev_Order_By = {
 
 /** aggregate stddev_pop on columns */
 export type Columns_Stddev_Pop_Fields = {
-  __typename?: 'columns_stddev_pop_fields';
   index?: Maybe<Scalars['Float']>;
 };
 
@@ -311,7 +302,6 @@ export type Columns_Stddev_Pop_Order_By = {
 
 /** aggregate stddev_samp on columns */
 export type Columns_Stddev_Samp_Fields = {
-  __typename?: 'columns_stddev_samp_fields';
   index?: Maybe<Scalars['Float']>;
 };
 
@@ -322,7 +312,6 @@ export type Columns_Stddev_Samp_Order_By = {
 
 /** aggregate sum on columns */
 export type Columns_Sum_Fields = {
-  __typename?: 'columns_sum_fields';
   index?: Maybe<Scalars['Int']>;
 };
 
@@ -345,7 +334,6 @@ export enum Columns_Update_Column {
 
 /** aggregate var_pop on columns */
 export type Columns_Var_Pop_Fields = {
-  __typename?: 'columns_var_pop_fields';
   index?: Maybe<Scalars['Float']>;
 };
 
@@ -356,7 +344,6 @@ export type Columns_Var_Pop_Order_By = {
 
 /** aggregate var_samp on columns */
 export type Columns_Var_Samp_Fields = {
-  __typename?: 'columns_var_samp_fields';
   index?: Maybe<Scalars['Float']>;
 };
 
@@ -367,7 +354,6 @@ export type Columns_Var_Samp_Order_By = {
 
 /** aggregate variance on columns */
 export type Columns_Variance_Fields = {
-  __typename?: 'columns_variance_fields';
   index?: Maybe<Scalars['Float']>;
 };
 
@@ -378,7 +364,6 @@ export type Columns_Variance_Order_By = {
 
 /** columns and relationships of "comments" */
 export type Comments = {
-  __typename?: 'comments';
   created_at: Scalars['timestamptz'];
   id: Scalars['uuid'];
   /** An object relationship */
@@ -393,14 +378,12 @@ export type Comments = {
 
 /** aggregated selection of "comments" */
 export type Comments_Aggregate = {
-  __typename?: 'comments_aggregate';
   aggregate?: Maybe<Comments_Aggregate_Fields>;
   nodes: Array<Comments>;
 };
 
 /** aggregate fields of "comments" */
 export type Comments_Aggregate_Fields = {
-  __typename?: 'comments_aggregate_fields';
   count: Scalars['Int'];
   max?: Maybe<Comments_Max_Fields>;
   min?: Maybe<Comments_Min_Fields>;
@@ -462,7 +445,6 @@ export type Comments_Insert_Input = {
 
 /** aggregate max on columns */
 export type Comments_Max_Fields = {
-  __typename?: 'comments_max_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
   issue_id?: Maybe<Scalars['uuid']>;
@@ -483,7 +465,6 @@ export type Comments_Max_Order_By = {
 
 /** aggregate min on columns */
 export type Comments_Min_Fields = {
-  __typename?: 'comments_min_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
   id?: Maybe<Scalars['uuid']>;
   issue_id?: Maybe<Scalars['uuid']>;
@@ -504,7 +485,6 @@ export type Comments_Min_Order_By = {
 
 /** response of any mutation on the table "comments" */
 export type Comments_Mutation_Response = {
-  __typename?: 'comments_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
@@ -579,7 +559,6 @@ export enum Comments_Update_Column {
 
 /** columns and relationships of "issues" */
 export type Issues = {
-  __typename?: 'issues';
   /** An object relationship */
   column?: Maybe<Columns>;
   column_id?: Maybe<Scalars['uuid']>;
@@ -628,14 +607,12 @@ export type IssuesComments_AggregateArgs = {
 
 /** aggregated selection of "issues" */
 export type Issues_Aggregate = {
-  __typename?: 'issues_aggregate';
   aggregate?: Maybe<Issues_Aggregate_Fields>;
   nodes: Array<Issues>;
 };
 
 /** aggregate fields of "issues" */
 export type Issues_Aggregate_Fields = {
-  __typename?: 'issues_aggregate_fields';
   avg?: Maybe<Issues_Avg_Fields>;
   count: Scalars['Int'];
   max?: Maybe<Issues_Max_Fields>;
@@ -680,7 +657,6 @@ export type Issues_Arr_Rel_Insert_Input = {
 
 /** aggregate avg on columns */
 export type Issues_Avg_Fields = {
-  __typename?: 'issues_avg_fields';
   index?: Maybe<Scalars['Float']>;
   priority?: Maybe<Scalars['Float']>;
 };
@@ -749,7 +725,6 @@ export type Issues_Insert_Input = {
 
 /** aggregate max on columns */
 export type Issues_Max_Fields = {
-  __typename?: 'issues_max_fields';
   column_id?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   /** it is nullable for development purposes. in prod, it wont be nullable */
@@ -786,7 +761,6 @@ export type Issues_Max_Order_By = {
 
 /** aggregate min on columns */
 export type Issues_Min_Fields = {
-  __typename?: 'issues_min_fields';
   column_id?: Maybe<Scalars['uuid']>;
   created_at?: Maybe<Scalars['timestamptz']>;
   /** it is nullable for development purposes. in prod, it wont be nullable */
@@ -823,7 +797,6 @@ export type Issues_Min_Order_By = {
 
 /** response of any mutation on the table "issues" */
 export type Issues_Mutation_Response = {
-  __typename?: 'issues_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
@@ -914,7 +887,6 @@ export type Issues_Set_Input = {
 
 /** aggregate stddev on columns */
 export type Issues_Stddev_Fields = {
-  __typename?: 'issues_stddev_fields';
   index?: Maybe<Scalars['Float']>;
   priority?: Maybe<Scalars['Float']>;
 };
@@ -927,7 +899,6 @@ export type Issues_Stddev_Order_By = {
 
 /** aggregate stddev_pop on columns */
 export type Issues_Stddev_Pop_Fields = {
-  __typename?: 'issues_stddev_pop_fields';
   index?: Maybe<Scalars['Float']>;
   priority?: Maybe<Scalars['Float']>;
 };
@@ -940,7 +911,6 @@ export type Issues_Stddev_Pop_Order_By = {
 
 /** aggregate stddev_samp on columns */
 export type Issues_Stddev_Samp_Fields = {
-  __typename?: 'issues_stddev_samp_fields';
   index?: Maybe<Scalars['Float']>;
   priority?: Maybe<Scalars['Float']>;
 };
@@ -953,7 +923,6 @@ export type Issues_Stddev_Samp_Order_By = {
 
 /** aggregate sum on columns */
 export type Issues_Sum_Fields = {
-  __typename?: 'issues_sum_fields';
   index?: Maybe<Scalars['Int']>;
   priority?: Maybe<Scalars['Int']>;
 };
@@ -992,7 +961,6 @@ export enum Issues_Update_Column {
 
 /** aggregate var_pop on columns */
 export type Issues_Var_Pop_Fields = {
-  __typename?: 'issues_var_pop_fields';
   index?: Maybe<Scalars['Float']>;
   priority?: Maybe<Scalars['Float']>;
 };
@@ -1005,7 +973,6 @@ export type Issues_Var_Pop_Order_By = {
 
 /** aggregate var_samp on columns */
 export type Issues_Var_Samp_Fields = {
-  __typename?: 'issues_var_samp_fields';
   index?: Maybe<Scalars['Float']>;
   priority?: Maybe<Scalars['Float']>;
 };
@@ -1018,7 +985,6 @@ export type Issues_Var_Samp_Order_By = {
 
 /** aggregate variance on columns */
 export type Issues_Variance_Fields = {
-  __typename?: 'issues_variance_fields';
   index?: Maybe<Scalars['Float']>;
   priority?: Maybe<Scalars['Float']>;
 };
@@ -1031,7 +997,6 @@ export type Issues_Variance_Order_By = {
 
 /** mutation root */
 export type Mutation_Root = {
-  __typename?: 'mutation_root';
   /** delete data from the table: "columns" */
   delete_columns?: Maybe<Columns_Mutation_Response>;
   /** delete single row from the table: "columns" */
@@ -1453,7 +1418,6 @@ export enum Order_By {
 
 /** columns and relationships of "project_members" */
 export type Project_Members = {
-  __typename?: 'project_members';
   id: Scalars['uuid'];
   /** An object relationship */
   project: Projects;
@@ -1466,14 +1430,12 @@ export type Project_Members = {
 
 /** aggregated selection of "project_members" */
 export type Project_Members_Aggregate = {
-  __typename?: 'project_members_aggregate';
   aggregate?: Maybe<Project_Members_Aggregate_Fields>;
   nodes: Array<Project_Members>;
 };
 
 /** aggregate fields of "project_members" */
 export type Project_Members_Aggregate_Fields = {
-  __typename?: 'project_members_aggregate_fields';
   count: Scalars['Int'];
   max?: Maybe<Project_Members_Max_Fields>;
   min?: Maybe<Project_Members_Min_Fields>;
@@ -1533,7 +1495,6 @@ export type Project_Members_Insert_Input = {
 
 /** aggregate max on columns */
 export type Project_Members_Max_Fields = {
-  __typename?: 'project_members_max_fields';
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
   type_id?: Maybe<Scalars['uuid']>;
@@ -1550,7 +1511,6 @@ export type Project_Members_Max_Order_By = {
 
 /** aggregate min on columns */
 export type Project_Members_Min_Fields = {
-  __typename?: 'project_members_min_fields';
   id?: Maybe<Scalars['uuid']>;
   project_id?: Maybe<Scalars['uuid']>;
   type_id?: Maybe<Scalars['uuid']>;
@@ -1567,7 +1527,6 @@ export type Project_Members_Min_Order_By = {
 
 /** response of any mutation on the table "project_members" */
 export type Project_Members_Mutation_Response = {
-  __typename?: 'project_members_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
@@ -1630,7 +1589,6 @@ export enum Project_Members_Update_Column {
 
 /** columns and relationships of "projects" */
 export type Projects = {
-  __typename?: 'projects';
   /** An array relationship */
   columns: Array<Columns>;
   /** An aggregate relationship */
@@ -1716,14 +1674,12 @@ export type ProjectsProject_Members_AggregateArgs = {
 
 /** aggregated selection of "projects" */
 export type Projects_Aggregate = {
-  __typename?: 'projects_aggregate';
   aggregate?: Maybe<Projects_Aggregate_Fields>;
   nodes: Array<Projects>;
 };
 
 /** aggregate fields of "projects" */
 export type Projects_Aggregate_Fields = {
-  __typename?: 'projects_aggregate_fields';
   count: Scalars['Int'];
   max?: Maybe<Projects_Max_Fields>;
   min?: Maybe<Projects_Min_Fields>;
@@ -1791,7 +1747,6 @@ export type Projects_Insert_Input = {
 
 /** aggregate max on columns */
 export type Projects_Max_Fields = {
-  __typename?: 'projects_max_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
@@ -1814,7 +1769,6 @@ export type Projects_Max_Order_By = {
 
 /** aggregate min on columns */
 export type Projects_Min_Fields = {
-  __typename?: 'projects_min_fields';
   created_at?: Maybe<Scalars['timestamptz']>;
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
@@ -1837,7 +1791,6 @@ export type Projects_Min_Order_By = {
 
 /** response of any mutation on the table "projects" */
 export type Projects_Mutation_Response = {
-  __typename?: 'projects_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
@@ -1926,7 +1879,6 @@ export enum Projects_Update_Column {
 }
 
 export type Query_Root = {
-  __typename?: 'query_root';
   /** An array relationship */
   columns: Array<Columns>;
   /** An aggregate relationship */
@@ -2183,7 +2135,6 @@ export type Search_Users_Args = {
 };
 
 export type Subscription_Root = {
-  __typename?: 'subscription_root';
   /** An array relationship */
   columns: Array<Columns>;
   /** An aggregate relationship */
@@ -2451,21 +2402,18 @@ export type Timestamptz_Comparison_Exp = {
 
 /** columns and relationships of "user_private" */
 export type User_Private = {
-  __typename?: 'user_private';
   email?: Maybe<Scalars['String']>;
   user_id?: Maybe<Scalars['String']>;
 };
 
 /** aggregated selection of "user_private" */
 export type User_Private_Aggregate = {
-  __typename?: 'user_private_aggregate';
   aggregate?: Maybe<User_Private_Aggregate_Fields>;
   nodes: Array<User_Private>;
 };
 
 /** aggregate fields of "user_private" */
 export type User_Private_Aggregate_Fields = {
-  __typename?: 'user_private_aggregate_fields';
   count: Scalars['Int'];
   max?: Maybe<User_Private_Max_Fields>;
   min?: Maybe<User_Private_Min_Fields>;
@@ -2495,21 +2443,18 @@ export type User_Private_Insert_Input = {
 
 /** aggregate max on columns */
 export type User_Private_Max_Fields = {
-  __typename?: 'user_private_max_fields';
   email?: Maybe<Scalars['String']>;
   user_id?: Maybe<Scalars['String']>;
 };
 
 /** aggregate min on columns */
 export type User_Private_Min_Fields = {
-  __typename?: 'user_private_min_fields';
   email?: Maybe<Scalars['String']>;
   user_id?: Maybe<Scalars['String']>;
 };
 
 /** response of any mutation on the table "user_private" */
 export type User_Private_Mutation_Response = {
-  __typename?: 'user_private_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
@@ -2538,21 +2483,18 @@ export type User_Private_Set_Input = {
 
 /** columns and relationships of "user_type" */
 export type User_Type = {
-  __typename?: 'user_type';
   id: Scalars['uuid'];
   type: Scalars['String'];
 };
 
 /** aggregated selection of "user_type" */
 export type User_Type_Aggregate = {
-  __typename?: 'user_type_aggregate';
   aggregate?: Maybe<User_Type_Aggregate_Fields>;
   nodes: Array<User_Type>;
 };
 
 /** aggregate fields of "user_type" */
 export type User_Type_Aggregate_Fields = {
-  __typename?: 'user_type_aggregate_fields';
   count: Scalars['Int'];
   max?: Maybe<User_Type_Max_Fields>;
   min?: Maybe<User_Type_Min_Fields>;
@@ -2588,21 +2530,18 @@ export type User_Type_Insert_Input = {
 
 /** aggregate max on columns */
 export type User_Type_Max_Fields = {
-  __typename?: 'user_type_max_fields';
   id?: Maybe<Scalars['uuid']>;
   type?: Maybe<Scalars['String']>;
 };
 
 /** aggregate min on columns */
 export type User_Type_Min_Fields = {
-  __typename?: 'user_type_min_fields';
   id?: Maybe<Scalars['uuid']>;
   type?: Maybe<Scalars['String']>;
 };
 
 /** response of any mutation on the table "user_type" */
 export type User_Type_Mutation_Response = {
-  __typename?: 'user_type_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
@@ -2651,7 +2590,6 @@ export enum User_Type_Update_Column {
 
 /** columns and relationships of "users" */
 export type Users = {
-  __typename?: 'users';
   /** An array relationship */
   comments: Array<Comments>;
   /** An aggregate relationship */
@@ -2757,14 +2695,12 @@ export type UsersProjects_AggregateArgs = {
 
 /** aggregated selection of "users" */
 export type Users_Aggregate = {
-  __typename?: 'users_aggregate';
   aggregate?: Maybe<Users_Aggregate_Fields>;
   nodes: Array<Users>;
 };
 
 /** aggregate fields of "users" */
 export type Users_Aggregate_Fields = {
-  __typename?: 'users_aggregate_fields';
   count: Scalars['Int'];
   max?: Maybe<Users_Max_Fields>;
   min?: Maybe<Users_Min_Fields>;
@@ -2814,7 +2750,6 @@ export type Users_Insert_Input = {
 
 /** aggregate max on columns */
 export type Users_Max_Fields = {
-  __typename?: 'users_max_fields';
   email?: Maybe<Scalars['String']>;
   first_name?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
@@ -2824,7 +2759,6 @@ export type Users_Max_Fields = {
 
 /** aggregate min on columns */
 export type Users_Min_Fields = {
-  __typename?: 'users_min_fields';
   email?: Maybe<Scalars['String']>;
   first_name?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
@@ -2834,7 +2768,6 @@ export type Users_Min_Fields = {
 
 /** response of any mutation on the table "users" */
 export type Users_Mutation_Response = {
-  __typename?: 'users_mutation_response';
   /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
   /** data from the rows affected by the mutation */
@@ -2931,17 +2864,10 @@ export type AddUserToProjectMutationVariables = Exact<{
 }>;
 
 
-export type AddUserToProjectMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_project_members_one?: Maybe<(
-    { __typename?: 'project_members' }
-    & Pick<Project_Members, 'id'>
-    & { user?: Maybe<(
-      { __typename?: 'users' }
-      & Pick<Users, 'email'>
-    )> }
-  )> }
-);
+export type AddUserToProjectMutation = { insert_project_members_one?: Maybe<(
+    Pick<Project_Members, 'id'>
+    & { user?: Maybe<Pick<Users, 'email'>> }
+  )> };
 
 export type CreateColumnMutationVariables = Exact<{
   projectId: Scalars['uuid'];
@@ -2950,13 +2876,7 @@ export type CreateColumnMutationVariables = Exact<{
 }>;
 
 
-export type CreateColumnMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_columns_one?: Maybe<(
-    { __typename?: 'columns' }
-    & Pick<Columns, 'id'>
-  )> }
-);
+export type CreateColumnMutation = { insert_columns_one?: Maybe<Pick<Columns, 'id'>> };
 
 export type CreateIssueMutationVariables = Exact<{
   projectId: Scalars['uuid'];
@@ -2967,13 +2887,7 @@ export type CreateIssueMutationVariables = Exact<{
 }>;
 
 
-export type CreateIssueMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_issues_one?: Maybe<(
-    { __typename?: 'issues' }
-    & Pick<Issues, 'id'>
-  )> }
-);
+export type CreateIssueMutation = { insert_issues_one?: Maybe<Pick<Issues, 'id'>> };
 
 export type CreateIssueWithTitleMutationVariables = Exact<{
   projectId: Scalars['uuid'];
@@ -2983,13 +2897,7 @@ export type CreateIssueWithTitleMutationVariables = Exact<{
 }>;
 
 
-export type CreateIssueWithTitleMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_issues_one?: Maybe<(
-    { __typename?: 'issues' }
-    & Pick<Issues, 'id'>
-  )> }
-);
+export type CreateIssueWithTitleMutation = { insert_issues_one?: Maybe<Pick<Issues, 'column_id' | 'description' | 'id' | 'index' | 'priority' | 'project_id' | 'title' | 'type' | 'owner_id'>> };
 
 export type CreateProjectMutationVariables = Exact<{
   title: Scalars['String'];
@@ -2997,55 +2905,28 @@ export type CreateProjectMutationVariables = Exact<{
 }>;
 
 
-export type CreateProjectMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_projects_one?: Maybe<(
-    { __typename?: 'projects' }
-    & Pick<Projects, 'id' | 'title' | 'description'>
-  )> }
-);
+export type CreateProjectMutation = { insert_projects_one?: Maybe<Pick<Projects, 'id' | 'title' | 'description'>> };
 
 export type DeleteColumnMutationVariables = Exact<{
   id: Scalars['uuid'];
 }>;
 
 
-export type DeleteColumnMutation = (
-  { __typename?: 'mutation_root' }
-  & { delete_columns_by_pk?: Maybe<(
-    { __typename?: 'columns' }
-    & Pick<Columns, 'id'>
-  )> }
-);
+export type DeleteColumnMutation = { delete_columns_by_pk?: Maybe<Pick<Columns, 'id'>> };
 
 export type DeleteProjectMutationVariables = Exact<{
   id: Scalars['uuid'];
 }>;
 
 
-export type DeleteProjectMutation = (
-  { __typename?: 'mutation_root' }
-  & { delete_projects_by_pk?: Maybe<(
-    { __typename?: 'projects' }
-    & Pick<Projects, 'id' | 'title'>
-  )> }
-);
+export type DeleteProjectMutation = { delete_projects_by_pk?: Maybe<Pick<Projects, 'id' | 'title'>> };
 
 export type RemoveUserFromProjectMutationVariables = Exact<{
   memberId: Scalars['uuid'];
 }>;
 
 
-export type RemoveUserFromProjectMutation = (
-  { __typename?: 'mutation_root' }
-  & { delete_project_members_by_pk?: Maybe<(
-    { __typename?: 'project_members' }
-    & { user?: Maybe<(
-      { __typename?: 'users' }
-      & Pick<Users, 'email'>
-    )> }
-  )> }
-);
+export type RemoveUserFromProjectMutation = { delete_project_members_by_pk?: Maybe<{ user?: Maybe<Pick<Users, 'email'>> }> };
 
 export type UpdateColumnMutationVariables = Exact<{
   id: Scalars['uuid'];
@@ -3054,13 +2935,7 @@ export type UpdateColumnMutationVariables = Exact<{
 }>;
 
 
-export type UpdateColumnMutation = (
-  { __typename?: 'mutation_root' }
-  & { update_columns_by_pk?: Maybe<(
-    { __typename?: 'columns' }
-    & Pick<Columns, 'id'>
-  )> }
-);
+export type UpdateColumnMutation = { update_columns_by_pk?: Maybe<Pick<Columns, 'id'>> };
 
 export type UpdateIssuesOrderMutationVariables = Exact<{
   issues: Array<Issues_Insert_Input> | Issues_Insert_Input;
@@ -3068,16 +2943,7 @@ export type UpdateIssuesOrderMutationVariables = Exact<{
 }>;
 
 
-export type UpdateIssuesOrderMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_issues?: Maybe<(
-    { __typename?: 'issues_mutation_response' }
-    & { returning: Array<(
-      { __typename?: 'issues' }
-      & Pick<Issues, 'column_id' | 'created_at' | 'description' | 'id' | 'index' | 'owner_id' | 'priority' | 'project_id' | 'title' | 'type' | 'updated_at'>
-    )> }
-  )> }
-);
+export type UpdateIssuesOrderMutation = { insert_issues?: Maybe<{ returning: Array<Pick<Issues, 'column_id' | 'description' | 'id' | 'index' | 'priority' | 'project_id' | 'title' | 'type' | 'owner_id'>> }> };
 
 export type UpdateProjectMutationVariables = Exact<{
   id: Scalars['uuid'];
@@ -3086,62 +2952,35 @@ export type UpdateProjectMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProjectMutation = (
-  { __typename?: 'mutation_root' }
-  & { update_projects_by_pk?: Maybe<(
-    { __typename?: 'projects' }
-    & Pick<Projects, 'id' | 'description' | 'title'>
-  )> }
-);
+export type UpdateProjectMutation = { update_projects_by_pk?: Maybe<Pick<Projects, 'id' | 'description' | 'title'>> };
 
 export type GetProjectByIdQueryVariables = Exact<{
   id: Scalars['uuid'];
 }>;
 
 
-export type GetProjectByIdQuery = (
-  { __typename?: 'query_root' }
-  & { projects_by_pk?: Maybe<(
-    { __typename?: 'projects' }
-    & Pick<Projects, 'id' | 'title' | 'description' | 'owner_id'>
+export type GetProjectByIdQuery = { projects_by_pk?: Maybe<(
+    Pick<Projects, 'id' | 'title' | 'description' | 'owner_id'>
     & { project_members: Array<(
-      { __typename?: 'project_members' }
-      & Pick<Project_Members, 'id' | 'user_id' | 'type_id'>
-      & { user?: Maybe<(
-        { __typename?: 'users' }
-        & Pick<Users, 'email'>
-      )> }
-    )>, columns: Array<(
-      { __typename?: 'columns' }
-      & Pick<Columns, 'id' | 'name' | 'index'>
-      & { issues: Array<(
-        { __typename?: 'issues' }
-        & Pick<Issues, 'id' | 'index' | 'title' | 'description' | 'type' | 'project_id' | 'priority' | 'column_id'>
-      )> }
-    )>, columns_aggregate: (
-      { __typename?: 'columns_aggregate' }
-      & { aggregate?: Maybe<(
-        { __typename?: 'columns_aggregate_fields' }
-        & Pick<Columns_Aggregate_Fields, 'count'>
-      )> }
-    ) }
-  )> }
-);
+      Pick<Project_Members, 'id' | 'user_id' | 'type_id'>
+      & { user?: Maybe<Pick<Users, 'email'>> }
+    )>, columns: Array<Pick<Columns, 'id' | 'name' | 'index'>>, columns_aggregate: { aggregate?: Maybe<Pick<Columns_Aggregate_Fields, 'count'>> }, issues: Array<Pick<Issues, 'column_id' | 'description' | 'id' | 'index' | 'priority' | 'project_id' | 'title' | 'type' | 'owner_id'>> }
+  )> };
+
+export type GetProjectIssuesByProjectIdQueryVariables = Exact<{
+  projectId: Scalars['uuid'];
+}>;
+
+
+export type GetProjectIssuesByProjectIdQuery = { projects_by_pk?: Maybe<{ issues: Array<Pick<Issues, 'column_id' | 'description' | 'id' | 'index' | 'priority' | 'project_id' | 'title' | 'type' | 'owner_id'>> }> };
 
 export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProjectsQuery = (
-  { __typename?: 'query_root' }
-  & { projects: Array<(
-    { __typename?: 'projects' }
-    & Pick<Projects, 'id' | 'title' | 'description'>
-    & { project_owner: (
-      { __typename?: 'users' }
-      & Pick<Users, 'email' | 'id'>
-    ) }
-  )> }
-);
+export type GetProjectsQuery = { projects: Array<(
+    Pick<Projects, 'id' | 'title' | 'description'>
+    & { project_owner: Pick<Users, 'email' | 'id'> }
+  )> };
 
 export type UpdateProjectUserRoleMutationVariables = Exact<{
   projectMemberId: Scalars['uuid'];
@@ -3149,58 +2988,32 @@ export type UpdateProjectUserRoleMutationVariables = Exact<{
 }>;
 
 
-export type UpdateProjectUserRoleMutation = (
-  { __typename?: 'mutation_root' }
-  & { update_project_members_by_pk?: Maybe<(
-    { __typename?: 'project_members' }
-    & Pick<Project_Members, 'id' | 'type_id'>
-    & { user?: Maybe<(
-      { __typename?: 'users' }
-      & Pick<Users, 'email'>
-    )> }
-  )> }
-);
+export type UpdateProjectUserRoleMutation = { update_project_members_by_pk?: Maybe<(
+    Pick<Project_Members, 'id' | 'type_id'>
+    & { user?: Maybe<Pick<Users, 'email'>> }
+  )> };
 
 export type GetAllProjectUsersQueryVariables = Exact<{
   projectId: Scalars['uuid'];
 }>;
 
 
-export type GetAllProjectUsersQuery = (
-  { __typename?: 'query_root' }
-  & { project_members: Array<(
-    { __typename?: 'project_members' }
-    & Pick<Project_Members, 'id' | 'type_id'>
-    & { user?: Maybe<(
-      { __typename?: 'users' }
-      & Pick<Users, 'id' | 'email'>
-    )> }
-  )> }
-);
+export type GetAllProjectUsersQuery = { project_members: Array<(
+    Pick<Project_Members, 'id' | 'type_id'>
+    & { user?: Maybe<Pick<Users, 'id' | 'email'>> }
+  )> };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUsersQuery = (
-  { __typename?: 'query_root' }
-  & { users: Array<(
-    { __typename?: 'users' }
-    & Pick<Users, 'email' | 'id'>
-  )> }
-);
+export type GetUsersQuery = { users: Array<Pick<Users, 'email' | 'id'>> };
 
 export type SearchUsersByEmailQueryVariables = Exact<{
   email: Scalars['String'];
 }>;
 
 
-export type SearchUsersByEmailQuery = (
-  { __typename?: 'query_root' }
-  & { search_users: Array<(
-    { __typename?: 'users' }
-    & Pick<Users, 'email' | 'id'>
-  )> }
-);
+export type SearchUsersByEmailQuery = { search_users: Array<Pick<Users, 'email' | 'id'>> };
 
 
 export const AddUserToProjectDocument = gql`
@@ -3322,7 +3135,15 @@ export const CreateIssueWithTitleDocument = gql`
   insert_issues_one(
     object: {project_id: $projectId, column_id: $columnId, title: $title, index: $index}
   ) {
+    column_id
+    description
     id
+    index
+    priority
+    project_id
+    title
+    type
+    owner_id
   }
 }
     `;
@@ -3536,16 +3357,14 @@ export const UpdateIssuesOrderDocument = gql`
   ) {
     returning {
       column_id
-      created_at
       description
       id
       index
-      owner_id
       priority
       project_id
       title
       type
-      updated_at
+      owner_id
     }
   }
 }
@@ -3636,21 +3455,22 @@ export const GetProjectByIdDocument = gql`
       id
       name
       index
-      issues(order_by: {index: asc}) {
-        id
-        index
-        title
-        description
-        type
-        project_id
-        priority
-        column_id
-      }
     }
     columns_aggregate {
       aggregate {
         count
       }
+    }
+    issues {
+      column_id
+      description
+      id
+      index
+      priority
+      project_id
+      title
+      type
+      owner_id
     }
   }
 }
@@ -3683,6 +3503,51 @@ export function useGetProjectByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetProjectByIdQueryHookResult = ReturnType<typeof useGetProjectByIdQuery>;
 export type GetProjectByIdLazyQueryHookResult = ReturnType<typeof useGetProjectByIdLazyQuery>;
 export type GetProjectByIdQueryResult = Apollo.QueryResult<GetProjectByIdQuery, GetProjectByIdQueryVariables>;
+export const GetProjectIssuesByProjectIdDocument = gql`
+    query GetProjectIssuesByProjectId($projectId: uuid!) {
+  projects_by_pk(id: $projectId) {
+    issues {
+      column_id
+      description
+      id
+      index
+      priority
+      project_id
+      title
+      type
+      owner_id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectIssuesByProjectIdQuery__
+ *
+ * To run a query within a React component, call `useGetProjectIssuesByProjectIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectIssuesByProjectIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProjectIssuesByProjectIdQuery({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useGetProjectIssuesByProjectIdQuery(baseOptions: Apollo.QueryHookOptions<GetProjectIssuesByProjectIdQuery, GetProjectIssuesByProjectIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProjectIssuesByProjectIdQuery, GetProjectIssuesByProjectIdQueryVariables>(GetProjectIssuesByProjectIdDocument, options);
+      }
+export function useGetProjectIssuesByProjectIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProjectIssuesByProjectIdQuery, GetProjectIssuesByProjectIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProjectIssuesByProjectIdQuery, GetProjectIssuesByProjectIdQueryVariables>(GetProjectIssuesByProjectIdDocument, options);
+        }
+export type GetProjectIssuesByProjectIdQueryHookResult = ReturnType<typeof useGetProjectIssuesByProjectIdQuery>;
+export type GetProjectIssuesByProjectIdLazyQueryHookResult = ReturnType<typeof useGetProjectIssuesByProjectIdLazyQuery>;
+export type GetProjectIssuesByProjectIdQueryResult = Apollo.QueryResult<GetProjectIssuesByProjectIdQuery, GetProjectIssuesByProjectIdQueryVariables>;
 export const GetProjectsDocument = gql`
     query GetProjects {
   projects {

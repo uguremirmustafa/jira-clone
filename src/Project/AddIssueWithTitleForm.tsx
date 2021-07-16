@@ -6,6 +6,7 @@ import React, { FC, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import {
   CreateIssueWithTitleMutationVariables,
+  GetProjectByIdQuery,
   useCreateIssueWithTitleMutation,
 } from '../lib/generated/apolloComponents';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
@@ -34,26 +35,66 @@ const AddIssueWithTitleForm: FC<IProps> = ({ projectId, columnId, indexOfLastIss
   const c = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [variables, setVariables] = useState<CreateIssueWithTitleMutationVariables>();
-  const [createIssueWithTitleMutation, { data, loading, error }] = useCreateIssueWithTitleMutation({
-    variables,
-    refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
-  });
+  const [createIssueWithTitleMutation] = useCreateIssueWithTitleMutation();
 
   const { handleSubmit, control } = useForm<CreateIssueWithTitleMutationVariables>({
     defaultValues: {
       title: '',
-      projectId,
-      columnId,
     },
   });
 
   const onSubmit = async (formData: CreateIssueWithTitleMutationVariables) => {
-    setVariables({ ...formData, index: indexOfLastIssue });
+    // setVariables({ ...formData, index: indexOfLastIssue, projectId });
     try {
       enqueueSnackbar('Issue is submitting, wait...', {
         variant: 'info',
       });
-      const res = await createIssueWithTitleMutation();
+      const res = await createIssueWithTitleMutation({
+        variables: { ...formData, index: indexOfLastIssue, projectId, columnId },
+        // refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+        update: (cache, { data: response }) => {
+          const cachedProject = cache.readQuery<GetProjectByIdQuery>({
+            query: GetProjectById,
+            variables: { id: projectId },
+          });
+
+          if (cachedProject?.projects_by_pk) {
+            if (response?.insert_issues_one) {
+              cache.writeQuery<GetProjectByIdQuery>({
+                query: GetProjectById,
+                variables: { id: projectId },
+                data: {
+                  projects_by_pk: {
+                    ...cachedProject.projects_by_pk,
+                    issues: [...cachedProject.projects_by_pk.issues, response.insert_issues_one],
+                  },
+                },
+              });
+            } else {
+              enqueueSnackbar('yarraa', {
+                variant: 'success',
+              });
+            }
+          } else {
+            enqueueSnackbar('babaya', {
+              variant: 'success',
+            });
+          }
+        },
+        optimisticResponse: {
+          insert_issues_one: {
+            id: 'adsa',
+            index: indexOfLastIssue,
+            column_id: columnId,
+            priority: 3,
+            type: null,
+            title: formData.title,
+            description: null,
+            owner_id: null,
+            project_id: projectId,
+          },
+        },
+      });
       if (res.data?.insert_issues_one?.id !== null) {
         enqueueSnackbar('Issue created successfully', {
           variant: 'success',

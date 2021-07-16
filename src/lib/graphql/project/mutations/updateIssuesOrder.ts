@@ -12,16 +12,14 @@ export const UpdateIssuesOrder = gql`
     ) {
       returning {
         column_id
-        created_at
         description
         id
         index
-        owner_id
         priority
         project_id
         title
         type
-        updated_at
+        owner_id
       }
     }
   }

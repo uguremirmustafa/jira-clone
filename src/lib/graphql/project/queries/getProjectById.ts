@@ -19,21 +19,22 @@ export const GetProjectById = gql`
         id
         name
         index
-        issues(order_by: { index: asc }) {
-          id
-          index
-          title
-          description
-          type
-          project_id
-          priority
-          column_id
-        }
       }
       columns_aggregate {
         aggregate {
           count
         }
+      }
+      issues {
+        column_id
+        description
+        id
+        index
+        priority
+        project_id
+        title
+        type
+        owner_id
       }
     }
   }
