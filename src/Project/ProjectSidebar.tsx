@@ -14,6 +14,7 @@ import ReportProblemRoundedIcon from '@material-ui/icons/ReportProblemRounded';
 import { FC } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { appBarHeight, drawerWidth } from '../shared/Constants';
+import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -37,9 +38,10 @@ interface Props {
   id: string;
   projectTitle: string | undefined;
   isOwner: boolean;
+  loading: Boolean;
 }
 
-export const ProjectSidebar: FC<Props> = ({ id, projectTitle, isOwner }) => {
+export const ProjectSidebar: FC<Props> = ({ id, projectTitle, isOwner, loading }) => {
   const { pathname } = useLocation();
 
   const c = useStyles();
@@ -51,7 +53,7 @@ export const ProjectSidebar: FC<Props> = ({ id, projectTitle, isOwner }) => {
       classes={{ paper: c.drawerPaper }}
     >
       <Typography variant="h6" color="textPrimary" component="h1" className={c.projectTitle}>
-        {projectTitle}
+        {loading ? <Skeleton /> : projectTitle}
       </Typography>
       <Divider />
 

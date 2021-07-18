@@ -13145,6 +13145,11 @@ ts-invariant@^0.7.0:
   dependencies:
     tslib "^2.1.0"
 
+ts-is-present@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/ts-is-present/-/ts-is-present-1.2.1.tgz#38faeef8c59a890c0f876c86a46397fab236e21c"
+  integrity sha512-EYHn58qVRd/VHGkHSNGQJAxPXhF9wRiphYXl04VznngqqKjcT2jfHvAMPuzh8sRKdvifXw+dq6/Q3hG+nr3DRA==
+
 ts-log@^2.2.3:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/ts-log/-/ts-log-2.2.3.tgz#4da5640fe25a9fb52642cd32391c886721318efb"

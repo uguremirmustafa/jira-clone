@@ -4,14 +4,16 @@ import { Avatar, makeStyles, Tooltip, Typography, Breadcrumbs } from '@material-
 import HomeIcon from '@material-ui/icons/Home';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import CategoryRounded from '@material-ui/icons/CategoryRounded';
-
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 // queries
-import { GetProjectByIdQuery } from '../lib/generated/apolloComponents';
+import { GetProjectByIdQuery, Issues } from '../lib/generated/apolloComponents';
 import AddUserDialog from './AddUserDialog';
 import AddIssueDialog from './AddIssueDialog';
 import KanbanBoard from './KanbanBoard';
+import { Skeleton } from '@material-ui/lab';
+import { BoardSkeleton } from './loadingSkeletons/BoardSkeleton';
+import { isPresent, isDefined, isFilled } from 'ts-is-present';
 
 // styling
 const useStyles = makeStyles((theme) => {
@@ -46,21 +48,24 @@ const useStyles = makeStyles((theme) => {
 
 // interface
 interface IProps {
-  id: string;
+  projectId: string;
   project: GetProjectByIdQuery | undefined;
   isOwner: boolean;
   isMember: boolean;
   isOwnerOrMember: boolean;
+  loading: boolean;
 }
 
 // component
-const Board: FC<IProps> = ({ project, id, isOwner, isMember, isOwnerOrMember }) => {
+const Board: FC<IProps> = ({ project, projectId, isOwner, isMember, isOwnerOrMember, loading }) => {
   const c = useStyles();
+
   const title = project?.projects_by_pk?.title;
   const users = project?.projects_by_pk?.project_members;
-  const columns = project?.projects_by_pk?.columns;
+
   const issues = project?.projects_by_pk?.issues;
-  const numOfColumns = project?.projects_by_pk?.columns_aggregate.aggregate?.count;
+
+  const columns = project?.projects_by_pk?.columns;
   return (
     <>
       {/* breadcrumbs section */}
@@ -73,10 +78,10 @@ const Board: FC<IProps> = ({ project, id, isOwner, isMember, isOwnerOrMember }) 
           color="inherit"
           className={c.link}
           component={Link}
-          to={`/project/${id}/settings`}
+          to={`/project/${projectId}/settings`}
         >
           <CategoryRounded className={c.icon} />
-          {title}
+          {loading ? <Skeleton width={150} height={30} /> : title}
         </Typography>
         <Typography color="textPrimary" className={c.link}>
           <DashboardIcon className={c.icon} />
@@ -88,7 +93,7 @@ const Board: FC<IProps> = ({ project, id, isOwner, isMember, isOwnerOrMember }) 
       {/* project title */}
       <div className={c.header}>
         <Typography variant="h4" component="h2">
-          {title}
+          {loading ? <Skeleton /> : title}
         </Typography>
       </div>
       {/* end of project title */}
@@ -102,26 +107,33 @@ const Board: FC<IProps> = ({ project, id, isOwner, isMember, isOwnerOrMember }) 
               title={`${item.user?.email} | ${isMember ? 'member' : 'viewer'}`}
               key={item.user_id}
             >
-              <Avatar>{item.user?.email.substring(0, 1).toUpperCase()}</Avatar>
+              {loading ? (
+                <Skeleton />
+              ) : (
+                <Avatar>{item.user?.email.substring(0, 1).toUpperCase()}</Avatar>
+              )}
             </Tooltip>
           );
         })}
-        {isOwner && <AddUserDialog projectId={id} />}
+        {isOwner && <AddUserDialog projectId={projectId} />}
       </div>
       {/* end of project users avatar list */}
 
       {/* create issue button */}
-      {isMember && <AddIssueDialog projectId={id} />}
+      {isMember && <AddIssueDialog projectId={projectId} />}
       {/* end of create issue button */}
 
       {/* kanban board */}
-      <KanbanBoard
-        columns={columns}
-        numOfColumns={numOfColumns}
-        projectId={id}
-        isOwnerOrMember={isOwnerOrMember}
-        issues={issues}
-      />
+      {loading ? (
+        <BoardSkeleton loading={loading} />
+      ) : (
+        <KanbanBoard
+          columns={columns}
+          projectId={projectId}
+          isOwnerOrMember={isOwnerOrMember}
+          issues={issues}
+        />
+      )}
       {/* end of kanban board */}
     </>
   );

@@ -37,7 +37,8 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
   const [variables, setVariables] = useState<UpdateColumnMutationVariables>();
   const [updateColumnMutation] = useUpdateColumnMutation({
     variables,
-    refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+    // refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+    // update:(cache,{data:{}})
   });
 
   const { handleSubmit, control } = useForm<UpdateColumnMutationVariables>({

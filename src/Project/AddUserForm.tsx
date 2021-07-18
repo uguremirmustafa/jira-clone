@@ -61,7 +61,7 @@ const AddUserForm: FC<IProps> = ({ projectId, handleClose }) => {
     { data: mutationData, loading: mutationLoading, error: mutationError },
   ] = useAddUserToProjectMutation({
     variables: addUserVariables,
-    refetchQueries: [{ query: GetProjectById, variables: { id: projectId } }],
+    refetchQueries: [{ query: GetProjectById, variables: { projectId } }],
   });
 
   const { handleSubmit, control } = useForm<FormInput>({

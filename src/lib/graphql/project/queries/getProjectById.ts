@@ -1,8 +1,10 @@
 import { gql } from '@apollo/client';
+import { IssueFragment } from '../fragments/issue';
 
+// ${IssueFragment}
 export const GetProjectById = gql`
-  query GetProjectById($id: uuid!) {
-    projects_by_pk(id: $id) {
+  query GetProjectById($projectId: uuid!) {
+    projects_by_pk(id: $projectId) {
       id
       title
       description
@@ -17,15 +19,10 @@ export const GetProjectById = gql`
       }
       columns(order_by: { index: asc }) {
         id
-        name
         index
+        name
       }
-      columns_aggregate {
-        aggregate {
-          count
-        }
-      }
-      issues {
+      issues(order_by: { index: asc }) {
         column_id
         description
         id

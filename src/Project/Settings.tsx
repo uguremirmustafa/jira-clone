@@ -1,5 +1,6 @@
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import {
+  GetProjectByIdQuery,
   useGetProjectByIdQuery,
   useUpdateProjectMutation,
 } from '../lib/generated/apolloComponents';
@@ -38,17 +39,15 @@ interface IFormInput {
 }
 
 interface IProps {
-  id: string;
+  project: GetProjectByIdQuery | undefined;
+  projectId: string;
   isOwner: boolean;
+  loading: boolean;
 }
 
-const Settings: FC<IProps> = ({ id, isOwner }) => {
+const Settings: FC<IProps> = ({ projectId, isOwner, loading, project }) => {
   const { enqueueSnackbar } = useSnackbar();
   const c = useStyles();
-
-  const { data, loading, error } = useGetProjectByIdQuery({
-    variables: { id },
-  });
 
   let defaultValues = {
     title: 'title',
@@ -56,7 +55,7 @@ const Settings: FC<IProps> = ({ id, isOwner }) => {
   };
 
   const [variables, setVariables] = useState({
-    id,
+    projectId,
     title: '',
     description: '',
   });
@@ -71,7 +70,7 @@ const Settings: FC<IProps> = ({ id, isOwner }) => {
   const [updateProjectMutation] = useUpdateProjectMutation({ variables });
 
   const onSubmit: SubmitHandler<IFormInput> = async (formData) => {
-    setVariables({ ...formData, id });
+    setVariables({ ...formData, projectId });
     const res = await updateProjectMutation();
 
     if (res.data?.update_projects_by_pk !== null) {
@@ -85,26 +84,10 @@ const Settings: FC<IProps> = ({ id, isOwner }) => {
 
   useEffect(() => {
     reset({
-      description: data?.projects_by_pk?.description || '',
-      title: data?.projects_by_pk?.title || '',
+      description: project?.projects_by_pk?.description || '',
+      title: project?.projects_by_pk?.title || '',
     });
-  }, [data, reset]);
-
-  if (loading) {
-    return (
-      <Box className={c.root}>
-        <Skeleton animation="wave" width={180} height={80} />
-        <Skeleton animation="wave" height={70} />
-        <Skeleton animation="wave" height={70} />
-        <Skeleton animation="wave" width={140} height={50} />
-        <Skeleton animation="wave" width={180} height={80} />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return <div>{error.message}</div>;
-  }
+  }, [project, reset]);
 
   return (
     <Box className={c.root}>
@@ -155,23 +138,28 @@ const Settings: FC<IProps> = ({ id, isOwner }) => {
           <Typography variant="subtitle1" color="textSecondary">
             Title:
           </Typography>
-          <Typography variant="h5" color="secondary">
-            {data?.projects_by_pk?.title}
+          <Typography variant="subtitle1" color="secondary">
+            {loading ? <Skeleton /> : project?.projects_by_pk?.title}
           </Typography>
           <Typography variant="subtitle1" color="textSecondary">
             Description:
           </Typography>
-          <Typography>{data?.projects_by_pk?.description}</Typography>
+          <Typography>{loading ? <Skeleton /> : project?.projects_by_pk?.description}</Typography>
         </Box>
       )}
       <Box>
         <Typography variant="h4" component="h3" style={{ margin: '2rem 0' }} color="textSecondary">
-          {data?.projects_by_pk?.project_members[0] !== undefined
+          {project?.projects_by_pk?.project_members[0] !== undefined
             ? 'Project Members'
             : 'Currently there is nobody in the project'}
         </Typography>
-        {data?.projects_by_pk?.project_members.map((i) => (
-          <MemberCard member={i} id={id} key={i.id} ownerId={data?.projects_by_pk?.owner_id} />
+        {project?.projects_by_pk?.project_members.map((i) => (
+          <MemberCard
+            member={i}
+            id={projectId}
+            key={i.id}
+            ownerId={project?.projects_by_pk?.owner_id}
+          />
         ))}
       </Box>
     </Box>
