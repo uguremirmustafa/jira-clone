@@ -80,7 +80,6 @@ interface IProps {
         | 'type'
       >[]
     | undefined;
-  // loading: boolean;
 }
 
 const KanbanBoard: FC<IProps> = ({ columns, projectId, issues }) => {
@@ -149,7 +148,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues }) => {
   };
 
   const deleteColumn = useDeleteColumnAndNotify();
-
+  // subs();
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Grid container className={c.root}>

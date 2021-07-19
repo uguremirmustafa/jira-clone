@@ -5,9 +5,13 @@ import { Route } from 'react-router-dom';
 import Settings from './Settings';
 import DangerZone from './DangerZone';
 import Board from './Board';
-import { useGetProjectByIdQuery } from '../lib/generated/apolloComponents';
+import {
+  SubscribeToProjectByProjectIdDocument,
+  useGetProjectByIdQuery,
+} from '../lib/generated/apolloComponents';
 
 import { useAuth0 } from '@auth0/auth0-react';
+import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
 
 // interface
 interface IProps extends RouteComponentProps<{ id: string }> {}
@@ -19,11 +23,30 @@ export const Project: FC<IProps> = ({ match }) => {
     data: project,
     loading: projectLoading,
     error: projectError,
+    subscribeToMore,
   } = useGetProjectByIdQuery({
     variables: {
       projectId,
     },
   });
+  subscribeToMore({
+    document: SubscribeToProjectByProjectIdDocument,
+    variables: { projectId },
+    updateQuery: (prev, { subscriptionData }) => {
+      if (!subscriptionData.data) return prev;
+      const newIssuesData = subscriptionData.data.projects_by_pk?.issues;
+      const newColumnsData = subscriptionData.data.projects_by_pk?.columns;
+      return Object.assign({}, prev, {
+        ...prev,
+        projects_by_pk: {
+          ...prev.projects_by_pk,
+          issues: newIssuesData,
+          columns: newColumnsData,
+        },
+      });
+    },
+  });
+
   let loading = userLoading || projectLoading;
 
   if (projectError) {
@@ -59,6 +82,7 @@ export const Project: FC<IProps> = ({ match }) => {
             isMember={isMember}
             isOwnerOrMember={isOwnerOrMember}
             loading={loading}
+            // subs={SubscribeToIssueUpdates}
           />
         )}
         path={`/project/${projectId}/board`}

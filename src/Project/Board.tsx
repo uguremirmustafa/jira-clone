@@ -7,17 +7,12 @@ import CategoryRounded from '@material-ui/icons/CategoryRounded';
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 // queries
-import {
-  GetProjectByIdQuery,
-  Issues,
-  SubscribeProjectByIdSubscription,
-} from '../lib/generated/apolloComponents';
+import { GetProjectByIdQuery, Issues } from '../lib/generated/apolloComponents';
 import AddUserDialog from './AddUserDialog';
 import AddIssueDialog from './AddIssueDialog';
 import KanbanBoard from './KanbanBoard';
 import { Skeleton } from '@material-ui/lab';
 import { BoardSkeleton } from './loadingSkeletons/BoardSkeleton';
-import { isPresent, isDefined, isFilled } from 'ts-is-present';
 
 // styling
 const useStyles = makeStyles((theme) => {
@@ -54,15 +49,23 @@ const useStyles = makeStyles((theme) => {
 interface IProps {
   projectId: string;
   project: GetProjectByIdQuery | undefined;
-  // project: SubscribeProjectByIdSubscription | undefined;
   isOwner: boolean;
   isMember: boolean;
   isOwnerOrMember: boolean;
   loading: boolean;
+  // subs: () => void;
 }
 
 // component
-const Board: FC<IProps> = ({ project, projectId, isOwner, isMember, isOwnerOrMember, loading }) => {
+const Board: FC<IProps> = ({
+  project,
+  projectId,
+  isOwner,
+  isMember,
+  isOwnerOrMember,
+  loading,
+  // subs,
+}) => {
   const c = useStyles();
 
   const title = project?.projects_by_pk?.title;
@@ -137,6 +140,7 @@ const Board: FC<IProps> = ({ project, projectId, isOwner, isMember, isOwnerOrMem
           projectId={projectId}
           isOwnerOrMember={isOwnerOrMember}
           issues={issues}
+          // subs={subs}
         />
       )}
       {/* end of kanban board */}
