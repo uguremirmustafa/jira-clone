@@ -1,10 +1,22 @@
 // material ui
-import { Divider, Grid, IconButton, makeStyles, Paper, Typography } from '@material-ui/core';
+import {
+  Button,
+  Divider,
+  Grid,
+  IconButton,
+  makeStyles,
+  Paper,
+  Typography,
+  Card,
+  CardContent,
+  CardActionArea,
+  CardActions,
+} from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import clsx from 'clsx';
 // other stuff
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Issues, Columns } from '../lib/generated/apolloComponents';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import AddColumnForm from './AddColumnForm';
@@ -15,6 +27,7 @@ import AddIssueWithTitleForm from './AddIssueWithTitleForm';
 import { useReorderIssuesAndNotify } from '../hooks/useReorderIssuesAndNotify';
 import { IndexOfLatestColumn } from '../functions/indexOfLastColumn';
 import { useDeleteColumnAndNotify } from '../hooks/useDeleteColumnAndNotify';
+import IssueDialog from './IssueDialog';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -46,7 +59,7 @@ const useStyles = makeStyles((theme) => {
     },
     paper: {
       backgroundColor: '#fff',
-      padding: theme.spacing(1, 1, 1, 2),
+      // padding: theme.spacing(1, 1, 1, 2),
       marginBottom: theme.spacing(1),
     },
     dragging: {
@@ -148,6 +161,21 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
   };
 
   const deleteColumn = useDeleteColumnAndNotify();
+
+  // handle modal state
+
+  const [open, setOpen] = useState(false);
+  const [openIssue, setOpenIssue] = useState('');
+  const handleClickOpen = (issueId: string) => {
+    setOpenIssue(issueId);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  if (!issues)
+    return <Typography>There is no issue here, I guess due date is not this week!</Typography>;
   if (!columns) {
     return <Typography>There is no issue here, I guess due date is not this week!</Typography>;
   }
@@ -156,34 +184,41 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
       <Grid container className={c.root}>
         {columns.length > 0 ? (
           columns?.map((col) => (
-            <Grid item xs className={c.column} key={col.id}>
-              <Typography variant="subtitle1">{col.name}</Typography>
-              <Divider />
-              <div className={c.dots}>
-                <MenuButton
-                  icon={<MoreVertIcon />}
-                  items={[
-                    {
-                      text: `Details of column ${col.name}`,
-                      func: () => {
-                        alert('heyy');
+            <>
+              <Grid item xs className={c.column} key={col.id}>
+                <Typography variant="subtitle1">{col.name}</Typography>
+                <Divider />
+                <div className={c.dots}>
+                  <MenuButton
+                    icon={<MoreVertIcon />}
+                    items={[
+                      {
+                        text: `Details of column ${col.name}`,
+                        func: () => {
+                          alert('heyy');
+                        },
                       },
-                    },
-                  ]}
-                />
-              </div>
-              <div key={col.id}>
-                {issues
-                  ?.filter((issue) => issue.column_id === col.id)
-                  ?.map((issue) => (
-                    <Paper className={clsx(c.paper)}>
-                      <div className={c.flex}>
-                        <Typography>{issue.title}</Typography>
-                      </div>
-                    </Paper>
-                  ))}
-              </div>
-            </Grid>
+                    ]}
+                  />
+                </div>
+                <div key={col.id}>
+                  {issues
+                    ?.filter((issue) => issue.column_id === col.id)
+                    ?.map((issue) => (
+                      <>
+                        <Card className={clsx(c.paper)} onClick={() => handleClickOpen(issue.id)}>
+                          <CardActionArea>
+                            <CardContent>
+                              <Typography>{issue.title}</Typography>
+                            </CardContent>
+                          </CardActionArea>
+                        </Card>
+                      </>
+                    ))}
+                </div>
+              </Grid>
+              <IssueDialog open={open} onClose={handleClose} issue={openIssue} />
+            </>
           ))
         ) : (
           <Typography>There is no issue here, I guess due date is not this week!</Typography>
@@ -193,81 +228,93 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
   }
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Grid container className={c.root}>
-        {columns?.map((col) => (
-          <Grid item xs className={c.column} key={col.id}>
-            <UpdateColumnForm
-              projectId={projectId}
-              name={col?.name}
-              id={col?.id}
-              index={col?.index}
-            />
-            <div className={c.dots}>
-              <MenuButton
-                icon={<MoreVertIcon />}
-                items={[
-                  {
-                    text: `Delete Column`,
-                    func: () => {
-                      confirmDialog('Are you sure?', () =>
-                        deleteColumn(col.id, columns, projectId)
-                      );
-                    },
-                  },
-                  {
-                    text: `Details of column ${col.name}`,
-                    func: () => {
-                      alert('heyy');
-                    },
-                  },
-                ]}
+    <>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Grid container className={c.root}>
+          {columns?.map((col) => (
+            <Grid item xs className={c.column} key={col.id}>
+              <UpdateColumnForm
+                projectId={projectId}
+                name={col?.name}
+                id={col?.id}
+                index={col?.index}
               />
-            </div>
-            <Droppable droppableId={col.id} key={col.id}>
-              {(provided: any) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  {issues
-                    ?.filter((issue) => issue.column_id === col.id)
-                    ?.map((issue, index) => (
-                      <Draggable key={issue.id} draggableId={issue.id} index={index}>
-                        {(provided: any, snapshot: any) => (
-                          <Paper
-                            {...provided.draggableProps}
-                            ref={provided.innerRef}
-                            className={clsx(c.paper, snapshot.isDragging ? c.dragging : null)}
-                          >
-                            <div className={c.flex}>
-                              <Typography>{issue.title}</Typography>
-                              <IconButton
-                                {...provided.dragHandleProps}
-                                className={c.dragButton}
-                                size="small"
-                              >
-                                <DragIndicatorIcon fontSize="small" />
-                              </IconButton>
-                            </div>
-                          </Paper>
-                        )}
-                      </Draggable>
-                    ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
+              <div className={c.dots}>
+                <MenuButton
+                  icon={<MoreVertIcon />}
+                  items={[
+                    {
+                      text: `Delete Column`,
+                      func: () => {
+                        confirmDialog('Are you sure?', () =>
+                          deleteColumn(col.id, columns, projectId)
+                        );
+                      },
+                    },
+                    {
+                      text: `Details of column ${col.name}`,
+                      func: () => {
+                        alert('heyy');
+                      },
+                    },
+                  ]}
+                />
+              </div>
+              <Droppable droppableId={col.id} key={col.id}>
+                {(provided: any) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {issues
+                      ?.filter((issue) => issue.column_id === col.id)
+                      ?.map((issue, index) => (
+                        <Draggable key={issue.id} draggableId={issue.id} index={index}>
+                          {(provided: any, snapshot: any) => (
+                            <Card
+                              {...provided.draggableProps}
+                              ref={provided.innerRef}
+                              className={clsx(
+                                c.paper,
+                                c.flex,
+                                snapshot.isDragging ? c.dragging : null
+                              )}
+                            >
+                              <CardActionArea>
+                                <CardContent onClick={() => handleClickOpen(issue.id)}>
+                                  <Typography>{issue.title}</Typography>
+                                </CardContent>
+                              </CardActionArea>
+                              <CardActions>
+                                <IconButton
+                                  {...provided.dragHandleProps}
+                                  className={c.dragButton}
+                                  size="small"
+                                >
+                                  <DragIndicatorIcon fontSize="small" />
+                                </IconButton>
+                              </CardActions>
+                            </Card>
+                          )}
+                        </Draggable>
+                      ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
 
-            <AddIssueWithTitleForm
-              columnId={col.id}
-              projectId={projectId}
-              indexOfLastIssue={issues?.filter((issue) => issue.column_id === col.id).length || 0}
-            />
+              <AddIssueWithTitleForm
+                columnId={col.id}
+                projectId={projectId}
+                indexOfLastIssue={issues?.filter((issue) => issue.column_id === col.id).length || 0}
+              />
+            </Grid>
+          ))}
+          <Grid item className={c.column}>
+            <AddColumnForm projectId={projectId} indexOfLastColumn={indexOfLastColumn} />
           </Grid>
-        ))}
-        <Grid item className={c.column}>
-          <AddColumnForm projectId={projectId} indexOfLastColumn={indexOfLastColumn} />
         </Grid>
-      </Grid>
-    </DragDropContext>
+      </DragDropContext>
+
+      <IssueDialog open={open} onClose={handleClose} issue={openIssue} />
+    </>
   );
 };
 
