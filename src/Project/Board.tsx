@@ -140,7 +140,6 @@ const Board: FC<IProps> = ({
           projectId={projectId}
           isOwnerOrMember={isOwnerOrMember}
           issues={issues}
-          // subs={subs}
         />
       )}
       {/* end of kanban board */}

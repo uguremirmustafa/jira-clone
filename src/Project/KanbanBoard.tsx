@@ -1,5 +1,5 @@
 // material ui
-import { Grid, IconButton, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Divider, Grid, IconButton, makeStyles, Paper, Typography } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
 import clsx from 'clsx';
@@ -82,7 +82,7 @@ interface IProps {
     | undefined;
 }
 
-const KanbanBoard: FC<IProps> = ({ columns, projectId, issues }) => {
+const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }) => {
   const c = useStyles();
   // get the index of latest column
   const indexOfLastColumn = IndexOfLatestColumn(columns);
@@ -148,7 +148,50 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues }) => {
   };
 
   const deleteColumn = useDeleteColumnAndNotify();
-  // subs();
+  if (!columns) {
+    return <Typography>There is no issue here, I guess due date is not this week!</Typography>;
+  }
+  if (!isOwnerOrMember) {
+    return (
+      <Grid container className={c.root}>
+        {columns.length > 0 ? (
+          columns?.map((col) => (
+            <Grid item xs className={c.column} key={col.id}>
+              <Typography variant="subtitle1">{col.name}</Typography>
+              <Divider />
+              <div className={c.dots}>
+                <MenuButton
+                  icon={<MoreVertIcon />}
+                  items={[
+                    {
+                      text: `Details of column ${col.name}`,
+                      func: () => {
+                        alert('heyy');
+                      },
+                    },
+                  ]}
+                />
+              </div>
+              <div key={col.id}>
+                {issues
+                  ?.filter((issue) => issue.column_id === col.id)
+                  ?.map((issue) => (
+                    <Paper className={clsx(c.paper)}>
+                      <div className={c.flex}>
+                        <Typography>{issue.title}</Typography>
+                      </div>
+                    </Paper>
+                  ))}
+              </div>
+            </Grid>
+          ))
+        ) : (
+          <Typography>There is no issue here, I guess due date is not this week!</Typography>
+        )}
+      </Grid>
+    );
+  }
+
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Grid container className={c.root}>
