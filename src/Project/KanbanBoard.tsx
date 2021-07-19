@@ -230,3 +230,4 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues }) => {
 };
 
 export default KanbanBoard;
+// subscrib
