@@ -87,7 +87,7 @@ const MemberCard: FC<IProps> = ({ member, id, ownerId }) => {
     });
     removeUserFromProjectMutation({
       variables: { memberId },
-      refetchQueries: [{ query: GetProjectById, variables: { id } }],
+      refetchQueries: [{ query: GetProjectById, variables: { projectId: id } }],
     });
     if (removeUserError) {
       enqueueSnackbar(`${removeUserError.message}`, {
@@ -115,7 +115,7 @@ const MemberCard: FC<IProps> = ({ member, id, ownerId }) => {
         projectMemberId: memberId,
         typeId,
       },
-      refetchQueries: [{ query: GetProjectById, variables: { id } }],
+      refetchQueries: [{ query: GetProjectById, variables: { projectId: id } }],
     });
     console.log(updateUserData);
 

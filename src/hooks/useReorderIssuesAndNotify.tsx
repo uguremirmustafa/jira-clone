@@ -2,11 +2,9 @@ import { Maybe } from 'graphql/jsutils/Maybe';
 import { useSnackbar } from 'notistack';
 import {
   GetProjectByIdQuery,
-  GetProjectIssuesByProjectIdQuery,
   useUpdateIssuesOrderMutation,
 } from '../lib/generated/apolloComponents';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
-import { GetProjectIssuesByProjectId } from '../lib/graphql/project/queries/getProjectIssuesByProjectId';
 
 export const useReorderIssuesAndNotify = (): ((
   newestIssuesArray: {
@@ -47,16 +45,13 @@ export const useReorderIssuesAndNotify = (): ((
           issues: newestIssuesArray,
           projectId,
         },
-        // refetchQueries: [{ query: GetProjectById, variables: { projectId } }],
-        // awaitRefetchQueries: true,
+        refetchQueries: [{ query: GetProjectById, variables: { projectId } }],
+        awaitRefetchQueries: true,
         optimisticResponse: {
           __typename: 'mutation_root',
           insert_issues: {
             __typename: 'issues_mutation_response',
-            returning: newestIssuesArray
-              // .map((i) => ({ ...i, type: 'devugurwashere' }))
-              .slice()
-              .sort((a, b) => (a.index > b.index ? 1 : -1)),
+            returning: newestIssuesArray.slice().sort((a, b) => (a.index > b.index ? 1 : -1)),
           },
         },
         update: (cache, { data: response }) => {
