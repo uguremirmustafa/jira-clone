@@ -581,8 +581,8 @@ export enum Comments_Update_Column {
 export type Issues = {
   __typename?: 'issues';
   /** An object relationship */
-  column?: Maybe<Columns>;
-  column_id?: Maybe<Scalars['uuid']>;
+  column: Columns;
+  column_id: Scalars['uuid'];
   /** An array relationship */
   comments: Array<Comments>;
   /** An aggregate relationship */
@@ -3069,6 +3069,7 @@ export type UpdateColumnMutation = (
 
 export type UpdateIssuesOrderMutationVariables = Exact<{
   issues: Array<Issues_Insert_Input> | Issues_Insert_Input;
+  projectId: Scalars['uuid'];
 }>;
 
 
@@ -3180,6 +3181,33 @@ export type GetReorderedIssuesQuery = (
   & { issues: Array<(
     { __typename?: 'issues' }
     & Pick<Issues, 'column_id' | 'description' | 'id' | 'index' | 'priority' | 'project_id' | 'title' | 'type' | 'owner_id'>
+  )> }
+);
+
+export type SubscribeProjectByIdSubscriptionVariables = Exact<{
+  projectId: Scalars['uuid'];
+}>;
+
+
+export type SubscribeProjectByIdSubscription = (
+  { __typename?: 'subscription_root' }
+  & { projects_by_pk?: Maybe<(
+    { __typename?: 'projects' }
+    & Pick<Projects, 'id' | 'title' | 'description' | 'owner_id'>
+    & { project_members: Array<(
+      { __typename?: 'project_members' }
+      & Pick<Project_Members, 'id' | 'user_id' | 'type_id'>
+      & { user?: Maybe<(
+        { __typename?: 'users' }
+        & Pick<Users, 'email'>
+      )> }
+    )>, columns: Array<(
+      { __typename?: 'columns' }
+      & Pick<Columns, 'id' | 'index' | 'name'>
+    )>, issues: Array<(
+      { __typename?: 'issues' }
+      & Pick<Issues, 'column_id' | 'description' | 'id' | 'index' | 'priority' | 'project_id' | 'title' | 'type' | 'owner_id'>
+    )> }
   )> }
 );
 
@@ -3592,10 +3620,10 @@ export type UpdateColumnMutationHookResult = ReturnType<typeof useUpdateColumnMu
 export type UpdateColumnMutationResult = Apollo.MutationResult<UpdateColumnMutation>;
 export type UpdateColumnMutationOptions = Apollo.BaseMutationOptions<UpdateColumnMutation, UpdateColumnMutationVariables>;
 export const UpdateIssuesOrderDocument = gql`
-    mutation UpdateIssuesOrder($issues: [issues_insert_input!]!) {
+    mutation UpdateIssuesOrder($issues: [issues_insert_input!]!, $projectId: uuid!) {
   insert_issues(
     objects: $issues
-    on_conflict: {constraint: issues_pkey, update_columns: [index, column_id]}
+    on_conflict: {constraint: issues_pkey, update_columns: [index, column_id], where: {project_id: {_eq: $projectId}}}
   ) {
     returning {
       column_id
@@ -3627,6 +3655,7 @@ export type UpdateIssuesOrderMutationFn = Apollo.MutationFunction<UpdateIssuesOr
  * const [updateIssuesOrderMutation, { data, loading, error }] = useUpdateIssuesOrderMutation({
  *   variables: {
  *      issues: // value for 'issues'
+ *      projectId: // value for 'projectId'
  *   },
  * });
  */
@@ -3905,6 +3934,63 @@ export function useGetReorderedIssuesLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetReorderedIssuesQueryHookResult = ReturnType<typeof useGetReorderedIssuesQuery>;
 export type GetReorderedIssuesLazyQueryHookResult = ReturnType<typeof useGetReorderedIssuesLazyQuery>;
 export type GetReorderedIssuesQueryResult = Apollo.QueryResult<GetReorderedIssuesQuery, GetReorderedIssuesQueryVariables>;
+export const SubscribeProjectByIdDocument = gql`
+    subscription SubscribeProjectById($projectId: uuid!) {
+  projects_by_pk(id: $projectId) {
+    id
+    title
+    description
+    owner_id
+    project_members {
+      id
+      user_id
+      user {
+        email
+      }
+      type_id
+    }
+    columns(order_by: {index: asc}) {
+      id
+      index
+      name
+    }
+    issues(order_by: {index: asc}) {
+      column_id
+      description
+      id
+      index
+      priority
+      project_id
+      title
+      type
+      owner_id
+    }
+  }
+}
+    `;
+
+/**
+ * __useSubscribeProjectByIdSubscription__
+ *
+ * To run a query within a React component, call `useSubscribeProjectByIdSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useSubscribeProjectByIdSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubscribeProjectByIdSubscription({
+ *   variables: {
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useSubscribeProjectByIdSubscription(baseOptions: Apollo.SubscriptionHookOptions<SubscribeProjectByIdSubscription, SubscribeProjectByIdSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<SubscribeProjectByIdSubscription, SubscribeProjectByIdSubscriptionVariables>(SubscribeProjectByIdDocument, options);
+      }
+export type SubscribeProjectByIdSubscriptionHookResult = ReturnType<typeof useSubscribeProjectByIdSubscription>;
+export type SubscribeProjectByIdSubscriptionResult = Apollo.SubscriptionResult<SubscribeProjectByIdSubscription>;
 export const UpdateProjectUserRoleDocument = gql`
     mutation UpdateProjectUserRole($projectMemberId: uuid!, $typeId: uuid!) {
   update_project_members_by_pk(

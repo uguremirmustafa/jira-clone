@@ -7,7 +7,11 @@ import CategoryRounded from '@material-ui/icons/CategoryRounded';
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 // queries
-import { GetProjectByIdQuery, Issues } from '../lib/generated/apolloComponents';
+import {
+  GetProjectByIdQuery,
+  Issues,
+  SubscribeProjectByIdSubscription,
+} from '../lib/generated/apolloComponents';
 import AddUserDialog from './AddUserDialog';
 import AddIssueDialog from './AddIssueDialog';
 import KanbanBoard from './KanbanBoard';
@@ -50,6 +54,7 @@ const useStyles = makeStyles((theme) => {
 interface IProps {
   projectId: string;
   project: GetProjectByIdQuery | undefined;
+  // project: SubscribeProjectByIdSubscription | undefined;
   isOwner: boolean;
   isMember: boolean;
   isOwnerOrMember: boolean;

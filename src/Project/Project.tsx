@@ -8,7 +8,6 @@ import Board from './Board';
 import { useGetProjectByIdQuery } from '../lib/generated/apolloComponents';
 
 import { useAuth0 } from '@auth0/auth0-react';
-import { BoardSkeleton } from './loadingSkeletons/BoardSkeleton';
 
 // interface
 interface IProps extends RouteComponentProps<{ id: string }> {}

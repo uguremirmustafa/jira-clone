@@ -2,13 +2,14 @@
 import { makeStyles, TextField } from '@material-ui/core';
 // react hook form
 import { useForm, Controller } from 'react-hook-form';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import {
   CreateIssueWithTitleMutationVariables,
   useCreateIssueWithTitleMutation,
 } from '../lib/generated/apolloComponents';
 import { GetProjectIssuesByProjectId } from '../lib/graphql/project/queries/getProjectIssuesByProjectId';
+import { useAddIssueWithTitleAndNotify } from '../hooks/useAddIssueWithTitleAndNotify';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -32,39 +33,18 @@ export interface IProps {
 
 const AddIssueWithTitleForm: FC<IProps> = ({ projectId, columnId, indexOfLastIssue }) => {
   const c = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
-  const [createIssueWithTitleMutation] = useCreateIssueWithTitleMutation();
+
+  // const [variables, setVariables] = useState<CreateIssueWithTitleMutationVariables>();
+
   const { handleSubmit, control, reset } = useForm<CreateIssueWithTitleMutationVariables>({
     defaultValues: {
       title: '',
     },
   });
 
+  const addIssue = useAddIssueWithTitleAndNotify();
   const onSubmit = async (formData: CreateIssueWithTitleMutationVariables) => {
-    reset();
-    try {
-      enqueueSnackbar('Issue is submitting, wait...', {
-        variant: 'info',
-      });
-      const res = await createIssueWithTitleMutation({
-        variables: { ...formData, index: indexOfLastIssue, projectId, columnId },
-        refetchQueries: [{ query: GetProjectIssuesByProjectId, variables: { projectId } }],
-      });
-      if (res.data?.insert_issues_one?.id !== null) {
-        enqueueSnackbar('Issue created successfully', {
-          variant: 'success',
-        });
-      } else if (res.data.insert_issues_one === null) {
-        enqueueSnackbar('Something went wrong', { variant: 'error' });
-      } else if (res.errors) {
-        enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
-      }
-    } catch (error) {
-      enqueueSnackbar(`${error.message}`, {
-        variant: 'warning',
-      });
-      reset();
-    }
+    addIssue({ ...formData, index: indexOfLastIssue, projectId, columnId }, projectId);
   };
 
   return (
