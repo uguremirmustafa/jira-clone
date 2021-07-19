@@ -1,7 +1,6 @@
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import {
   GetProjectByIdQuery,
-  SubscribeProjectByIdSubscription,
   useGetProjectByIdQuery,
   useUpdateProjectMutation,
 } from '../lib/generated/apolloComponents';
@@ -41,7 +40,6 @@ interface IFormInput {
 
 interface IProps {
   project: GetProjectByIdQuery | undefined;
-  // project: SubscribeProjectByIdSubscription | undefined;
   projectId: string;
   isOwner: boolean;
   loading: boolean;

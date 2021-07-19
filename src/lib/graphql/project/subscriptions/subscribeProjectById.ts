@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-export const SubscribeProjectById = gql`
-  subscription SubscribeProjectById($projectId: uuid!) {
+export const SubscribeToProjectByProjectId = gql`
+  subscription SubscribeToProjectByProjectId($projectId: uuid!) {
     projects_by_pk(id: $projectId) {
       id
       title

@@ -3184,12 +3184,12 @@ export type GetReorderedIssuesQuery = (
   )> }
 );
 
-export type SubscribeProjectByIdSubscriptionVariables = Exact<{
+export type SubscribeToProjectByProjectIdSubscriptionVariables = Exact<{
   projectId: Scalars['uuid'];
 }>;
 
 
-export type SubscribeProjectByIdSubscription = (
+export type SubscribeToProjectByProjectIdSubscription = (
   { __typename?: 'subscription_root' }
   & { projects_by_pk?: Maybe<(
     { __typename?: 'projects' }
@@ -3934,8 +3934,8 @@ export function useGetReorderedIssuesLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetReorderedIssuesQueryHookResult = ReturnType<typeof useGetReorderedIssuesQuery>;
 export type GetReorderedIssuesLazyQueryHookResult = ReturnType<typeof useGetReorderedIssuesLazyQuery>;
 export type GetReorderedIssuesQueryResult = Apollo.QueryResult<GetReorderedIssuesQuery, GetReorderedIssuesQueryVariables>;
-export const SubscribeProjectByIdDocument = gql`
-    subscription SubscribeProjectById($projectId: uuid!) {
+export const SubscribeToProjectByProjectIdDocument = gql`
+    subscription SubscribeToProjectByProjectId($projectId: uuid!) {
   projects_by_pk(id: $projectId) {
     id
     title
@@ -3970,27 +3970,27 @@ export const SubscribeProjectByIdDocument = gql`
     `;
 
 /**
- * __useSubscribeProjectByIdSubscription__
+ * __useSubscribeToProjectByProjectIdSubscription__
  *
- * To run a query within a React component, call `useSubscribeProjectByIdSubscription` and pass it any options that fit your needs.
- * When your component renders, `useSubscribeProjectByIdSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSubscribeToProjectByProjectIdSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useSubscribeToProjectByProjectIdSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSubscribeProjectByIdSubscription({
+ * const { data, loading, error } = useSubscribeToProjectByProjectIdSubscription({
  *   variables: {
  *      projectId: // value for 'projectId'
  *   },
  * });
  */
-export function useSubscribeProjectByIdSubscription(baseOptions: Apollo.SubscriptionHookOptions<SubscribeProjectByIdSubscription, SubscribeProjectByIdSubscriptionVariables>) {
+export function useSubscribeToProjectByProjectIdSubscription(baseOptions: Apollo.SubscriptionHookOptions<SubscribeToProjectByProjectIdSubscription, SubscribeToProjectByProjectIdSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<SubscribeProjectByIdSubscription, SubscribeProjectByIdSubscriptionVariables>(SubscribeProjectByIdDocument, options);
+        return Apollo.useSubscription<SubscribeToProjectByProjectIdSubscription, SubscribeToProjectByProjectIdSubscriptionVariables>(SubscribeToProjectByProjectIdDocument, options);
       }
-export type SubscribeProjectByIdSubscriptionHookResult = ReturnType<typeof useSubscribeProjectByIdSubscription>;
-export type SubscribeProjectByIdSubscriptionResult = Apollo.SubscriptionResult<SubscribeProjectByIdSubscription>;
+export type SubscribeToProjectByProjectIdSubscriptionHookResult = ReturnType<typeof useSubscribeToProjectByProjectIdSubscription>;
+export type SubscribeToProjectByProjectIdSubscriptionResult = Apollo.SubscriptionResult<SubscribeToProjectByProjectIdSubscription>;
 export const UpdateProjectUserRoleDocument = gql`
     mutation UpdateProjectUserRole($projectMemberId: uuid!, $typeId: uuid!) {
   update_project_members_by_pk(
