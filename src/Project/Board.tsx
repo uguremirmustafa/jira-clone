@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 // queries
 import { GetProjectByIdQuery, Issues } from '../lib/generated/apolloComponents';
 import AddUserDialog from './AddUserDialog';
-import AddIssueDialog from './AddIssueDialog';
+// import AddIssueDialog from './AddIssueDialog';
 import KanbanBoard from './KanbanBoard';
 import { Skeleton } from '@material-ui/lab';
 import { BoardSkeleton } from './loadingSkeletons/BoardSkeleton';
@@ -128,7 +128,7 @@ const Board: FC<IProps> = ({
       {/* end of project users avatar list */}
 
       {/* create issue button */}
-      {isMember && <AddIssueDialog projectId={projectId} />}
+      {/* {isMember && <AddIssueDialog projectId={projectId} />} */}
       {/* end of create issue button */}
 
       {/* kanban board */}

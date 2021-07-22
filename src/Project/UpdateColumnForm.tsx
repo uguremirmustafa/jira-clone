@@ -102,6 +102,7 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
         )}
       />
       <Divider />
+      {id}
     </form>
   );
 };

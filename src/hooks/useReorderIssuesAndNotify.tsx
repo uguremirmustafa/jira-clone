@@ -10,12 +10,12 @@ export const useReorderIssuesAndNotify = (): ((
   newestIssuesArray: {
     index: number;
     column_id: any;
-    description?: Maybe<string> | undefined;
+    description: string;
     id: string;
     priority: number;
     project_id: any;
     title: string;
-    type?: Maybe<string> | undefined;
+    type: string;
     owner_id?: Maybe<string> | undefined;
   }[],
   projectId: string
@@ -29,12 +29,12 @@ export const useReorderIssuesAndNotify = (): ((
     newestIssuesArray: {
       index: number;
       column_id: any;
-      description?: Maybe<string> | undefined;
+      description: string;
       id: string;
       priority: number;
       project_id: any;
       title: string;
-      type?: Maybe<string> | undefined;
+      type: string;
       owner_id?: Maybe<string> | undefined;
     }[],
     projectId: string

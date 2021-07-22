@@ -1,11 +1,9 @@
 // material ui
 import {
-  Button,
   Divider,
   Grid,
   IconButton,
   makeStyles,
-  Paper,
   Typography,
   Card,
   CardContent,
@@ -28,6 +26,8 @@ import { useReorderIssuesAndNotify } from '../hooks/useReorderIssuesAndNotify';
 import { IndexOfLatestColumn } from '../functions/indexOfLastColumn';
 import { useDeleteColumnAndNotify } from '../hooks/useDeleteColumnAndNotify';
 import IssueDialog from './IssueDialog';
+import { useHistory } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -96,6 +96,7 @@ interface IProps {
 }
 
 const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }) => {
+  const history = useHistory();
   const c = useStyles();
   // get the index of latest column
   const indexOfLastColumn = IndexOfLatestColumn(columns);
@@ -163,17 +164,10 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
   const deleteColumn = useDeleteColumnAndNotify();
 
   // handle modal state
-
-  const [open, setOpen] = useState(false);
-  const [openIssue, setOpenIssue] = useState('');
   const handleClickOpen = (issueId: string) => {
-    setOpenIssue(issueId);
-    setOpen(true);
+    history.push(`/project/${projectId}/board/issue/${issueId}`);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
   if (!issues)
     return <Typography>There is no issue here, I guess due date is not this week!</Typography>;
   if (!columns) {
@@ -217,7 +211,6 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
                     ))}
                 </div>
               </Grid>
-              <IssueDialog open={open} onClose={handleClose} issue={openIssue} />
             </>
           ))
         ) : (
@@ -299,7 +292,6 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
                   </div>
                 )}
               </Droppable>
-
               <AddIssueWithTitleForm
                 columnId={col.id}
                 projectId={projectId}
@@ -312,11 +304,8 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
           </Grid>
         </Grid>
       </DragDropContext>
-
-      <IssueDialog open={open} onClose={handleClose} issue={openIssue} />
     </>
   );
 };
 
 export default KanbanBoard;
-// subscrib

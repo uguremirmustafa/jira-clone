@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { RouteComponentProps } from 'react-router';
 import ProjectLayout from './ProjectLayout';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Settings from './Settings';
 import DangerZone from './DangerZone';
 import Board from './Board';
@@ -9,9 +9,8 @@ import {
   SubscribeToProjectByProjectIdDocument,
   useGetProjectByIdQuery,
 } from '../lib/generated/apolloComponents';
-
 import { useAuth0 } from '@auth0/auth0-react';
-import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
+import IssueDialog from './IssueDialog';
 
 // interface
 interface IProps extends RouteComponentProps<{ id: string }> {}
@@ -93,6 +92,10 @@ export const Project: FC<IProps> = ({ match }) => {
           path={`/project/${projectId}/danger`}
         />
       )}
+      <Route
+        path={`/project/${projectId}/board/issue/:issueId`}
+        component={() => <IssueDialog isMember={isMember} />}
+      />
     </ProjectLayout>
   );
 };

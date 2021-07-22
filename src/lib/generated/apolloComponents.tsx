@@ -589,7 +589,7 @@ export type Issues = {
   comments_aggregate: Comments_Aggregate;
   created_at: Scalars['timestamptz'];
   /** it is nullable for development purposes. in prod, it wont be nullable */
-  description?: Maybe<Scalars['String']>;
+  description: Scalars['String'];
   id: Scalars['uuid'];
   index: Scalars['Int'];
   /** An object relationship */
@@ -602,7 +602,7 @@ export type Issues = {
   project_id: Scalars['uuid'];
   title: Scalars['String'];
   /** bug, enhancement, first issue, etc. */
-  type?: Maybe<Scalars['String']>;
+  type: Scalars['String'];
   updated_at: Scalars['timestamptz'];
 };
 
@@ -2924,6 +2924,115 @@ export type Uuid_Comparison_Exp = {
   _nin?: Maybe<Array<Scalars['uuid']>>;
 };
 
+export type DeleteIssueMutationVariables = Exact<{
+  issueId: Scalars['uuid'];
+}>;
+
+
+export type DeleteIssueMutation = (
+  { __typename?: 'mutation_root' }
+  & { delete_issues_by_pk?: Maybe<(
+    { __typename?: 'issues' }
+    & Pick<Issues, 'id'>
+  )> }
+);
+
+export type UpdateIssueDescriptionMutationVariables = Exact<{
+  issueId: Scalars['uuid'];
+  description: Scalars['String'];
+}>;
+
+
+export type UpdateIssueDescriptionMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_issues_by_pk?: Maybe<(
+    { __typename?: 'issues' }
+    & Pick<Issues, 'id' | 'description'>
+  )> }
+);
+
+export type UpdateIssuePriorityMutationVariables = Exact<{
+  issueId: Scalars['uuid'];
+  priority: Scalars['Int'];
+}>;
+
+
+export type UpdateIssuePriorityMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_issues_by_pk?: Maybe<(
+    { __typename?: 'issues' }
+    & Pick<Issues, 'id' | 'priority'>
+  )> }
+);
+
+export type UpdateIssueTitleMutationVariables = Exact<{
+  issueId: Scalars['uuid'];
+  title: Scalars['String'];
+}>;
+
+
+export type UpdateIssueTitleMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_issues_by_pk?: Maybe<(
+    { __typename?: 'issues' }
+    & Pick<Issues, 'id' | 'title'>
+  )> }
+);
+
+export type UpdateIssueTypeMutationVariables = Exact<{
+  issueId: Scalars['uuid'];
+  type: Scalars['String'];
+}>;
+
+
+export type UpdateIssueTypeMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_issues_by_pk?: Maybe<(
+    { __typename?: 'issues' }
+    & Pick<Issues, 'id' | 'type'>
+  )> }
+);
+
+export type GetIssueByIdQueryVariables = Exact<{
+  issueId: Scalars['uuid'];
+}>;
+
+
+export type GetIssueByIdQuery = (
+  { __typename?: 'query_root' }
+  & { issues_by_pk?: Maybe<(
+    { __typename?: 'issues' }
+    & Pick<Issues, 'id' | 'title' | 'description' | 'created_at' | 'updated_at' | 'priority' | 'type' | 'owner_id' | 'project_id'>
+    & { column: (
+      { __typename?: 'columns' }
+      & Pick<Columns, 'id' | 'name'>
+    ), issue_owner?: Maybe<(
+      { __typename?: 'users' }
+      & Pick<Users, 'id' | 'email'>
+    )> }
+  )> }
+);
+
+export type SubscribeIssueByIdSubscriptionVariables = Exact<{
+  issueId: Scalars['uuid'];
+}>;
+
+
+export type SubscribeIssueByIdSubscription = (
+  { __typename?: 'subscription_root' }
+  & { issues_by_pk?: Maybe<(
+    { __typename?: 'issues' }
+    & Pick<Issues, 'id' | 'title' | 'description' | 'created_at' | 'updated_at' | 'priority' | 'type' | 'owner_id' | 'project_id'>
+    & { column: (
+      { __typename?: 'columns' }
+      & Pick<Columns, 'id' | 'name'>
+    ), issue_owner?: Maybe<(
+      { __typename?: 'users' }
+      & Pick<Users, 'id' | 'email'>
+    )> }
+  )> }
+);
+
 export type IssueFragmentFragment = (
   { __typename?: 'issues' }
   & Pick<Issues, 'column_id' | 'description' | 'index' | 'priority' | 'project_id' | 'title' | 'type' | 'owner_id'>
@@ -2960,23 +3069,6 @@ export type CreateColumnMutation = (
   & { insert_columns_one?: Maybe<(
     { __typename?: 'columns' }
     & Pick<Columns, 'id' | 'name' | 'index'>
-  )> }
-);
-
-export type CreateIssueMutationVariables = Exact<{
-  projectId: Scalars['uuid'];
-  title: Scalars['String'];
-  priority?: Maybe<Scalars['Int']>;
-  description?: Maybe<Scalars['String']>;
-  type?: Maybe<Scalars['String']>;
-}>;
-
-
-export type CreateIssueMutation = (
-  { __typename?: 'mutation_root' }
-  & { insert_issues_one?: Maybe<(
-    { __typename?: 'issues' }
-    & Pick<Issues, 'id'>
   )> }
 );
 
@@ -3282,6 +3374,279 @@ export const IssueFragmentFragmentDoc = gql`
   owner_id
 }
     `;
+export const DeleteIssueDocument = gql`
+    mutation DeleteIssue($issueId: uuid!) {
+  delete_issues_by_pk(id: $issueId) {
+    id
+  }
+}
+    `;
+export type DeleteIssueMutationFn = Apollo.MutationFunction<DeleteIssueMutation, DeleteIssueMutationVariables>;
+
+/**
+ * __useDeleteIssueMutation__
+ *
+ * To run a mutation, you first call `useDeleteIssueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteIssueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteIssueMutation, { data, loading, error }] = useDeleteIssueMutation({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *   },
+ * });
+ */
+export function useDeleteIssueMutation(baseOptions?: Apollo.MutationHookOptions<DeleteIssueMutation, DeleteIssueMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteIssueMutation, DeleteIssueMutationVariables>(DeleteIssueDocument, options);
+      }
+export type DeleteIssueMutationHookResult = ReturnType<typeof useDeleteIssueMutation>;
+export type DeleteIssueMutationResult = Apollo.MutationResult<DeleteIssueMutation>;
+export type DeleteIssueMutationOptions = Apollo.BaseMutationOptions<DeleteIssueMutation, DeleteIssueMutationVariables>;
+export const UpdateIssueDescriptionDocument = gql`
+    mutation UpdateIssueDescription($issueId: uuid!, $description: String!) {
+  update_issues_by_pk(
+    pk_columns: {id: $issueId}
+    _set: {description: $description}
+  ) {
+    id
+    description
+  }
+}
+    `;
+export type UpdateIssueDescriptionMutationFn = Apollo.MutationFunction<UpdateIssueDescriptionMutation, UpdateIssueDescriptionMutationVariables>;
+
+/**
+ * __useUpdateIssueDescriptionMutation__
+ *
+ * To run a mutation, you first call `useUpdateIssueDescriptionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateIssueDescriptionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateIssueDescriptionMutation, { data, loading, error }] = useUpdateIssueDescriptionMutation({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *      description: // value for 'description'
+ *   },
+ * });
+ */
+export function useUpdateIssueDescriptionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateIssueDescriptionMutation, UpdateIssueDescriptionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateIssueDescriptionMutation, UpdateIssueDescriptionMutationVariables>(UpdateIssueDescriptionDocument, options);
+      }
+export type UpdateIssueDescriptionMutationHookResult = ReturnType<typeof useUpdateIssueDescriptionMutation>;
+export type UpdateIssueDescriptionMutationResult = Apollo.MutationResult<UpdateIssueDescriptionMutation>;
+export type UpdateIssueDescriptionMutationOptions = Apollo.BaseMutationOptions<UpdateIssueDescriptionMutation, UpdateIssueDescriptionMutationVariables>;
+export const UpdateIssuePriorityDocument = gql`
+    mutation UpdateIssuePriority($issueId: uuid!, $priority: Int!) {
+  update_issues_by_pk(pk_columns: {id: $issueId}, _set: {priority: $priority}) {
+    id
+    priority
+  }
+}
+    `;
+export type UpdateIssuePriorityMutationFn = Apollo.MutationFunction<UpdateIssuePriorityMutation, UpdateIssuePriorityMutationVariables>;
+
+/**
+ * __useUpdateIssuePriorityMutation__
+ *
+ * To run a mutation, you first call `useUpdateIssuePriorityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateIssuePriorityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateIssuePriorityMutation, { data, loading, error }] = useUpdateIssuePriorityMutation({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *      priority: // value for 'priority'
+ *   },
+ * });
+ */
+export function useUpdateIssuePriorityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateIssuePriorityMutation, UpdateIssuePriorityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateIssuePriorityMutation, UpdateIssuePriorityMutationVariables>(UpdateIssuePriorityDocument, options);
+      }
+export type UpdateIssuePriorityMutationHookResult = ReturnType<typeof useUpdateIssuePriorityMutation>;
+export type UpdateIssuePriorityMutationResult = Apollo.MutationResult<UpdateIssuePriorityMutation>;
+export type UpdateIssuePriorityMutationOptions = Apollo.BaseMutationOptions<UpdateIssuePriorityMutation, UpdateIssuePriorityMutationVariables>;
+export const UpdateIssueTitleDocument = gql`
+    mutation UpdateIssueTitle($issueId: uuid!, $title: String!) {
+  update_issues_by_pk(pk_columns: {id: $issueId}, _set: {title: $title}) {
+    id
+    title
+  }
+}
+    `;
+export type UpdateIssueTitleMutationFn = Apollo.MutationFunction<UpdateIssueTitleMutation, UpdateIssueTitleMutationVariables>;
+
+/**
+ * __useUpdateIssueTitleMutation__
+ *
+ * To run a mutation, you first call `useUpdateIssueTitleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateIssueTitleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateIssueTitleMutation, { data, loading, error }] = useUpdateIssueTitleMutation({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useUpdateIssueTitleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateIssueTitleMutation, UpdateIssueTitleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateIssueTitleMutation, UpdateIssueTitleMutationVariables>(UpdateIssueTitleDocument, options);
+      }
+export type UpdateIssueTitleMutationHookResult = ReturnType<typeof useUpdateIssueTitleMutation>;
+export type UpdateIssueTitleMutationResult = Apollo.MutationResult<UpdateIssueTitleMutation>;
+export type UpdateIssueTitleMutationOptions = Apollo.BaseMutationOptions<UpdateIssueTitleMutation, UpdateIssueTitleMutationVariables>;
+export const UpdateIssueTypeDocument = gql`
+    mutation UpdateIssueType($issueId: uuid!, $type: String!) {
+  update_issues_by_pk(pk_columns: {id: $issueId}, _set: {type: $type}) {
+    id
+    type
+  }
+}
+    `;
+export type UpdateIssueTypeMutationFn = Apollo.MutationFunction<UpdateIssueTypeMutation, UpdateIssueTypeMutationVariables>;
+
+/**
+ * __useUpdateIssueTypeMutation__
+ *
+ * To run a mutation, you first call `useUpdateIssueTypeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateIssueTypeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateIssueTypeMutation, { data, loading, error }] = useUpdateIssueTypeMutation({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *      type: // value for 'type'
+ *   },
+ * });
+ */
+export function useUpdateIssueTypeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateIssueTypeMutation, UpdateIssueTypeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateIssueTypeMutation, UpdateIssueTypeMutationVariables>(UpdateIssueTypeDocument, options);
+      }
+export type UpdateIssueTypeMutationHookResult = ReturnType<typeof useUpdateIssueTypeMutation>;
+export type UpdateIssueTypeMutationResult = Apollo.MutationResult<UpdateIssueTypeMutation>;
+export type UpdateIssueTypeMutationOptions = Apollo.BaseMutationOptions<UpdateIssueTypeMutation, UpdateIssueTypeMutationVariables>;
+export const GetIssueByIdDocument = gql`
+    query GetIssueById($issueId: uuid!) {
+  issues_by_pk(id: $issueId) {
+    id
+    title
+    description
+    column {
+      id
+      name
+    }
+    issue_owner {
+      id
+      email
+    }
+    created_at
+    updated_at
+    priority
+    type
+    owner_id
+    project_id
+  }
+}
+    `;
+
+/**
+ * __useGetIssueByIdQuery__
+ *
+ * To run a query within a React component, call `useGetIssueByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIssueByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetIssueByIdQuery({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *   },
+ * });
+ */
+export function useGetIssueByIdQuery(baseOptions: Apollo.QueryHookOptions<GetIssueByIdQuery, GetIssueByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetIssueByIdQuery, GetIssueByIdQueryVariables>(GetIssueByIdDocument, options);
+      }
+export function useGetIssueByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetIssueByIdQuery, GetIssueByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetIssueByIdQuery, GetIssueByIdQueryVariables>(GetIssueByIdDocument, options);
+        }
+export type GetIssueByIdQueryHookResult = ReturnType<typeof useGetIssueByIdQuery>;
+export type GetIssueByIdLazyQueryHookResult = ReturnType<typeof useGetIssueByIdLazyQuery>;
+export type GetIssueByIdQueryResult = Apollo.QueryResult<GetIssueByIdQuery, GetIssueByIdQueryVariables>;
+export const SubscribeIssueByIdDocument = gql`
+    subscription SubscribeIssueById($issueId: uuid!) {
+  issues_by_pk(id: $issueId) {
+    id
+    title
+    description
+    column {
+      id
+      name
+    }
+    issue_owner {
+      id
+      email
+    }
+    created_at
+    updated_at
+    priority
+    type
+    owner_id
+    project_id
+  }
+}
+    `;
+
+/**
+ * __useSubscribeIssueByIdSubscription__
+ *
+ * To run a query within a React component, call `useSubscribeIssueByIdSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useSubscribeIssueByIdSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSubscribeIssueByIdSubscription({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *   },
+ * });
+ */
+export function useSubscribeIssueByIdSubscription(baseOptions: Apollo.SubscriptionHookOptions<SubscribeIssueByIdSubscription, SubscribeIssueByIdSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<SubscribeIssueByIdSubscription, SubscribeIssueByIdSubscriptionVariables>(SubscribeIssueByIdDocument, options);
+      }
+export type SubscribeIssueByIdSubscriptionHookResult = ReturnType<typeof useSubscribeIssueByIdSubscription>;
+export type SubscribeIssueByIdSubscriptionResult = Apollo.SubscriptionResult<SubscribeIssueByIdSubscription>;
 export const AddUserToProjectDocument = gql`
     mutation AddUserToProject($userId: String!, $projectId: uuid!, $typeId: uuid!) {
   insert_project_members_one(
@@ -3359,45 +3724,6 @@ export function useCreateColumnMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateColumnMutationHookResult = ReturnType<typeof useCreateColumnMutation>;
 export type CreateColumnMutationResult = Apollo.MutationResult<CreateColumnMutation>;
 export type CreateColumnMutationOptions = Apollo.BaseMutationOptions<CreateColumnMutation, CreateColumnMutationVariables>;
-export const CreateIssueDocument = gql`
-    mutation CreateIssue($projectId: uuid!, $title: String!, $priority: Int, $description: String, $type: String) {
-  insert_issues_one(
-    object: {title: $title, project_id: $projectId, priority: $priority, description: $description, type: $type}
-  ) {
-    id
-  }
-}
-    `;
-export type CreateIssueMutationFn = Apollo.MutationFunction<CreateIssueMutation, CreateIssueMutationVariables>;
-
-/**
- * __useCreateIssueMutation__
- *
- * To run a mutation, you first call `useCreateIssueMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateIssueMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createIssueMutation, { data, loading, error }] = useCreateIssueMutation({
- *   variables: {
- *      projectId: // value for 'projectId'
- *      title: // value for 'title'
- *      priority: // value for 'priority'
- *      description: // value for 'description'
- *      type: // value for 'type'
- *   },
- * });
- */
-export function useCreateIssueMutation(baseOptions?: Apollo.MutationHookOptions<CreateIssueMutation, CreateIssueMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateIssueMutation, CreateIssueMutationVariables>(CreateIssueDocument, options);
-      }
-export type CreateIssueMutationHookResult = ReturnType<typeof useCreateIssueMutation>;
-export type CreateIssueMutationResult = Apollo.MutationResult<CreateIssueMutation>;
-export type CreateIssueMutationOptions = Apollo.BaseMutationOptions<CreateIssueMutation, CreateIssueMutationVariables>;
 export const CreateIssueWithTitleDocument = gql`
     mutation CreateIssueWithTitle($projectId: uuid!, $columnId: uuid!, $title: String!, $index: Int!) {
   insert_issues_one(

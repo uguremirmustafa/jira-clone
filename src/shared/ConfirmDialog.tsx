@@ -8,11 +8,12 @@ import {
   Button,
   Box,
   IconButton,
-  Typography,
+  makeStyles,
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 // zustand
 import create from 'zustand';
+import { Alert } from '@material-ui/lab';
 
 type ConfirmDialogStore = {
   message: string;
@@ -33,22 +34,29 @@ export const confirmDialog = (message: string, onSubmit: () => void) => {
   });
 };
 
-interface Props {}
+const useStyles = makeStyles((theme) => {
+  return {
+    actions: {
+      padding: theme.spacing(2),
+    },
+  };
+});
 
-const ConfirmDialog = (props: Props) => {
+const ConfirmDialog = () => {
+  const c = useStyles();
   const { message, onSubmit, close } = useConfirmDialogStore();
   return (
     <Dialog open={Boolean(onSubmit)} onClose={close} maxWidth="sm" fullWidth>
-      <DialogTitle>Confirm the action</DialogTitle>
-      <Box position="absolute" top={0} right={0}>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <DialogTitle>Confirm the action</DialogTitle>
         <IconButton onClick={close}>
           <Close />
         </IconButton>
       </Box>
       <DialogContent>
-        <Typography>{message}</Typography>
+        <Alert severity="error">{message}</Alert>
       </DialogContent>
-      <DialogActions>
+      <DialogActions className={c.actions}>
         <Button color="primary" variant="contained" onClick={close}>
           Cancel
         </Button>
