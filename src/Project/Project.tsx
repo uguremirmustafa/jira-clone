@@ -94,7 +94,7 @@ export const Project: FC<IProps> = ({ match }) => {
       )}
       <Route
         path={`/project/${projectId}/board/issue/:issueId`}
-        component={() => <IssueDialog isMember={isMember} />}
+        component={() => <IssueDialog isOwnerOrMember={isOwnerOrMember} />}
       />
     </ProjectLayout>
   );

@@ -20,6 +20,12 @@ export const GetIssueById = gql`
       type
       owner_id
       project_id
+      issue_labels {
+        label {
+          id
+          name
+        }
+      }
     }
   }
 `;

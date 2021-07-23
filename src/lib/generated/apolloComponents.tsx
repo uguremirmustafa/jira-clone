@@ -577,6 +577,161 @@ export enum Comments_Update_Column {
   UserId = 'user_id'
 }
 
+/**
+ * this is a bridge table between issues table and labels table in order to create many to many relationship
+ *
+ *
+ * columns and relationships of "issue_label"
+ */
+export type Issue_Label = {
+  __typename?: 'issue_label';
+  /** An object relationship */
+  issue: Issues;
+  issue_id: Scalars['uuid'];
+  /** An object relationship */
+  label: Labels;
+  label_id: Scalars['uuid'];
+};
+
+/** aggregated selection of "issue_label" */
+export type Issue_Label_Aggregate = {
+  __typename?: 'issue_label_aggregate';
+  aggregate?: Maybe<Issue_Label_Aggregate_Fields>;
+  nodes: Array<Issue_Label>;
+};
+
+/** aggregate fields of "issue_label" */
+export type Issue_Label_Aggregate_Fields = {
+  __typename?: 'issue_label_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Issue_Label_Max_Fields>;
+  min?: Maybe<Issue_Label_Min_Fields>;
+};
+
+
+/** aggregate fields of "issue_label" */
+export type Issue_Label_Aggregate_FieldsCountArgs = {
+  columns?: Maybe<Array<Issue_Label_Select_Column>>;
+  distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "issue_label" */
+export type Issue_Label_Aggregate_Order_By = {
+  count?: Maybe<Order_By>;
+  max?: Maybe<Issue_Label_Max_Order_By>;
+  min?: Maybe<Issue_Label_Min_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "issue_label" */
+export type Issue_Label_Arr_Rel_Insert_Input = {
+  data: Array<Issue_Label_Insert_Input>;
+  /** on conflict condition */
+  on_conflict?: Maybe<Issue_Label_On_Conflict>;
+};
+
+/** Boolean expression to filter rows from the table "issue_label". All fields are combined with a logical 'AND'. */
+export type Issue_Label_Bool_Exp = {
+  _and?: Maybe<Array<Issue_Label_Bool_Exp>>;
+  _not?: Maybe<Issue_Label_Bool_Exp>;
+  _or?: Maybe<Array<Issue_Label_Bool_Exp>>;
+  issue?: Maybe<Issues_Bool_Exp>;
+  issue_id?: Maybe<Uuid_Comparison_Exp>;
+  label?: Maybe<Labels_Bool_Exp>;
+  label_id?: Maybe<Uuid_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "issue_label" */
+export enum Issue_Label_Constraint {
+  /** unique or primary key constraint */
+  IssueLabelPkey = 'issue_label_pkey'
+}
+
+/** input type for inserting data into table "issue_label" */
+export type Issue_Label_Insert_Input = {
+  issue?: Maybe<Issues_Obj_Rel_Insert_Input>;
+  issue_id?: Maybe<Scalars['uuid']>;
+  label?: Maybe<Labels_Obj_Rel_Insert_Input>;
+  label_id?: Maybe<Scalars['uuid']>;
+};
+
+/** aggregate max on columns */
+export type Issue_Label_Max_Fields = {
+  __typename?: 'issue_label_max_fields';
+  issue_id?: Maybe<Scalars['uuid']>;
+  label_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by max() on columns of table "issue_label" */
+export type Issue_Label_Max_Order_By = {
+  issue_id?: Maybe<Order_By>;
+  label_id?: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Issue_Label_Min_Fields = {
+  __typename?: 'issue_label_min_fields';
+  issue_id?: Maybe<Scalars['uuid']>;
+  label_id?: Maybe<Scalars['uuid']>;
+};
+
+/** order by min() on columns of table "issue_label" */
+export type Issue_Label_Min_Order_By = {
+  issue_id?: Maybe<Order_By>;
+  label_id?: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "issue_label" */
+export type Issue_Label_Mutation_Response = {
+  __typename?: 'issue_label_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Issue_Label>;
+};
+
+/** on conflict condition type for table "issue_label" */
+export type Issue_Label_On_Conflict = {
+  constraint: Issue_Label_Constraint;
+  update_columns?: Array<Issue_Label_Update_Column>;
+  where?: Maybe<Issue_Label_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "issue_label". */
+export type Issue_Label_Order_By = {
+  issue?: Maybe<Issues_Order_By>;
+  issue_id?: Maybe<Order_By>;
+  label?: Maybe<Labels_Order_By>;
+  label_id?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: issue_label */
+export type Issue_Label_Pk_Columns_Input = {
+  issue_id: Scalars['uuid'];
+  label_id: Scalars['uuid'];
+};
+
+/** select columns of table "issue_label" */
+export enum Issue_Label_Select_Column {
+  /** column name */
+  IssueId = 'issue_id',
+  /** column name */
+  LabelId = 'label_id'
+}
+
+/** input type for updating data in table "issue_label" */
+export type Issue_Label_Set_Input = {
+  issue_id?: Maybe<Scalars['uuid']>;
+  label_id?: Maybe<Scalars['uuid']>;
+};
+
+/** update columns of table "issue_label" */
+export enum Issue_Label_Update_Column {
+  /** column name */
+  IssueId = 'issue_id',
+  /** column name */
+  LabelId = 'label_id'
+}
+
 /** columns and relationships of "issues" */
 export type Issues = {
   __typename?: 'issues';
@@ -592,6 +747,10 @@ export type Issues = {
   description: Scalars['String'];
   id: Scalars['uuid'];
   index: Scalars['Int'];
+  /** An array relationship */
+  issue_labels: Array<Issue_Label>;
+  /** An aggregate relationship */
+  issue_labels_aggregate: Issue_Label_Aggregate;
   /** An object relationship */
   issue_owner?: Maybe<Users>;
   /** issue owner. creater of the issue. */
@@ -624,6 +783,26 @@ export type IssuesComments_AggregateArgs = {
   offset?: Maybe<Scalars['Int']>;
   order_by?: Maybe<Array<Comments_Order_By>>;
   where?: Maybe<Comments_Bool_Exp>;
+};
+
+
+/** columns and relationships of "issues" */
+export type IssuesIssue_LabelsArgs = {
+  distinct_on?: Maybe<Array<Issue_Label_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issue_Label_Order_By>>;
+  where?: Maybe<Issue_Label_Bool_Exp>;
+};
+
+
+/** columns and relationships of "issues" */
+export type IssuesIssue_Labels_AggregateArgs = {
+  distinct_on?: Maybe<Array<Issue_Label_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issue_Label_Order_By>>;
+  where?: Maybe<Issue_Label_Bool_Exp>;
 };
 
 /** aggregated selection of "issues" */
@@ -703,6 +882,7 @@ export type Issues_Bool_Exp = {
   description?: Maybe<String_Comparison_Exp>;
   id?: Maybe<Uuid_Comparison_Exp>;
   index?: Maybe<Int_Comparison_Exp>;
+  issue_labels?: Maybe<Issue_Label_Bool_Exp>;
   issue_owner?: Maybe<Users_Bool_Exp>;
   owner_id?: Maybe<String_Comparison_Exp>;
   priority?: Maybe<Int_Comparison_Exp>;
@@ -735,6 +915,7 @@ export type Issues_Insert_Input = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['uuid']>;
   index?: Maybe<Scalars['Int']>;
+  issue_labels?: Maybe<Issue_Label_Arr_Rel_Insert_Input>;
   issue_owner?: Maybe<Users_Obj_Rel_Insert_Input>;
   /** issue owner. creater of the issue. */
   owner_id?: Maybe<Scalars['String']>;
@@ -853,6 +1034,7 @@ export type Issues_Order_By = {
   description?: Maybe<Order_By>;
   id?: Maybe<Order_By>;
   index?: Maybe<Order_By>;
+  issue_labels_aggregate?: Maybe<Issue_Label_Aggregate_Order_By>;
   issue_owner?: Maybe<Users_Order_By>;
   owner_id?: Maybe<Order_By>;
   priority?: Maybe<Order_By>;
@@ -1029,6 +1211,155 @@ export type Issues_Variance_Order_By = {
   priority?: Maybe<Order_By>;
 };
 
+/** columns and relationships of "labels" */
+export type Labels = {
+  __typename?: 'labels';
+  id: Scalars['uuid'];
+  /** An array relationship */
+  issue_labels: Array<Issue_Label>;
+  /** An aggregate relationship */
+  issue_labels_aggregate: Issue_Label_Aggregate;
+  name: Scalars['String'];
+};
+
+
+/** columns and relationships of "labels" */
+export type LabelsIssue_LabelsArgs = {
+  distinct_on?: Maybe<Array<Issue_Label_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issue_Label_Order_By>>;
+  where?: Maybe<Issue_Label_Bool_Exp>;
+};
+
+
+/** columns and relationships of "labels" */
+export type LabelsIssue_Labels_AggregateArgs = {
+  distinct_on?: Maybe<Array<Issue_Label_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issue_Label_Order_By>>;
+  where?: Maybe<Issue_Label_Bool_Exp>;
+};
+
+/** aggregated selection of "labels" */
+export type Labels_Aggregate = {
+  __typename?: 'labels_aggregate';
+  aggregate?: Maybe<Labels_Aggregate_Fields>;
+  nodes: Array<Labels>;
+};
+
+/** aggregate fields of "labels" */
+export type Labels_Aggregate_Fields = {
+  __typename?: 'labels_aggregate_fields';
+  count: Scalars['Int'];
+  max?: Maybe<Labels_Max_Fields>;
+  min?: Maybe<Labels_Min_Fields>;
+};
+
+
+/** aggregate fields of "labels" */
+export type Labels_Aggregate_FieldsCountArgs = {
+  columns?: Maybe<Array<Labels_Select_Column>>;
+  distinct?: Maybe<Scalars['Boolean']>;
+};
+
+/** Boolean expression to filter rows from the table "labels". All fields are combined with a logical 'AND'. */
+export type Labels_Bool_Exp = {
+  _and?: Maybe<Array<Labels_Bool_Exp>>;
+  _not?: Maybe<Labels_Bool_Exp>;
+  _or?: Maybe<Array<Labels_Bool_Exp>>;
+  id?: Maybe<Uuid_Comparison_Exp>;
+  issue_labels?: Maybe<Issue_Label_Bool_Exp>;
+  name?: Maybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "labels" */
+export enum Labels_Constraint {
+  /** unique or primary key constraint */
+  LabelsNameKey = 'labels_name_key',
+  /** unique or primary key constraint */
+  LabelsPkey = 'labels_pkey'
+}
+
+/** input type for inserting data into table "labels" */
+export type Labels_Insert_Input = {
+  id?: Maybe<Scalars['uuid']>;
+  issue_labels?: Maybe<Issue_Label_Arr_Rel_Insert_Input>;
+  name?: Maybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Labels_Max_Fields = {
+  __typename?: 'labels_max_fields';
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+/** aggregate min on columns */
+export type Labels_Min_Fields = {
+  __typename?: 'labels_min_fields';
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+/** response of any mutation on the table "labels" */
+export type Labels_Mutation_Response = {
+  __typename?: 'labels_mutation_response';
+  /** number of rows affected by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Labels>;
+};
+
+/** input type for inserting object relation for remote table "labels" */
+export type Labels_Obj_Rel_Insert_Input = {
+  data: Labels_Insert_Input;
+  /** on conflict condition */
+  on_conflict?: Maybe<Labels_On_Conflict>;
+};
+
+/** on conflict condition type for table "labels" */
+export type Labels_On_Conflict = {
+  constraint: Labels_Constraint;
+  update_columns?: Array<Labels_Update_Column>;
+  where?: Maybe<Labels_Bool_Exp>;
+};
+
+/** Ordering options when selecting data from "labels". */
+export type Labels_Order_By = {
+  id?: Maybe<Order_By>;
+  issue_labels_aggregate?: Maybe<Issue_Label_Aggregate_Order_By>;
+  name?: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: labels */
+export type Labels_Pk_Columns_Input = {
+  id: Scalars['uuid'];
+};
+
+/** select columns of table "labels" */
+export enum Labels_Select_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name'
+}
+
+/** input type for updating data in table "labels" */
+export type Labels_Set_Input = {
+  id?: Maybe<Scalars['uuid']>;
+  name?: Maybe<Scalars['String']>;
+};
+
+/** update columns of table "labels" */
+export enum Labels_Update_Column {
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Name = 'name'
+}
+
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
@@ -1040,10 +1371,18 @@ export type Mutation_Root = {
   delete_comments?: Maybe<Comments_Mutation_Response>;
   /** delete single row from the table: "comments" */
   delete_comments_by_pk?: Maybe<Comments>;
+  /** delete data from the table: "issue_label" */
+  delete_issue_label?: Maybe<Issue_Label_Mutation_Response>;
+  /** delete single row from the table: "issue_label" */
+  delete_issue_label_by_pk?: Maybe<Issue_Label>;
   /** delete data from the table: "issues" */
   delete_issues?: Maybe<Issues_Mutation_Response>;
   /** delete single row from the table: "issues" */
   delete_issues_by_pk?: Maybe<Issues>;
+  /** delete data from the table: "labels" */
+  delete_labels?: Maybe<Labels_Mutation_Response>;
+  /** delete single row from the table: "labels" */
+  delete_labels_by_pk?: Maybe<Labels>;
   /** delete data from the table: "project_members" */
   delete_project_members?: Maybe<Project_Members_Mutation_Response>;
   /** delete single row from the table: "project_members" */
@@ -1070,10 +1409,18 @@ export type Mutation_Root = {
   insert_comments?: Maybe<Comments_Mutation_Response>;
   /** insert a single row into the table: "comments" */
   insert_comments_one?: Maybe<Comments>;
+  /** insert data into the table: "issue_label" */
+  insert_issue_label?: Maybe<Issue_Label_Mutation_Response>;
+  /** insert a single row into the table: "issue_label" */
+  insert_issue_label_one?: Maybe<Issue_Label>;
   /** insert data into the table: "issues" */
   insert_issues?: Maybe<Issues_Mutation_Response>;
   /** insert a single row into the table: "issues" */
   insert_issues_one?: Maybe<Issues>;
+  /** insert data into the table: "labels" */
+  insert_labels?: Maybe<Labels_Mutation_Response>;
+  /** insert a single row into the table: "labels" */
+  insert_labels_one?: Maybe<Labels>;
   /** insert data into the table: "project_members" */
   insert_project_members?: Maybe<Project_Members_Mutation_Response>;
   /** insert a single row into the table: "project_members" */
@@ -1102,10 +1449,18 @@ export type Mutation_Root = {
   update_comments?: Maybe<Comments_Mutation_Response>;
   /** update single row of the table: "comments" */
   update_comments_by_pk?: Maybe<Comments>;
+  /** update data of the table: "issue_label" */
+  update_issue_label?: Maybe<Issue_Label_Mutation_Response>;
+  /** update single row of the table: "issue_label" */
+  update_issue_label_by_pk?: Maybe<Issue_Label>;
   /** update data of the table: "issues" */
   update_issues?: Maybe<Issues_Mutation_Response>;
   /** update single row of the table: "issues" */
   update_issues_by_pk?: Maybe<Issues>;
+  /** update data of the table: "labels" */
+  update_labels?: Maybe<Labels_Mutation_Response>;
+  /** update single row of the table: "labels" */
+  update_labels_by_pk?: Maybe<Labels>;
   /** update data of the table: "project_members" */
   update_project_members?: Maybe<Project_Members_Mutation_Response>;
   /** update single row of the table: "project_members" */
@@ -1152,6 +1507,19 @@ export type Mutation_RootDelete_Comments_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDelete_Issue_LabelArgs = {
+  where: Issue_Label_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Issue_Label_By_PkArgs = {
+  issue_id: Scalars['uuid'];
+  label_id: Scalars['uuid'];
+};
+
+
+/** mutation root */
 export type Mutation_RootDelete_IssuesArgs = {
   where: Issues_Bool_Exp;
 };
@@ -1159,6 +1527,18 @@ export type Mutation_RootDelete_IssuesArgs = {
 
 /** mutation root */
 export type Mutation_RootDelete_Issues_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_LabelsArgs = {
+  where: Labels_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Labels_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -1246,6 +1626,20 @@ export type Mutation_RootInsert_Comments_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Issue_LabelArgs = {
+  objects: Array<Issue_Label_Insert_Input>;
+  on_conflict?: Maybe<Issue_Label_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Issue_Label_OneArgs = {
+  object: Issue_Label_Insert_Input;
+  on_conflict?: Maybe<Issue_Label_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_IssuesArgs = {
   objects: Array<Issues_Insert_Input>;
   on_conflict?: Maybe<Issues_On_Conflict>;
@@ -1256,6 +1650,20 @@ export type Mutation_RootInsert_IssuesArgs = {
 export type Mutation_RootInsert_Issues_OneArgs = {
   object: Issues_Insert_Input;
   on_conflict?: Maybe<Issues_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_LabelsArgs = {
+  objects: Array<Labels_Insert_Input>;
+  on_conflict?: Maybe<Labels_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Labels_OneArgs = {
+  object: Labels_Insert_Input;
+  on_conflict?: Maybe<Labels_On_Conflict>;
 };
 
 
@@ -1358,6 +1766,20 @@ export type Mutation_RootUpdate_Comments_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Issue_LabelArgs = {
+  _set?: Maybe<Issue_Label_Set_Input>;
+  where: Issue_Label_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Issue_Label_By_PkArgs = {
+  _set?: Maybe<Issue_Label_Set_Input>;
+  pk_columns: Issue_Label_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_IssuesArgs = {
   _inc?: Maybe<Issues_Inc_Input>;
   _set?: Maybe<Issues_Set_Input>;
@@ -1370,6 +1792,20 @@ export type Mutation_RootUpdate_Issues_By_PkArgs = {
   _inc?: Maybe<Issues_Inc_Input>;
   _set?: Maybe<Issues_Set_Input>;
   pk_columns: Issues_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_LabelsArgs = {
+  _set?: Maybe<Labels_Set_Input>;
+  where: Labels_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Labels_By_PkArgs = {
+  _set?: Maybe<Labels_Set_Input>;
+  pk_columns: Labels_Pk_Columns_Input;
 };
 
 
@@ -1643,7 +2079,7 @@ export type Projects = {
   /** An aggregate relationship */
   issues_aggregate: Issues_Aggregate;
   owner_id: Scalars['String'];
-  /** fetch data from the table: "project_members" */
+  /** An array relationship */
   project_members: Array<Project_Members>;
   /** An aggregate relationship */
   project_members_aggregate: Project_Members_Aggregate;
@@ -1939,13 +2375,25 @@ export type Query_Root = {
   comments_aggregate: Comments_Aggregate;
   /** fetch data from the table: "comments" using primary key columns */
   comments_by_pk?: Maybe<Comments>;
+  /** fetch data from the table: "issue_label" */
+  issue_label: Array<Issue_Label>;
+  /** fetch aggregated fields from the table: "issue_label" */
+  issue_label_aggregate: Issue_Label_Aggregate;
+  /** fetch data from the table: "issue_label" using primary key columns */
+  issue_label_by_pk?: Maybe<Issue_Label>;
   /** An array relationship */
   issues: Array<Issues>;
   /** An aggregate relationship */
   issues_aggregate: Issues_Aggregate;
   /** fetch data from the table: "issues" using primary key columns */
   issues_by_pk?: Maybe<Issues>;
-  /** fetch data from the table: "project_members" */
+  /** fetch data from the table: "labels" */
+  labels: Array<Labels>;
+  /** fetch aggregated fields from the table: "labels" */
+  labels_aggregate: Labels_Aggregate;
+  /** fetch data from the table: "labels" using primary key columns */
+  labels_by_pk?: Maybe<Labels>;
+  /** An array relationship */
   project_members: Array<Project_Members>;
   /** An aggregate relationship */
   project_members_aggregate: Project_Members_Aggregate;
@@ -2026,6 +2474,30 @@ export type Query_RootComments_By_PkArgs = {
 };
 
 
+export type Query_RootIssue_LabelArgs = {
+  distinct_on?: Maybe<Array<Issue_Label_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issue_Label_Order_By>>;
+  where?: Maybe<Issue_Label_Bool_Exp>;
+};
+
+
+export type Query_RootIssue_Label_AggregateArgs = {
+  distinct_on?: Maybe<Array<Issue_Label_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issue_Label_Order_By>>;
+  where?: Maybe<Issue_Label_Bool_Exp>;
+};
+
+
+export type Query_RootIssue_Label_By_PkArgs = {
+  issue_id: Scalars['uuid'];
+  label_id: Scalars['uuid'];
+};
+
+
 export type Query_RootIssuesArgs = {
   distinct_on?: Maybe<Array<Issues_Select_Column>>;
   limit?: Maybe<Scalars['Int']>;
@@ -2045,6 +2517,29 @@ export type Query_RootIssues_AggregateArgs = {
 
 
 export type Query_RootIssues_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Query_RootLabelsArgs = {
+  distinct_on?: Maybe<Array<Labels_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Labels_Order_By>>;
+  where?: Maybe<Labels_Bool_Exp>;
+};
+
+
+export type Query_RootLabels_AggregateArgs = {
+  distinct_on?: Maybe<Array<Labels_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Labels_Order_By>>;
+  where?: Maybe<Labels_Bool_Exp>;
+};
+
+
+export type Query_RootLabels_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -2196,13 +2691,25 @@ export type Subscription_Root = {
   comments_aggregate: Comments_Aggregate;
   /** fetch data from the table: "comments" using primary key columns */
   comments_by_pk?: Maybe<Comments>;
+  /** fetch data from the table: "issue_label" */
+  issue_label: Array<Issue_Label>;
+  /** fetch aggregated fields from the table: "issue_label" */
+  issue_label_aggregate: Issue_Label_Aggregate;
+  /** fetch data from the table: "issue_label" using primary key columns */
+  issue_label_by_pk?: Maybe<Issue_Label>;
   /** An array relationship */
   issues: Array<Issues>;
   /** An aggregate relationship */
   issues_aggregate: Issues_Aggregate;
   /** fetch data from the table: "issues" using primary key columns */
   issues_by_pk?: Maybe<Issues>;
-  /** fetch data from the table: "project_members" */
+  /** fetch data from the table: "labels" */
+  labels: Array<Labels>;
+  /** fetch aggregated fields from the table: "labels" */
+  labels_aggregate: Labels_Aggregate;
+  /** fetch data from the table: "labels" using primary key columns */
+  labels_by_pk?: Maybe<Labels>;
+  /** An array relationship */
   project_members: Array<Project_Members>;
   /** An aggregate relationship */
   project_members_aggregate: Project_Members_Aggregate;
@@ -2283,6 +2790,30 @@ export type Subscription_RootComments_By_PkArgs = {
 };
 
 
+export type Subscription_RootIssue_LabelArgs = {
+  distinct_on?: Maybe<Array<Issue_Label_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issue_Label_Order_By>>;
+  where?: Maybe<Issue_Label_Bool_Exp>;
+};
+
+
+export type Subscription_RootIssue_Label_AggregateArgs = {
+  distinct_on?: Maybe<Array<Issue_Label_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Issue_Label_Order_By>>;
+  where?: Maybe<Issue_Label_Bool_Exp>;
+};
+
+
+export type Subscription_RootIssue_Label_By_PkArgs = {
+  issue_id: Scalars['uuid'];
+  label_id: Scalars['uuid'];
+};
+
+
 export type Subscription_RootIssuesArgs = {
   distinct_on?: Maybe<Array<Issues_Select_Column>>;
   limit?: Maybe<Scalars['Int']>;
@@ -2302,6 +2833,29 @@ export type Subscription_RootIssues_AggregateArgs = {
 
 
 export type Subscription_RootIssues_By_PkArgs = {
+  id: Scalars['uuid'];
+};
+
+
+export type Subscription_RootLabelsArgs = {
+  distinct_on?: Maybe<Array<Labels_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Labels_Order_By>>;
+  where?: Maybe<Labels_Bool_Exp>;
+};
+
+
+export type Subscription_RootLabels_AggregateArgs = {
+  distinct_on?: Maybe<Array<Labels_Select_Column>>;
+  limit?: Maybe<Scalars['Int']>;
+  offset?: Maybe<Scalars['Int']>;
+  order_by?: Maybe<Array<Labels_Order_By>>;
+  where?: Maybe<Labels_Bool_Exp>;
+};
+
+
+export type Subscription_RootLabels_By_PkArgs = {
   id: Scalars['uuid'];
 };
 
@@ -2665,7 +3219,7 @@ export type Users = {
   issues_aggregate: Issues_Aggregate;
   last_name?: Maybe<Scalars['String']>;
   manager_id?: Maybe<Scalars['String']>;
-  /** fetch data from the table: "project_members" */
+  /** An array relationship */
   project_members: Array<Project_Members>;
   /** An aggregate relationship */
   project_members_aggregate: Project_Members_Aggregate;
@@ -2924,6 +3478,34 @@ export type Uuid_Comparison_Exp = {
   _nin?: Maybe<Array<Scalars['uuid']>>;
 };
 
+export type AddLabelToIssueMutationVariables = Exact<{
+  issueId: Scalars['uuid'];
+  labelName: Scalars['String'];
+}>;
+
+
+export type AddLabelToIssueMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_issue_label_one?: Maybe<(
+    { __typename?: 'issue_label' }
+    & Pick<Issue_Label, 'label_id'>
+  )> }
+);
+
+export type ConnectExistingLabelToIssueMutationVariables = Exact<{
+  issueId: Scalars['uuid'];
+  labelId: Scalars['uuid'];
+}>;
+
+
+export type ConnectExistingLabelToIssueMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_issue_label_one?: Maybe<(
+    { __typename?: 'issue_label' }
+    & Pick<Issue_Label, 'label_id'>
+  )> }
+);
+
 export type DeleteIssueMutationVariables = Exact<{
   issueId: Scalars['uuid'];
 }>;
@@ -2934,6 +3516,20 @@ export type DeleteIssueMutation = (
   & { delete_issues_by_pk?: Maybe<(
     { __typename?: 'issues' }
     & Pick<Issues, 'id'>
+  )> }
+);
+
+export type DeleteIssueLabelMutationVariables = Exact<{
+  issueId: Scalars['uuid'];
+  labelId: Scalars['uuid'];
+}>;
+
+
+export type DeleteIssueLabelMutation = (
+  { __typename?: 'mutation_root' }
+  & { delete_issue_label_by_pk?: Maybe<(
+    { __typename?: 'issue_label' }
+    & Pick<Issue_Label, 'label_id'>
   )> }
 );
 
@@ -3009,7 +3605,24 @@ export type GetIssueByIdQuery = (
     ), issue_owner?: Maybe<(
       { __typename?: 'users' }
       & Pick<Users, 'id' | 'email'>
+    )>, issue_labels: Array<(
+      { __typename?: 'issue_label' }
+      & { label: (
+        { __typename?: 'labels' }
+        & Pick<Labels, 'id' | 'name'>
+      ) }
     )> }
+  )> }
+);
+
+export type GetLabelsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetLabelsQuery = (
+  { __typename?: 'query_root' }
+  & { labels: Array<(
+    { __typename?: 'labels' }
+    & Pick<Labels, 'id' | 'name'>
   )> }
 );
 
@@ -3029,6 +3642,12 @@ export type SubscribeIssueByIdSubscription = (
     ), issue_owner?: Maybe<(
       { __typename?: 'users' }
       & Pick<Users, 'id' | 'email'>
+    )>, issue_labels: Array<(
+      { __typename?: 'issue_label' }
+      & { label: (
+        { __typename?: 'labels' }
+        & Pick<Labels, 'id' | 'name'>
+      ) }
     )> }
   )> }
 );
@@ -3374,6 +3993,76 @@ export const IssueFragmentFragmentDoc = gql`
   owner_id
 }
     `;
+export const AddLabelToIssueDocument = gql`
+    mutation AddLabelToIssue($issueId: uuid!, $labelName: String!) {
+  insert_issue_label_one(
+    object: {issue_id: $issueId, label: {data: {name: $labelName}}}
+  ) {
+    label_id
+  }
+}
+    `;
+export type AddLabelToIssueMutationFn = Apollo.MutationFunction<AddLabelToIssueMutation, AddLabelToIssueMutationVariables>;
+
+/**
+ * __useAddLabelToIssueMutation__
+ *
+ * To run a mutation, you first call `useAddLabelToIssueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddLabelToIssueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addLabelToIssueMutation, { data, loading, error }] = useAddLabelToIssueMutation({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *      labelName: // value for 'labelName'
+ *   },
+ * });
+ */
+export function useAddLabelToIssueMutation(baseOptions?: Apollo.MutationHookOptions<AddLabelToIssueMutation, AddLabelToIssueMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddLabelToIssueMutation, AddLabelToIssueMutationVariables>(AddLabelToIssueDocument, options);
+      }
+export type AddLabelToIssueMutationHookResult = ReturnType<typeof useAddLabelToIssueMutation>;
+export type AddLabelToIssueMutationResult = Apollo.MutationResult<AddLabelToIssueMutation>;
+export type AddLabelToIssueMutationOptions = Apollo.BaseMutationOptions<AddLabelToIssueMutation, AddLabelToIssueMutationVariables>;
+export const ConnectExistingLabelToIssueDocument = gql`
+    mutation ConnectExistingLabelToIssue($issueId: uuid!, $labelId: uuid!) {
+  insert_issue_label_one(object: {issue_id: $issueId, label_id: $labelId}) {
+    label_id
+  }
+}
+    `;
+export type ConnectExistingLabelToIssueMutationFn = Apollo.MutationFunction<ConnectExistingLabelToIssueMutation, ConnectExistingLabelToIssueMutationVariables>;
+
+/**
+ * __useConnectExistingLabelToIssueMutation__
+ *
+ * To run a mutation, you first call `useConnectExistingLabelToIssueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useConnectExistingLabelToIssueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [connectExistingLabelToIssueMutation, { data, loading, error }] = useConnectExistingLabelToIssueMutation({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *      labelId: // value for 'labelId'
+ *   },
+ * });
+ */
+export function useConnectExistingLabelToIssueMutation(baseOptions?: Apollo.MutationHookOptions<ConnectExistingLabelToIssueMutation, ConnectExistingLabelToIssueMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ConnectExistingLabelToIssueMutation, ConnectExistingLabelToIssueMutationVariables>(ConnectExistingLabelToIssueDocument, options);
+      }
+export type ConnectExistingLabelToIssueMutationHookResult = ReturnType<typeof useConnectExistingLabelToIssueMutation>;
+export type ConnectExistingLabelToIssueMutationResult = Apollo.MutationResult<ConnectExistingLabelToIssueMutation>;
+export type ConnectExistingLabelToIssueMutationOptions = Apollo.BaseMutationOptions<ConnectExistingLabelToIssueMutation, ConnectExistingLabelToIssueMutationVariables>;
 export const DeleteIssueDocument = gql`
     mutation DeleteIssue($issueId: uuid!) {
   delete_issues_by_pk(id: $issueId) {
@@ -3407,6 +4096,40 @@ export function useDeleteIssueMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeleteIssueMutationHookResult = ReturnType<typeof useDeleteIssueMutation>;
 export type DeleteIssueMutationResult = Apollo.MutationResult<DeleteIssueMutation>;
 export type DeleteIssueMutationOptions = Apollo.BaseMutationOptions<DeleteIssueMutation, DeleteIssueMutationVariables>;
+export const DeleteIssueLabelDocument = gql`
+    mutation DeleteIssueLabel($issueId: uuid!, $labelId: uuid!) {
+  delete_issue_label_by_pk(issue_id: $issueId, label_id: $labelId) {
+    label_id
+  }
+}
+    `;
+export type DeleteIssueLabelMutationFn = Apollo.MutationFunction<DeleteIssueLabelMutation, DeleteIssueLabelMutationVariables>;
+
+/**
+ * __useDeleteIssueLabelMutation__
+ *
+ * To run a mutation, you first call `useDeleteIssueLabelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteIssueLabelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteIssueLabelMutation, { data, loading, error }] = useDeleteIssueLabelMutation({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *      labelId: // value for 'labelId'
+ *   },
+ * });
+ */
+export function useDeleteIssueLabelMutation(baseOptions?: Apollo.MutationHookOptions<DeleteIssueLabelMutation, DeleteIssueLabelMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteIssueLabelMutation, DeleteIssueLabelMutationVariables>(DeleteIssueLabelDocument, options);
+      }
+export type DeleteIssueLabelMutationHookResult = ReturnType<typeof useDeleteIssueLabelMutation>;
+export type DeleteIssueLabelMutationResult = Apollo.MutationResult<DeleteIssueLabelMutation>;
+export type DeleteIssueLabelMutationOptions = Apollo.BaseMutationOptions<DeleteIssueLabelMutation, DeleteIssueLabelMutationVariables>;
 export const UpdateIssueDescriptionDocument = gql`
     mutation UpdateIssueDescription($issueId: uuid!, $description: String!) {
   update_issues_by_pk(
@@ -3570,6 +4293,12 @@ export const GetIssueByIdDocument = gql`
     type
     owner_id
     project_id
+    issue_labels {
+      label {
+        id
+        name
+      }
+    }
   }
 }
     `;
@@ -3601,6 +4330,41 @@ export function useGetIssueByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetIssueByIdQueryHookResult = ReturnType<typeof useGetIssueByIdQuery>;
 export type GetIssueByIdLazyQueryHookResult = ReturnType<typeof useGetIssueByIdLazyQuery>;
 export type GetIssueByIdQueryResult = Apollo.QueryResult<GetIssueByIdQuery, GetIssueByIdQueryVariables>;
+export const GetLabelsDocument = gql`
+    query GetLabels {
+  labels {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetLabelsQuery__
+ *
+ * To run a query within a React component, call `useGetLabelsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetLabelsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetLabelsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetLabelsQuery(baseOptions?: Apollo.QueryHookOptions<GetLabelsQuery, GetLabelsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLabelsQuery, GetLabelsQueryVariables>(GetLabelsDocument, options);
+      }
+export function useGetLabelsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLabelsQuery, GetLabelsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLabelsQuery, GetLabelsQueryVariables>(GetLabelsDocument, options);
+        }
+export type GetLabelsQueryHookResult = ReturnType<typeof useGetLabelsQuery>;
+export type GetLabelsLazyQueryHookResult = ReturnType<typeof useGetLabelsLazyQuery>;
+export type GetLabelsQueryResult = Apollo.QueryResult<GetLabelsQuery, GetLabelsQueryVariables>;
 export const SubscribeIssueByIdDocument = gql`
     subscription SubscribeIssueById($issueId: uuid!) {
   issues_by_pk(id: $issueId) {
@@ -3621,6 +4385,12 @@ export const SubscribeIssueByIdDocument = gql`
     type
     owner_id
     project_id
+    issue_labels {
+      label {
+        id
+        name
+      }
+    }
   }
 }
     `;

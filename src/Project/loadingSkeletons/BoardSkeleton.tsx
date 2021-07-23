@@ -19,10 +19,10 @@ const useStyles = makeStyles((theme) => {
       display: 'grid',
       gap: theme.spacing(2),
       width: '100%',
-      gridTemplateColumns: '1fr 1fr 1fr',
+      gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
     },
     skeletonTitle: {
-      gridColumn: '1/4',
+      gridColumn: '1/6',
       display: 'flex',
       gap: theme.spacing(1),
     },
@@ -40,6 +40,8 @@ export const BoardSkeleton: FC<IProps> = ({ loading }) => {
             <Skeleton variant="circle" width={40} height={40} />
             <Skeleton variant="circle" width={40} height={40} />
           </div>
+          <Skeleton variant="rect" height={300} />
+          <Skeleton variant="rect" height={300} />
           <Skeleton variant="rect" height={300} />
           <Skeleton variant="rect" height={300} />
           <Skeleton variant="rect" height={300} />

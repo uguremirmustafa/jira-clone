@@ -32,10 +32,10 @@ const useStyles = makeStyles((theme) => {
 });
 
 interface IProps extends RouteComponentProps<{ issueId: string }> {
-  isMember: boolean;
+  isOwnerOrMember: boolean;
 }
 
-const IssueDialog: FC<IProps> = ({ match, history, isMember }) => {
+const IssueDialog: FC<IProps> = ({ match, history, isOwnerOrMember }) => {
   const c = useStyles();
   let issueId = match.params.issueId;
   const {
@@ -112,7 +112,7 @@ const IssueDialog: FC<IProps> = ({ match, history, isMember }) => {
             <MenuButton
               icon={<MoreHorizIcon />}
               items={[
-                isMember && {
+                isOwnerOrMember && {
                   text: `Delete Issue`,
                   func: () => {
                     confirmDialog(
@@ -134,7 +134,7 @@ const IssueDialog: FC<IProps> = ({ match, history, isMember }) => {
           issue={issue}
           issueLoading={issueLoading}
           issueId={issueId}
-          isMember={isMember}
+          isOwnerOrMember={isOwnerOrMember}
         />
       </DialogContent>
     </Dialog>

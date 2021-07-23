@@ -15,6 +15,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.0",
     "@types/react-select": "^4.0.15",
+    "date-fns": "^2.22.1",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
     "graphql": "^15.5.0",
