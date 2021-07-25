@@ -153,6 +153,7 @@ export const IssueTypeForm: FC<IProps> = ({ value, issueLoading, issueId }) => {
                       borderRadius: '0.2rem',
                     },
                   }}
+                  disableUnderline
                 >
                   {[
                     { value: 'enhancement', label: 'Enhancement' },

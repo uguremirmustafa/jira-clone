@@ -26,6 +26,12 @@ export const GetIssueById = gql`
           name
         }
       }
+      project {
+        columns {
+          id
+          name
+        }
+      }
     }
   }
 `;

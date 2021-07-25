@@ -3537,6 +3537,19 @@ export type DeleteIssueMutation = (
   )> }
 );
 
+export type DeleteIssueCommentMutationVariables = Exact<{
+  commentId: Scalars['uuid'];
+}>;
+
+
+export type DeleteIssueCommentMutation = (
+  { __typename?: 'mutation_root' }
+  & { delete_comments_by_pk?: Maybe<(
+    { __typename?: 'comments' }
+    & Pick<Comments, 'id'>
+  )> }
+);
+
 export type DeleteIssueLabelMutationVariables = Exact<{
   issueId: Scalars['uuid'];
   labelId: Scalars['uuid'];
@@ -3548,6 +3561,20 @@ export type DeleteIssueLabelMutation = (
   & { delete_issue_label_by_pk?: Maybe<(
     { __typename?: 'issue_label' }
     & Pick<Issue_Label, 'label_id'>
+  )> }
+);
+
+export type UpdateIssueCommentMutationVariables = Exact<{
+  commentId: Scalars['uuid'];
+  text: Scalars['String'];
+}>;
+
+
+export type UpdateIssueCommentMutation = (
+  { __typename?: 'mutation_root' }
+  & { update_comments_by_pk?: Maybe<(
+    { __typename?: 'comments' }
+    & Pick<Comments, 'id'>
   )> }
 );
 
@@ -3629,7 +3656,13 @@ export type GetIssueByIdQuery = (
         { __typename?: 'labels' }
         & Pick<Labels, 'id' | 'name'>
       ) }
-    )> }
+    )>, project: (
+      { __typename?: 'projects' }
+      & { columns: Array<(
+        { __typename?: 'columns' }
+        & Pick<Columns, 'id' | 'name'>
+      )> }
+    ) }
   )> }
 );
 
@@ -4172,6 +4205,39 @@ export function useDeleteIssueMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeleteIssueMutationHookResult = ReturnType<typeof useDeleteIssueMutation>;
 export type DeleteIssueMutationResult = Apollo.MutationResult<DeleteIssueMutation>;
 export type DeleteIssueMutationOptions = Apollo.BaseMutationOptions<DeleteIssueMutation, DeleteIssueMutationVariables>;
+export const DeleteIssueCommentDocument = gql`
+    mutation DeleteIssueComment($commentId: uuid!) {
+  delete_comments_by_pk(id: $commentId) {
+    id
+  }
+}
+    `;
+export type DeleteIssueCommentMutationFn = Apollo.MutationFunction<DeleteIssueCommentMutation, DeleteIssueCommentMutationVariables>;
+
+/**
+ * __useDeleteIssueCommentMutation__
+ *
+ * To run a mutation, you first call `useDeleteIssueCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteIssueCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteIssueCommentMutation, { data, loading, error }] = useDeleteIssueCommentMutation({
+ *   variables: {
+ *      commentId: // value for 'commentId'
+ *   },
+ * });
+ */
+export function useDeleteIssueCommentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteIssueCommentMutation, DeleteIssueCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteIssueCommentMutation, DeleteIssueCommentMutationVariables>(DeleteIssueCommentDocument, options);
+      }
+export type DeleteIssueCommentMutationHookResult = ReturnType<typeof useDeleteIssueCommentMutation>;
+export type DeleteIssueCommentMutationResult = Apollo.MutationResult<DeleteIssueCommentMutation>;
+export type DeleteIssueCommentMutationOptions = Apollo.BaseMutationOptions<DeleteIssueCommentMutation, DeleteIssueCommentMutationVariables>;
 export const DeleteIssueLabelDocument = gql`
     mutation DeleteIssueLabel($issueId: uuid!, $labelId: uuid!) {
   delete_issue_label_by_pk(issue_id: $issueId, label_id: $labelId) {
@@ -4206,6 +4272,40 @@ export function useDeleteIssueLabelMutation(baseOptions?: Apollo.MutationHookOpt
 export type DeleteIssueLabelMutationHookResult = ReturnType<typeof useDeleteIssueLabelMutation>;
 export type DeleteIssueLabelMutationResult = Apollo.MutationResult<DeleteIssueLabelMutation>;
 export type DeleteIssueLabelMutationOptions = Apollo.BaseMutationOptions<DeleteIssueLabelMutation, DeleteIssueLabelMutationVariables>;
+export const UpdateIssueCommentDocument = gql`
+    mutation UpdateIssueComment($commentId: uuid!, $text: String!) {
+  update_comments_by_pk(pk_columns: {id: $commentId}, _set: {text: $text}) {
+    id
+  }
+}
+    `;
+export type UpdateIssueCommentMutationFn = Apollo.MutationFunction<UpdateIssueCommentMutation, UpdateIssueCommentMutationVariables>;
+
+/**
+ * __useUpdateIssueCommentMutation__
+ *
+ * To run a mutation, you first call `useUpdateIssueCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateIssueCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateIssueCommentMutation, { data, loading, error }] = useUpdateIssueCommentMutation({
+ *   variables: {
+ *      commentId: // value for 'commentId'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useUpdateIssueCommentMutation(baseOptions?: Apollo.MutationHookOptions<UpdateIssueCommentMutation, UpdateIssueCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateIssueCommentMutation, UpdateIssueCommentMutationVariables>(UpdateIssueCommentDocument, options);
+      }
+export type UpdateIssueCommentMutationHookResult = ReturnType<typeof useUpdateIssueCommentMutation>;
+export type UpdateIssueCommentMutationResult = Apollo.MutationResult<UpdateIssueCommentMutation>;
+export type UpdateIssueCommentMutationOptions = Apollo.BaseMutationOptions<UpdateIssueCommentMutation, UpdateIssueCommentMutationVariables>;
 export const UpdateIssueDescriptionDocument = gql`
     mutation UpdateIssueDescription($issueId: uuid!, $description: String!) {
   update_issues_by_pk(
@@ -4371,6 +4471,12 @@ export const GetIssueByIdDocument = gql`
     project_id
     issue_labels {
       label {
+        id
+        name
+      }
+    }
+    project {
+      columns {
         id
         name
       }

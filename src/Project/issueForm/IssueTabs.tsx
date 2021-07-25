@@ -1,16 +1,25 @@
 import { Box, Tabs, Theme, Typography, makeStyles, Tab, AppBar } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
+import { Alert, Skeleton } from '@material-ui/lab';
 import React from 'react';
 import { FC } from 'react';
-import {
-  useGetIssueCommentsLazyQuery,
-  useGetIssueCommentsQuery,
-} from '../../lib/generated/apolloComponents';
-import { IssueCommentForm } from './IssueCommentForm';
+import { Columns } from '../../lib/generated/apolloComponents';
 import { IssueComments } from './IssueComments';
 
 interface IProps {
   issueId: string;
+  column:
+    | ({
+        __typename?: 'columns' | undefined;
+      } & Pick<Columns, 'id' | 'name'>)
+    | undefined;
+  issueLoading: boolean;
+  projectColumns:
+    | {
+        id: any;
+        indexOfLastIssue: number;
+        name: string;
+      }[]
+    | undefined;
 }
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -29,7 +38,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box marginTop={3} marginLeft={2}>
+        <Box marginTop={3}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -47,10 +56,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+    marginBottom: theme.spacing(8),
   },
 }));
 
-export const IssueTabs: FC<IProps> = ({ issueId }) => {
+export const IssueTabs: FC<IProps> = ({ issueId, column, issueLoading }) => {
   const c = useStyles();
   const [value, setValue] = React.useState(0);
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -67,7 +77,7 @@ export const IssueTabs: FC<IProps> = ({ issueId }) => {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        Issue Status
+        {issueLoading ? <Skeleton /> : <Alert severity="info">{column?.name}</Alert>}
       </TabPanel>
       <TabPanel value={value} index={1}>
         <IssueComments issueId={issueId} />

@@ -2,8 +2,7 @@ import { Grid, makeStyles, Button, Typography, Box, Divider } from '@material-ui
 import { useEffect, useState } from 'react';
 import { FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { GetIssueByIdQuery } from '../../lib/generated/apolloComponents';
-
+import { GetIssueByIdQuery, GetProjectByIdQuery } from '../../lib/generated/apolloComponents';
 import { IssueTitleForm } from './IssueTitleForm';
 import { IssueDescriptionForm } from './IssueDescriptionForm';
 import { IssuePriorityForm } from './IssuePriorityForm';
@@ -11,8 +10,9 @@ import { IssueTypeForm } from './IssueTypeForm';
 import { FieldForNonMembers } from '../../shared/FieldForNonMembers';
 import { IssueDetailsAccordion } from './IssueDetailsAccordion';
 import { IssueDateInfo } from './IssueDateInfo';
-import { IssueCommentForm } from './IssueCommentForm';
 import { IssueTabs } from './IssueTabs';
+import { useApolloClient } from '@apollo/client';
+import { GetProjectById } from '../../lib/graphql/project/queries/getProjectById';
 
 interface IProps {
   issue: GetIssueByIdQuery | undefined;
@@ -40,9 +40,26 @@ const useStyles = makeStyles((theme) => ({
 
 export const IssueForm: FC<IProps> = ({ issue, issueLoading, issueId, isOwnerOrMember }) => {
   const c = useStyles();
+  const client = useApolloClient();
+  const [project, setProject] = useState<GetProjectByIdQuery | null>();
+  useEffect(() => {
+    if (issueLoading) return;
+    const project = client.readQuery<GetProjectByIdQuery>({
+      query: GetProjectById,
+      variables: { projectId: issue?.issues_by_pk?.project_id },
+    });
+    setProject(project);
+  }, [issueLoading, issue, issueId]);
 
+  const projectColumns = project?.projects_by_pk?.columns.map((col) => ({
+    id: col.id,
+    indexOfLastIssue:
+      project?.projects_by_pk?.issues.filter((i) => i.column_id === col.id)[0]?.index || 0,
+    name: col.name,
+  }));
   const title = issue?.issues_by_pk?.title;
   const description = issue?.issues_by_pk?.description;
+  const column = issue?.issues_by_pk?.column;
   const priority = issue?.issues_by_pk?.priority || undefined;
   const type = issue?.issues_by_pk?.type;
   const createdAt = issue?.issues_by_pk?.created_at;
@@ -66,7 +83,14 @@ export const IssueForm: FC<IProps> = ({ issue, issueLoading, issueId, isOwnerOrM
           issueId={issueId}
           isOwnerOrMember={isOwnerOrMember}
         />
-        <IssueTabs issueId={issueId} />
+        {project && (
+          <IssueTabs
+            issueId={issueId}
+            column={column}
+            projectColumns={projectColumns}
+            issueLoading={issueLoading}
+          />
+        )}
       </Grid>
       <Grid item xs={12} md={4} className={c.rightColumn}>
         {isOwnerOrMember ? (

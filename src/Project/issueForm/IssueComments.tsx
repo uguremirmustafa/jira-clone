@@ -52,7 +52,10 @@ export const IssueComments: FC<Props> = ({ issueId }) => {
   // editor state initialize
   const [fieldFocus, setFieldFocus] = useState(false);
   const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
-  const [rawState, setRawState] = useState<RawDraftContentState>();
+  const [rawState, setRawState] = useState<RawDraftContentState>(() =>
+    convertToRaw(editorState.getCurrentContent())
+  );
+  // const [initialRawState, setInitialRawState] = useState<RawDraftContentState>();
 
   // get data from localstorage
   useEffect(() => {
@@ -76,6 +79,12 @@ export const IssueComments: FC<Props> = ({ issueId }) => {
     setEditorState(editorState);
   };
 
+  const cancelChanges = () => {
+    setEditorState(EditorState.createEmpty());
+    window.localStorage.removeItem(`jira-clone-${issueId}-comment`);
+    setFieldFocus(false);
+  };
+
   // push comment to db
   const [createIssueCommentMutation, { loading: commentLoading }] = useCreateIssueCommentMutation();
   const onSubmit = async (e: React.FormEvent) => {
@@ -95,9 +104,10 @@ export const IssueComments: FC<Props> = ({ issueId }) => {
 
       if (res.data?.insert_comments_one?.id) {
         enqueueSnackbar('Success', { variant: 'success' });
-        setEditorState(EditorState.createEmpty());
-        setRawState(convertToRaw(editorState.getCurrentContent()));
-        window.localStorage.setItem(`jira-clone-${issueId}-comment`, JSON.stringify(rawState));
+        // setEditorState(EditorState.createEmpty());
+        // setRawState(convertToRaw(editorState.getCurrentContent()));
+        // window.localStorage.setItem(`jira-clone-${issueId}-comment`, JSON.stringify(rawState));
+        cancelChanges();
         // window.localStorage.removeItem(`jira-clone-${issueId}-comment`);
       } else if (res.errors) {
         enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
@@ -128,6 +138,9 @@ export const IssueComments: FC<Props> = ({ issueId }) => {
               onEditorStateChange={onChange}
               onFocus={() => setFieldFocus(true)}
               toolbarHidden={!fieldFocus}
+              toolbarClassName="editorToolbar"
+              // wrapperClassName="wrapperClassName"
+              editorClassName="commentEditor"
               placeholder="Add your comment here!"
             />
           </Box>
@@ -135,7 +148,7 @@ export const IssueComments: FC<Props> = ({ issueId }) => {
         {fieldFocus && (
           <DialogActions className={c.buttons}>
             {!commentLoading && (
-              <IconButton size="small" onClick={() => setFieldFocus(false)}>
+              <IconButton size="small" onClick={cancelChanges}>
                 <Close />
               </IconButton>
             )}

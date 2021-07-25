@@ -55,3 +55,19 @@
   }
 }
 /* end of loading spinner */
+
+/* start of comment editor style */
+.commentEditor {
+  background-color: #f7f7f7;
+  padding: 0 0.5rem;
+  border-radius: 0.2rem;
+  border: 1px solid lightgray;
+}
+.editorToolbar {
+  display: flex;
+  border-radius: 0.2rem;
+  border: 1px solid lightgray;
+  font-size: 13px;
+}
+
+/* end of comment editor style */

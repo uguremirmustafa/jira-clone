@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => {
     topScrollPaper: {
       alignItems: 'flex-start',
       marginTop: theme.spacing(4),
+      maxHeight: '95%',
     },
     topPaperScrollBody: {
       verticalAlign: 'top',

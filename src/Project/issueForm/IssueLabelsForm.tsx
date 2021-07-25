@@ -24,6 +24,7 @@ import {
   useUpdateIssueTitleMutation,
 } from '../../lib/generated/apolloComponents';
 import { useSnackbar } from 'notistack';
+import { confirmDialog } from '../../shared/ConfirmDialog';
 
 interface IProps {
   value:
@@ -175,8 +176,15 @@ export const IssueLabelsForm: FC<IProps> = ({
         <>
           {isOwnerOrMember ? (
             <Box className={c.chipsWrapper}>
-              {labels?.map((l) => (
-                <Chip label={l.name} key={l.id} onDelete={() => handleDelete(l.id)} size="small" />
+              {labels?.map((label) => (
+                <Chip
+                  label={label.name}
+                  key={label.id}
+                  onDelete={() =>
+                    confirmDialog(`Remove the ${label.name} label?`, () => handleDelete(label.id))
+                  }
+                  size="small"
+                />
               ))}
               <Chip
                 label={autocompleteActive ? 'Cancel' : 'Add label'}
@@ -224,11 +232,14 @@ export const IssueLabelsForm: FC<IProps> = ({
 
             // Suggest the creation of a new value
             if (params.inputValue !== '') {
-              filtered.push({
-                inputValue: params.inputValue,
-                name: `Add "${params.inputValue}"`,
-                id: 'new',
-              });
+              return [
+                {
+                  inputValue: params.inputValue,
+                  name: `Add "${params.inputValue}"`,
+                  id: 'new',
+                },
+                ...filtered,
+              ];
             }
 
             return filtered;

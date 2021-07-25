@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   buttons: {
     position: 'absolute',
     right: 0,
-    bottom: -45,
+    bottom: 5,
   },
 }));
 
@@ -128,9 +128,9 @@ export const IssueDescriptionForm: FC<IProps> = ({
       ) : (
         <div
           style={{
-            background: '#ededed',
-            padding: '8px',
-            minHeight: '300px',
+            // background: '#ededed',
+            marginBottom: '3rem',
+            // minHeight: '100px',
             borderRadius: '.2rem',
           }}
         >
@@ -142,6 +142,9 @@ export const IssueDescriptionForm: FC<IProps> = ({
             onEditorStateChange={onChange}
             toolbarHidden={!(isOwnerOrMember && fieldFocus)}
             readOnly={!isOwnerOrMember}
+            toolbarClassName="editorToolbar"
+            // wrapperClassName="wrapperClassName"
+            editorClassName="commentEditor"
           />
           {/* <FormHelperText>asdsadsa</FormHelperText> */}
         </div>

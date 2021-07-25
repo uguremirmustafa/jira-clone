@@ -10,16 +10,7 @@ import {
   FormControl,
   FormHelperText,
 } from '@material-ui/core';
-import {
-  ArrowDownward,
-  ArrowUpward,
-  Check,
-  Close,
-  CloudUpload,
-  TrendingDown,
-  TrendingFlat,
-  TrendingUp,
-} from '@material-ui/icons';
+import { Check, Close, CloudUpload } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import { FC, useEffect, useState } from 'react';
 import { Controller, useForm, useFormState } from 'react-hook-form';
@@ -160,6 +151,7 @@ export const IssuePriorityForm: FC<IProps> = ({ value, issueLoading, issueId }) 
                       borderRadius: '0.2rem',
                     },
                   }}
+                  disableUnderline
                 >
                   {priorityValues.map((item) => (
                     <MenuItem value={item.value} className={c.menuItem}>

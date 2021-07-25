@@ -1,15 +1,13 @@
 import {
   makeStyles,
-  DialogActions,
   Typography,
-  IconButton,
-  TextField,
   Box,
   Theme,
   Avatar,
-  Divider,
   Button,
   ButtonGroup,
+  DialogActions,
+  IconButton,
 } from '@material-ui/core';
 import { Check, Close, CloudUpload, Label } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
@@ -18,7 +16,9 @@ import { FC } from 'react';
 import {
   Comments,
   GetIssueCommentsQuery,
+  useDeleteIssueCommentMutation,
   Users,
+  useUpdateIssueCommentMutation,
   useUpdateIssueDescriptionMutation,
 } from '../../lib/generated/apolloComponents';
 import { Editor } from 'react-draft-wysiwyg';
@@ -34,6 +34,8 @@ import { useSnackbar } from 'notistack';
 import { getTime } from 'date-fns';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import { useAuth0 } from '@auth0/auth0-react';
+import { GetIssueComments } from '../../lib/graphql/issue/queries/getIssueComments';
+import { confirmDialog } from '../../shared/ConfirmDialog';
 
 interface IProps {
   value: {
@@ -56,18 +58,16 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   commentBox: {
     flexGrow: 1,
-    // border: '1px solid red',
-    background: theme.palette.grey[50],
+    // border: '1px solid lightgray',
+    borderRadius: '.2rem',
+    background: theme.palette.grey[100],
     padding: theme.spacing(2),
   },
-  editorWrapper: {
-    // border: '1px solid gray',
-    color: theme.palette.secondary.dark,
-  },
+
   buttons: {
     position: 'absolute',
     right: 0,
-    bottom: -45,
+    bottom: 5,
   },
   commentButton: {
     textTransform: 'capitalize',
@@ -106,6 +106,7 @@ export const IssueCommentForm: FC<IProps> = ({ value: comment, issueId }) => {
 
     setEditorState(editorState);
   };
+
   const { text } = comment;
   useEffect(() => {
     if (text !== null && text !== undefined) {
@@ -122,8 +123,65 @@ export const IssueCommentForm: FC<IProps> = ({ value: comment, issueId }) => {
     }
   }, [text]);
 
+  const cancelChanges = () => {
+    if (initialRawState !== undefined) {
+      setEditorState(EditorState.createWithContent(convertFromRaw(initialRawState)));
+      setFieldFocus(false);
+      setEditing(false);
+    }
+  };
+
+  //update issue
+  const [updateIssueCommentMutation, { loading }] = useUpdateIssueCommentMutation();
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditing(false);
+    const string = JSON.stringify(rawState);
+    try {
+      const res = await updateIssueCommentMutation({
+        variables: {
+          commentId: comment.id,
+          text: string,
+        },
+        refetchQueries: [{ query: GetIssueComments, variables: { issueId } }],
+      });
+      if (res.data?.update_comments_by_pk?.id) {
+        enqueueSnackbar('Success', { variant: 'success' });
+      } else if (res.errors) {
+        enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
+      }
+    } catch (error) {
+      enqueueSnackbar(`${error.message}`, { variant: 'error' });
+    }
+    setFieldFocus(false);
+  };
+
+  //delete issue
+
+  const [deleteIssueCommentMutation, { loading: deleteCommentLoading }] =
+    useDeleteIssueCommentMutation();
+
+  const deleteComment = async (id: string) => {
+    try {
+      const res = await deleteIssueCommentMutation({
+        variables: {
+          commentId: id,
+        },
+        refetchQueries: [{ query: GetIssueComments, variables: { issueId } }],
+      });
+      if (res.data?.delete_comments_by_pk) {
+        enqueueSnackbar('Success', { variant: 'success' });
+      } else if (res.errors) {
+        enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
+      }
+    } catch (error) {
+      enqueueSnackbar(`${error.message}`, { variant: 'error' });
+    }
+  };
+
   return (
-    <form className={c.form}>
+    <form className={c.form} onSubmit={onSubmit}>
       <Box display="flex" gridGap="1rem">
         <Avatar style={{ background: '#e63321', width: '2rem', height: '2rem' }}>
           {comment.user.email[0]}
@@ -139,32 +197,60 @@ export const IssueCommentForm: FC<IProps> = ({ value: comment, issueId }) => {
               {formattedCreatedAt}
             </Typography>
           </Box>
-          <div className={c.editorWrapper}>
+          <div style={editing ? { paddingBottom: '2rem' } : { padding: '0.5rem 0' }}>
             <Editor
               editorState={editorState}
               onEditorStateChange={onChange}
+              onFocus={() => setFieldFocus(true)}
               toolbarHidden={!editing}
               readOnly={!editing}
+              toolbarClassName="editorToolbar"
+              // wrapperClassName="wrapperClassName"
+              editorClassName="commentEditor"
             />
           </div>
-          {isCommentOwner && (
+          {isCommentOwner && !editing && (
             <ButtonGroup>
-              <Button className={c.commentButton} variant="text" size="small">
+              <Button
+                className={c.commentButton}
+                variant="text"
+                size="small"
+                onClick={() => {
+                  confirmDialog('Do you really want to delete your comment?', () =>
+                    deleteComment(comment.id)
+                  );
+                }}
+              >
                 Delete
               </Button>
               <Button
                 className={c.commentButton}
                 variant="text"
                 size="small"
-                onClick={() => setEditing(!editing)}
+                onClick={() => setEditing(true)}
               >
-                {editing ? 'Cancel' : 'Edit'}
+                Edit
               </Button>
             </ButtonGroup>
           )}
-          {/* <Divider /> */}
         </Box>
       </Box>
+      {fieldFocus && (
+        <>
+          {isCommentOwner && (
+            <DialogActions className={c.buttons}>
+              {!loading && (
+                <IconButton size="small" onClick={cancelChanges}>
+                  <Close />
+                </IconButton>
+              )}
+              <IconButton type="submit" color="secondary" size="small">
+                {loading ? <CloudUpload /> : <Check />}
+              </IconButton>
+            </DialogActions>
+          )}
+        </>
+      )}
     </form>
   );
 };
