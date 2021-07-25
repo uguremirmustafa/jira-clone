@@ -42,7 +42,7 @@ export const useAddIssueWithTitleAndNotify = (): ((
         optimisticResponse: {
           __typename: 'mutation_root',
           insert_issues_one: {
-            __typename: 'issues',
+            // __typename: 'issues',
             column_id: variables?.columnId,
             id: Math.round(Math.random() * -1000000),
             index: variables?.index || 0,

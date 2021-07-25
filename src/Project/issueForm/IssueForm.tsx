@@ -11,6 +11,8 @@ import { IssueTypeForm } from './IssueTypeForm';
 import { FieldForNonMembers } from '../../shared/FieldForNonMembers';
 import { IssueDetailsAccordion } from './IssueDetailsAccordion';
 import { IssueDateInfo } from './IssueDateInfo';
+import { IssueCommentForm } from './IssueCommentForm';
+import { IssueTabs } from './IssueTabs';
 
 interface IProps {
   issue: GetIssueByIdQuery | undefined;
@@ -40,6 +42,7 @@ export const IssueForm: FC<IProps> = ({ issue, issueLoading, issueId, isOwnerOrM
   const c = useStyles();
 
   const title = issue?.issues_by_pk?.title;
+  const description = issue?.issues_by_pk?.description;
   const priority = issue?.issues_by_pk?.priority || undefined;
   const type = issue?.issues_by_pk?.type;
   const createdAt = issue?.issues_by_pk?.created_at;
@@ -55,12 +58,15 @@ export const IssueForm: FC<IProps> = ({ issue, issueLoading, issueId, isOwnerOrM
         ) : (
           <FieldForNonMembers value={title} label="Title" />
         )}
-        {issueId}
-        {/* <IssueDescriptionForm
-          value={issue?.issues_by_pk?.description}
+        {/* {issueId} */}
+
+        <IssueDescriptionForm
+          value={description}
           issueLoading={issueLoading}
           issueId={issueId}
-        /> */}
+          isOwnerOrMember={isOwnerOrMember}
+        />
+        <IssueTabs issueId={issueId} />
       </Grid>
       <Grid item xs={12} md={4} className={c.rightColumn}>
         {isOwnerOrMember ? (

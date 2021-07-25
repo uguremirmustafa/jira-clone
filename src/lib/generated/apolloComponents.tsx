@@ -3506,6 +3506,24 @@ export type ConnectExistingLabelToIssueMutation = (
   )> }
 );
 
+export type CreateIssueCommentMutationVariables = Exact<{
+  issueId: Scalars['uuid'];
+  text: Scalars['String'];
+}>;
+
+
+export type CreateIssueCommentMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_comments_one?: Maybe<(
+    { __typename?: 'comments' }
+    & Pick<Comments, 'id' | 'text' | 'created_at' | 'updated_at'>
+    & { user: (
+      { __typename?: 'users' }
+      & Pick<Users, 'id' | 'email'>
+    ) }
+  )> }
+);
+
 export type DeleteIssueMutationVariables = Exact<{
   issueId: Scalars['uuid'];
 }>;
@@ -3612,6 +3630,23 @@ export type GetIssueByIdQuery = (
         & Pick<Labels, 'id' | 'name'>
       ) }
     )> }
+  )> }
+);
+
+export type GetIssueCommentsQueryVariables = Exact<{
+  issueId: Scalars['uuid'];
+}>;
+
+
+export type GetIssueCommentsQuery = (
+  { __typename?: 'query_root' }
+  & { comments: Array<(
+    { __typename?: 'comments' }
+    & Pick<Comments, 'id' | 'text' | 'created_at' | 'updated_at'>
+    & { user: (
+      { __typename?: 'users' }
+      & Pick<Users, 'id' | 'email'>
+    ) }
   )> }
 );
 
@@ -4063,6 +4098,47 @@ export function useConnectExistingLabelToIssueMutation(baseOptions?: Apollo.Muta
 export type ConnectExistingLabelToIssueMutationHookResult = ReturnType<typeof useConnectExistingLabelToIssueMutation>;
 export type ConnectExistingLabelToIssueMutationResult = Apollo.MutationResult<ConnectExistingLabelToIssueMutation>;
 export type ConnectExistingLabelToIssueMutationOptions = Apollo.BaseMutationOptions<ConnectExistingLabelToIssueMutation, ConnectExistingLabelToIssueMutationVariables>;
+export const CreateIssueCommentDocument = gql`
+    mutation CreateIssueComment($issueId: uuid!, $text: String!) {
+  insert_comments_one(object: {issue_id: $issueId, text: $text}) {
+    id
+    text
+    user {
+      id
+      email
+    }
+    created_at
+    updated_at
+  }
+}
+    `;
+export type CreateIssueCommentMutationFn = Apollo.MutationFunction<CreateIssueCommentMutation, CreateIssueCommentMutationVariables>;
+
+/**
+ * __useCreateIssueCommentMutation__
+ *
+ * To run a mutation, you first call `useCreateIssueCommentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateIssueCommentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createIssueCommentMutation, { data, loading, error }] = useCreateIssueCommentMutation({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useCreateIssueCommentMutation(baseOptions?: Apollo.MutationHookOptions<CreateIssueCommentMutation, CreateIssueCommentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateIssueCommentMutation, CreateIssueCommentMutationVariables>(CreateIssueCommentDocument, options);
+      }
+export type CreateIssueCommentMutationHookResult = ReturnType<typeof useCreateIssueCommentMutation>;
+export type CreateIssueCommentMutationResult = Apollo.MutationResult<CreateIssueCommentMutation>;
+export type CreateIssueCommentMutationOptions = Apollo.BaseMutationOptions<CreateIssueCommentMutation, CreateIssueCommentMutationVariables>;
 export const DeleteIssueDocument = gql`
     mutation DeleteIssue($issueId: uuid!) {
   delete_issues_by_pk(id: $issueId) {
@@ -4330,6 +4406,48 @@ export function useGetIssueByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetIssueByIdQueryHookResult = ReturnType<typeof useGetIssueByIdQuery>;
 export type GetIssueByIdLazyQueryHookResult = ReturnType<typeof useGetIssueByIdLazyQuery>;
 export type GetIssueByIdQueryResult = Apollo.QueryResult<GetIssueByIdQuery, GetIssueByIdQueryVariables>;
+export const GetIssueCommentsDocument = gql`
+    query GetIssueComments($issueId: uuid!) {
+  comments(where: {issue_id: {_eq: $issueId}}, order_by: {created_at: desc}) {
+    id
+    text
+    user {
+      id
+      email
+    }
+    created_at
+    updated_at
+  }
+}
+    `;
+
+/**
+ * __useGetIssueCommentsQuery__
+ *
+ * To run a query within a React component, call `useGetIssueCommentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIssueCommentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetIssueCommentsQuery({
+ *   variables: {
+ *      issueId: // value for 'issueId'
+ *   },
+ * });
+ */
+export function useGetIssueCommentsQuery(baseOptions: Apollo.QueryHookOptions<GetIssueCommentsQuery, GetIssueCommentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetIssueCommentsQuery, GetIssueCommentsQueryVariables>(GetIssueCommentsDocument, options);
+      }
+export function useGetIssueCommentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetIssueCommentsQuery, GetIssueCommentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetIssueCommentsQuery, GetIssueCommentsQueryVariables>(GetIssueCommentsDocument, options);
+        }
+export type GetIssueCommentsQueryHookResult = ReturnType<typeof useGetIssueCommentsQuery>;
+export type GetIssueCommentsLazyQueryHookResult = ReturnType<typeof useGetIssueCommentsLazyQuery>;
+export type GetIssueCommentsQueryResult = Apollo.QueryResult<GetIssueCommentsQuery, GetIssueCommentsQueryVariables>;
 export const GetLabelsDocument = gql`
     query GetLabels {
   labels {

@@ -5,8 +5,10 @@ import { useDeleteIssueMutation } from '../lib/generated/apolloComponents';
 export const useDeleteIssueAndNotify = (issueId: string) => {
   const { enqueueSnackbar } = useSnackbar();
   const [success, setSuccess] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [deleteIssueMutation] = useDeleteIssueMutation();
   const deleteIssue = async () => {
+    setDeleting(true);
     try {
       const res = await deleteIssueMutation({ variables: { issueId } });
       if (res.data?.delete_issues_by_pk?.id) {
@@ -20,8 +22,10 @@ export const useDeleteIssueAndNotify = (issueId: string) => {
       }
     } catch (error) {
       console.log(error);
+      setSuccess(false);
     }
+    setDeleting(false);
   };
 
-  return { deleteIssue, success };
+  return { deleteIssue, success, deleting };
 };

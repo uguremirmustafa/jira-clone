@@ -18,6 +18,7 @@ import { IssueForm } from './issueForm/IssueForm';
 import { MenuButton } from '../shared/MenuButton';
 import { confirmDialog } from '../shared/ConfirmDialog';
 import { useDeleteIssueAndNotify } from '../hooks/useDeleteIssueAndNotify';
+import LoadSpinner from '../shared/Loader';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -69,7 +70,7 @@ const IssueDialog: FC<IProps> = ({ match, history, isOwnerOrMember }) => {
   };
 
   // delete issue
-  const { deleteIssue, success } = useDeleteIssueAndNotify(issueId);
+  const { deleteIssue, success, deleting } = useDeleteIssueAndNotify(issueId);
   if (success) {
     history.push(`/project/${issue?.issues_by_pk?.project_id}/board`);
   }
@@ -79,6 +80,7 @@ const IssueDialog: FC<IProps> = ({ match, history, isOwnerOrMember }) => {
   }
   return (
     <Dialog
+      transitionDuration={0}
       onClose={onClose}
       open={open}
       fullWidth
@@ -88,55 +90,63 @@ const IssueDialog: FC<IProps> = ({ match, history, isOwnerOrMember }) => {
         paperScrollBody: c.topPaperScrollBody,
       }}
     >
-      <DialogTitle>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Box flexGrow="1">
-            {issueLoading ? (
-              <Skeleton />
-            ) : (
-              <Typography variant="h5" component="h3">
-                {issue?.issues_by_pk?.title}
-              </Typography>
-            )}
-          </Box>
-          <Box display="flex" justifyContent="flex-end">
-            <IconButton>
-              <LockIcon />
-            </IconButton>
-            <IconButton>
-              <ThumbUpIcon />
-            </IconButton>
-            <IconButton>
-              <ShareIcon />
-            </IconButton>
-            <MenuButton
-              icon={<MoreHorizIcon />}
-              items={[
-                isOwnerOrMember && {
-                  text: `Delete Issue`,
-                  func: () => {
-                    confirmDialog(
-                      'Are you sure you want to delete the issue and its comments? This is not reversable.',
-                      () => deleteIssue()
-                    );
-                  },
-                },
-              ]}
-            />
-            <IconButton onClick={onClose}>
-              <Close />
-            </IconButton>
-          </Box>
+      {deleting ? (
+        <Box display="flex" width="100%" height="600px" justifyContent="center" alignItems="center">
+          <LoadSpinner />
         </Box>
-      </DialogTitle>
-      <DialogContent>
-        <IssueForm
-          issue={issue}
-          issueLoading={issueLoading}
-          issueId={issueId}
-          isOwnerOrMember={isOwnerOrMember}
-        />
-      </DialogContent>
+      ) : (
+        <>
+          <DialogTitle>
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <Box flexGrow="1">
+                {issueLoading ? (
+                  <Skeleton />
+                ) : (
+                  <Typography variant="h5" component="h3">
+                    {issue?.issues_by_pk?.title}
+                  </Typography>
+                )}
+              </Box>
+              <Box display="flex" justifyContent="flex-end">
+                <IconButton>
+                  <LockIcon />
+                </IconButton>
+                <IconButton>
+                  <ThumbUpIcon />
+                </IconButton>
+                <IconButton>
+                  <ShareIcon />
+                </IconButton>
+                <MenuButton
+                  icon={<MoreHorizIcon />}
+                  items={[
+                    isOwnerOrMember && {
+                      text: `Delete Issue`,
+                      func: () => {
+                        confirmDialog(
+                          'Are you sure you want to delete the issue and its comments? This is not reversable.',
+                          () => deleteIssue()
+                        );
+                      },
+                    },
+                  ]}
+                />
+                <IconButton onClick={onClose}>
+                  <Close />
+                </IconButton>
+              </Box>
+            </Box>
+          </DialogTitle>
+          <DialogContent>
+            <IssueForm
+              issue={issue}
+              issueLoading={issueLoading}
+              issueId={issueId}
+              isOwnerOrMember={isOwnerOrMember}
+            />
+          </DialogContent>
+        </>
+      )}
     </Dialog>
   );
 };

@@ -1,7 +1,14 @@
-import { makeStyles, DialogActions, Typography, IconButton } from '@material-ui/core';
-import { Check, Close, Label } from '@material-ui/icons';
+import {
+  makeStyles,
+  DialogActions,
+  Typography,
+  IconButton,
+  TextField,
+  FormHelperText,
+} from '@material-ui/core';
+import { Check, Close, CloudUpload, Label } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FC } from 'react';
 import { useUpdateIssueDescriptionMutation } from '../../lib/generated/apolloComponents';
 import { Editor } from 'react-draft-wysiwyg';
@@ -13,16 +20,18 @@ import {
   RawDraftContentState,
 } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { useSnackbar } from 'notistack';
 
 interface IProps {
   value: string | undefined | null;
   issueLoading: boolean;
   issueId: string;
+  isOwnerOrMember: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    paddingBottom: theme.spacing(8),
+    marginBottom: theme.spacing(8),
   },
   form: {
     position: 'relative',
@@ -40,30 +49,69 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const IssueDescriptionForm: FC<IProps> = ({ value, issueLoading, issueId }) => {
+export const IssueDescriptionForm: FC<IProps> = ({
+  value,
+  issueLoading,
+  issueId,
+  isOwnerOrMember,
+}) => {
   const c = useStyles();
-  const [updateIssueDescriptionMutation] = useUpdateIssueDescriptionMutation();
-  const [parsedValue, setParsedValue] = useState<ContentState>();
+  const { enqueueSnackbar } = useSnackbar();
+  const [fieldFocus, setFieldFocus] = useState(false);
+  const [updateIssueDescriptionMutation, { loading }] = useUpdateIssueDescriptionMutation();
+
+  const [editorState, setEditorState] = useState<EditorState>(() => EditorState.createEmpty());
+  const [rawState, setRawState] = useState<RawDraftContentState>();
+  const [initialRawState, setInitialRawState] = useState<RawDraftContentState>();
+
+  const onChange = (editorState: EditorState) => {
+    const raw = convertToRaw(editorState.getCurrentContent());
+    setRawState(raw);
+
+    setEditorState(editorState);
+  };
 
   useEffect(() => {
-    if (value === null || value === undefined) {
-      return;
+    if (issueLoading) return;
+    if (value !== null && value !== undefined) {
+      if (value !== '') {
+        // parse string data from the db
+        const parsedValue = JSON.parse(value);
+        // convert raw to state object
+        const contentState = convertFromRaw(parsedValue);
+        setEditorState(EditorState.createWithContent(contentState));
+        setInitialRawState(parsedValue);
+      } else {
+        setEditorState(EditorState.createEmpty());
+      }
     }
-    const parsed = JSON.parse(value);
-    const raw = convertFromRaw(parsed);
-    setParsedValue(raw);
-  }, [value, issueLoading, issueId]);
+  }, [issueLoading, value]);
 
-  // const [editorState, setEditorState] = useState(() => EditorState.createWithContent(parsedValue));
-
-  const onSubmit = (e: React.FormEvent) => {
+  const cancelChanges = () => {
+    if (initialRawState !== undefined) {
+      setEditorState(EditorState.createWithContent(convertFromRaw(initialRawState)));
+      setFieldFocus(false);
+    }
+  };
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // const descriptionRaw = convertToRaw(editorState.getCurrentContent());
-    // const descriptionString = JSON.stringify(descriptionRaw);
-    // console.log(descriptionString);
-    // updateIssueDescriptionMutation({
-    //   variables: { issueId, description: descriptionString },
-    // });
+    console.log(rawState);
+    const rawStateString = JSON.stringify(rawState);
+    try {
+      const res = await updateIssueDescriptionMutation({
+        variables: {
+          issueId,
+          description: rawStateString,
+        },
+      });
+      if (res.data?.update_issues_by_pk?.id) {
+        enqueueSnackbar('success', { variant: 'success' });
+      } else if (res.errors) {
+        enqueueSnackbar(`${res.errors[0].message}`, { variant: 'error' });
+      }
+    } catch (error) {
+      enqueueSnackbar(`${JSON.stringify(error, null, 2)}`, { variant: 'error' });
+    }
   };
 
   return (
@@ -86,23 +134,34 @@ export const IssueDescriptionForm: FC<IProps> = ({ value, issueLoading, issueId 
             borderRadius: '.2rem',
           }}
         >
-          {/* <Editor
+          <Editor
+            placeholder="There is no description yet, start explaining what needs to be done..."
+            onFocus={() => setFieldFocus(true)}
+            // onBlur={() => setFieldFocus(false)}
             editorState={editorState}
-            // initialContentState={content}
-            onEditorStateChange={setEditorState}
-          /> */}
+            onEditorStateChange={onChange}
+            toolbarHidden={!(isOwnerOrMember && fieldFocus)}
+            readOnly={!isOwnerOrMember}
+          />
+          {/* <FormHelperText>asdsadsa</FormHelperText> */}
         </div>
       )}
-      {/* {fieldFocus && ( */}
-      <DialogActions className={c.buttons}>
-        <IconButton size="small">
-          <Close />
-        </IconButton>
-        <IconButton type="submit" color="secondary" size="small">
-          <Check />
-        </IconButton>
-      </DialogActions>
-      {/* )} */}
+      {fieldFocus && (
+        <>
+          {isOwnerOrMember && (
+            <DialogActions className={c.buttons}>
+              {!loading && (
+                <IconButton size="small" onClick={cancelChanges}>
+                  <Close />
+                </IconButton>
+              )}
+              <IconButton type="submit" color="secondary" size="small">
+                {loading ? <CloudUpload /> : <Check />}
+              </IconButton>
+            </DialogActions>
+          )}
+        </>
+      )}
     </form>
   );
 };
