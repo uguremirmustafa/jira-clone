@@ -7,6 +7,7 @@ import {
   Select,
   TextField,
   Typography,
+  ListItemIcon,
 } from '@material-ui/core';
 import React, { FC, useEffect, useState } from 'react';
 import {
@@ -19,6 +20,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { useForm, Controller, NestedValue, UseFormReturn, UseFormSetValue } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
+import { PersonAdd } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -54,28 +56,28 @@ const AddUserForm: FC<IProps> = ({ projectId, handleClose }) => {
     // fetchPolicy: 'network-only',
   });
 
-  const [addUserVariables, setAddUserVariables] = useState<AddUserToProjectMutationVariables>();
+  // const [addUserVariables, setAddUserVariables] = useState<AddUserToProjectMutationVariables>();
 
   const [
     addUserToProjectMutation,
     { data: mutationData, loading: mutationLoading, error: mutationError },
-  ] = useAddUserToProjectMutation({
-    variables: addUserVariables,
-    refetchQueries: [{ query: GetProjectById, variables: { projectId } }],
-  });
+  ] = useAddUserToProjectMutation();
 
   const { handleSubmit, control } = useForm<FormInput>({
     defaultValues: { email: {}, type: process.env.REACT_APP_VIEWER_TYPE_ID },
   });
 
   const onSubmit = async (formData: FormInput) => {
-    setAddUserVariables({
-      userId: formData.email.value,
-      typeId: formData.type,
-      projectId,
-    });
+    // setAddUserVariables({});
     try {
-      const res = await addUserToProjectMutation();
+      const res = await addUserToProjectMutation({
+        variables: {
+          userId: formData.email.value,
+          typeId: formData.type,
+          projectId,
+        },
+        refetchQueries: [{ query: GetProjectById, variables: { projectId } }],
+      });
       if (res.data?.insert_project_members_one?.id !== null) {
         enqueueSnackbar('Changes saved successfully', {
           variant: 'success',
@@ -140,12 +142,28 @@ const AddUserForm: FC<IProps> = ({ projectId, handleClose }) => {
               {...field}
               variant="filled"
               color="secondary"
+              defaultValue={process.env.REACT_APP_VIEWER_TYPE_ID}
               className={c.formControl}
-              // value={value}
-              // onChange={onChange}
+              SelectDisplayProps={{
+                style: {
+                  display: 'flex',
+                  padding: '.6rem',
+                  borderRadius: '0.2rem',
+                },
+              }}
             >
-              <MenuItem value={process.env.REACT_APP_MEMBER_TYPE_ID}>Member</MenuItem>
-              <MenuItem value={process.env.REACT_APP_VIEWER_TYPE_ID}>Viewer</MenuItem>
+              <MenuItem value={process.env.REACT_APP_MEMBER_TYPE_ID}>
+                <ListItemIcon>
+                  <PersonAdd />
+                </ListItemIcon>
+                <Typography>Member</Typography>
+              </MenuItem>
+              <MenuItem value={process.env.REACT_APP_VIEWER_TYPE_ID}>
+                <ListItemIcon>
+                  <PersonAdd />
+                </ListItemIcon>
+                <Typography>Viewer</Typography>
+              </MenuItem>
             </Select>
           )}
         />
