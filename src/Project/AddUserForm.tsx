@@ -1,7 +1,5 @@
 import {
   Button,
-  FormControl,
-  InputLabel,
   makeStyles,
   MenuItem,
   Select,
@@ -9,11 +7,10 @@ import {
   Typography,
   ListItemIcon,
 } from '@material-ui/core';
-import React, { FC, useEffect, useState } from 'react';
+import { FC } from 'react';
 import {
   useAddUserToProjectMutation,
   useSearchUsersByEmailLazyQuery,
-  AddUserToProjectMutationVariables,
 } from '../lib/generated/apolloComponents';
 import { Autocomplete } from '@material-ui/lab';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -64,7 +61,7 @@ const AddUserForm: FC<IProps> = ({ projectId, handleClose }) => {
   ] = useAddUserToProjectMutation();
 
   const { handleSubmit, control } = useForm<FormInput>({
-    defaultValues: { email: {}, type: process.env.REACT_APP_VIEWER_TYPE_ID },
+    // defaultValues: { email: {}, type: process.env.REACT_APP_VIEWER_TYPE_ID },
   });
 
   const onSubmit = async (formData: FormInput) => {

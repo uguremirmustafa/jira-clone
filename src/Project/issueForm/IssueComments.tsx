@@ -124,6 +124,7 @@ export const IssueComments: FC<Props> = ({ issueId }) => {
     error,
   } = useGetIssueCommentsQuery({
     variables: { issueId },
+    fetchPolicy: 'cache-and-network',
   });
   if (commentsLoading) return <Skeleton height={60} />;
   if (error) return <div>{error.message}</div>;
