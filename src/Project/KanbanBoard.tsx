@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => {
       transition: 'all 2s ease',
     },
     column: {
-      backgroundColor: '#ededed',
+      backgroundColor: theme.palette.grey[200],
       borderRadius: '8px',
       padding: theme.spacing(2, 2, 14, 2),
       display: 'flex',
@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => {
       bottom: 0,
     },
     paper: {
-      backgroundColor: '#fff',
+      backgroundColor: theme.palette.background.paper,
       // padding: theme.spacing(1, 1, 1, 2),
       marginBottom: theme.spacing(1),
     },
@@ -189,9 +189,6 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
 
   const deleteColumn = useDeleteColumnAndNotify();
 
-  // toggle adding
-  const [adding, setAdding] = useState(false);
-
   // handle modal state
   const handleClickOpen = (issueId: string) => {
     history.push(`/project/${projectId}/board/issue/${issueId}`);
@@ -294,7 +291,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
                             {
                               text: `Details of column ${col.name}`,
                               func: () => {
-                                alert('heyy');
+                                alert('This is not implemented yet!');
                               },
                             },
                           ]}
@@ -350,18 +347,7 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
                   )}
                 </Draggable>
               ))}
-              {adding && (
-                <Grid item className={c.column}>
-                  <AddColumnForm projectId={projectId} indexOfLastColumn={indexOfLastColumn} />
-                </Grid>
-              )}
-              <Grid>
-                <Tooltip title={adding ? 'cancel' : 'click to add a new column'}>
-                  <IconButton color="secondary" onClick={() => setAdding(!adding)}>
-                    {!adding ? <Add /> : <Cancel />}
-                  </IconButton>
-                </Tooltip>
-              </Grid>
+              <AddColumnForm projectId={projectId} indexOfLastColumn={indexOfLastColumn} />
               {provided.placeholder}
             </Grid>
           )}

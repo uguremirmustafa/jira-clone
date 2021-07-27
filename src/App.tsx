@@ -1,27 +1,15 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { Home } from './Home';
 import { Project } from './Project';
-import { Button, createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core';
+import { theme } from './theme';
 import './App.css';
-import { pink } from '@material-ui/core/colors';
 import Navbar from './shared/Navbar';
 import MainLayout from './shared/MainLayout';
 import { SnackbarProvider } from 'notistack';
 import { CreateProject } from './CreateProject';
 import { ProjectsList } from './Projects';
 import ConfirmDialog from './shared/ConfirmDialog';
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#fefefe',
-    },
-    secondary: pink,
-  },
-  typography: {
-    fontFamily: 'Ubuntu',
-  },
-});
 
 function App() {
   return (

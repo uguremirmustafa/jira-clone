@@ -2,7 +2,15 @@ import { FC, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import { Box, Button, DialogContent, Grid, IconButton, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  DialogContent,
+  Grid,
+  IconButton,
+  Tooltip,
+  Typography,
+} from '@material-ui/core';
 import {
   SubscribeIssueByIdDocument,
   useGetIssueByIdQuery,
@@ -19,6 +27,7 @@ import { MenuButton } from '../shared/MenuButton';
 import { confirmDialog } from '../shared/ConfirmDialog';
 import { useDeleteIssueAndNotify } from '../hooks/useDeleteIssueAndNotify';
 import LoadSpinner from '../shared/Loader';
+import { NotImplementedItem } from '../shared/NotImplementedItem';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -109,15 +118,21 @@ const IssueDialog: FC<IProps> = ({ match, history, isOwnerOrMember }) => {
                 )}
               </Box>
               <Box display="flex" justifyContent="flex-end">
-                <IconButton>
-                  <LockIcon />
-                </IconButton>
-                <IconButton>
-                  <ThumbUpIcon />
-                </IconButton>
-                <IconButton>
-                  <ShareIcon />
-                </IconButton>
+                <NotImplementedItem>
+                  <IconButton>
+                    <LockIcon />
+                  </IconButton>
+                </NotImplementedItem>
+                <NotImplementedItem>
+                  <IconButton>
+                    <ThumbUpIcon />
+                  </IconButton>
+                </NotImplementedItem>
+                <NotImplementedItem>
+                  <IconButton>
+                    <ShareIcon />
+                  </IconButton>
+                </NotImplementedItem>
                 <MenuButton
                   icon={<MoreHorizIcon />}
                   items={[

@@ -51,6 +51,8 @@ const useStyles = makeStyles((theme) => ({
 
 export const IssueTypeForm: FC<IProps> = ({ value, issueLoading, issueId }) => {
   const c = useStyles();
+  const [fieldFocus, setFieldFocus] = useState(false);
+
   const [updateIssueTypeMutation, { loading }] = useUpdateIssueTypeMutation();
   const {
     handleSubmit,
@@ -122,8 +124,6 @@ export const IssueTypeForm: FC<IProps> = ({ value, issueLoading, issueId }) => {
     }
   };
 
-  const [fieldFocus, setFieldFocus] = useState(false);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={c.form}>
       {issueLoading ? (
@@ -136,14 +136,12 @@ export const IssueTypeForm: FC<IProps> = ({ value, issueLoading, issueId }) => {
           <Controller
             name="type"
             control={control}
-            // defaultValue={value}
             render={({ field }) => (
               <FormControl fullWidth>
                 <Select
                   {...field}
                   defaultValue={value}
                   disabled={isSubmitting}
-                  onFocus={() => setFieldFocus(true)}
                   variant="filled"
                   SelectDisplayProps={{
                     style: {

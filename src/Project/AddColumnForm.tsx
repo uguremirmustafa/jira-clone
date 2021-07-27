@@ -1,8 +1,8 @@
 // material ui components
-import { TextField } from '@material-ui/core';
+import { Box, Grid, IconButton, makeStyles, TextField, Tooltip } from '@material-ui/core';
 // react hook form
 import { useForm, Controller } from 'react-hook-form';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useSnackbar } from 'notistack';
 import {
   CreateColumnMutationVariables,
@@ -10,15 +10,39 @@ import {
   useCreateColumnMutation,
 } from '../lib/generated/apolloComponents';
 import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
-
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
+import AddCircleOutlinedIcon from '@material-ui/icons/AddCircleOutlined';
+import { useRef } from 'react';
 export interface IProps {
   projectId: string;
   name?: string;
   indexOfLastColumn: number;
 }
 
+const useStyles = makeStyles((theme) => {
+  return {
+    column: {
+      backgroundColor: theme.palette.grey[200],
+      borderRadius: '8px',
+      padding: theme.spacing(2),
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      width: '100%',
+      maxWidth: '280px',
+      minWidth: '200px',
+      height: '100%',
+      transition: 'all 2s ease',
+    },
+  };
+});
+
 const AddColumnForm: FC<IProps> = ({ projectId, name, indexOfLastColumn }) => {
+  const c = useStyles();
+
   const { enqueueSnackbar } = useSnackbar();
+  // toggle adding
+  const [adding, setAdding] = useState(false);
   const [createColumnMutation] = useCreateColumnMutation();
 
   const { handleSubmit, control, reset } = useForm<CreateColumnMutationVariables>({
@@ -88,15 +112,38 @@ const AddColumnForm: FC<IProps> = ({ projectId, name, indexOfLastColumn }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Controller
-        name="name"
-        control={control}
-        render={({ field }) => (
-          <TextField {...field} size="small" label="Add Column +" color="secondary" value={name} />
-        )}
-      />
-    </form>
+    <>
+      {adding && (
+        <Grid item className={c.column}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  // inputRef={ref}
+                  autoFocus
+                  size="small"
+                  label="Add Column +"
+                  color="secondary"
+                  value={name}
+                  onBlur={() => setAdding(false)}
+                  InputProps={{ disableUnderline: false }}
+                />
+              )}
+            />
+          </form>
+        </Grid>
+      )}
+      <Grid item>
+        <Tooltip title={adding ? 'cancel' : 'click to add a new column'} placement="top">
+          <IconButton color="secondary" onClick={() => setAdding(!adding)}>
+            {!adding ? <AddCircleOutlinedIcon /> : <CancelOutlinedIcon />}
+          </IconButton>
+        </Tooltip>
+      </Grid>
+    </>
   );
 };
 

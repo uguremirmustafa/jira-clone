@@ -116,6 +116,7 @@ const AddUserForm: FC<IProps> = ({ projectId, handleClose }) => {
                   {...params}
                   label="Search users to add"
                   variant="filled"
+                  InputProps={{ disableUnderline: true }}
                   color="secondary"
                   onChange={(e) => searchUser({ variables: { email: e.target.value } })}
                 />

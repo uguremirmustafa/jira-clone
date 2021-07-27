@@ -60,7 +60,7 @@ export const IssuePriorityForm: FC<IProps> = ({ value, issueLoading, issueId }) 
     handleSubmit,
     control,
     reset,
-    formState: { isDirty },
+    formState: { isDirty, isSubmitting },
   } = useForm<{ priority: number }>({
     defaultValues: {
       priority: value,
@@ -142,7 +142,7 @@ export const IssuePriorityForm: FC<IProps> = ({ value, issueLoading, issueId }) 
                 <Select
                   {...field}
                   defaultValue={value}
-                  variant="filled"
+                  disabled={isSubmitting}
                   SelectDisplayProps={{
                     style: {
                       display: 'flex',
@@ -151,7 +151,6 @@ export const IssuePriorityForm: FC<IProps> = ({ value, issueLoading, issueId }) 
                       borderRadius: '0.2rem',
                     },
                   }}
-                  disableUnderline
                 >
                   {priorityValues.map((item) => (
                     <MenuItem value={item.value} className={c.menuItem}>
@@ -170,15 +169,17 @@ export const IssuePriorityForm: FC<IProps> = ({ value, issueLoading, issueId }) 
       )}
       {fieldFocus && (
         <DialogActions className={c.buttons}>
-          <IconButton
-            size="small"
-            onClick={() => {
-              setFieldFocus(false);
-              reset({ priority: value });
-            }}
-          >
-            <Close />
-          </IconButton>
+          {!loading && (
+            <IconButton
+              size="small"
+              onClick={() => {
+                setFieldFocus(false);
+                reset({ priority: value });
+              }}
+            >
+              <Close />
+            </IconButton>
+          )}
           <IconButton type="submit" color="secondary" size="small" disabled={loading}>
             {loading ? <CloudUpload /> : <Check />}
           </IconButton>

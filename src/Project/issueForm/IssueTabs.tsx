@@ -3,6 +3,7 @@ import { Alert, Skeleton } from '@material-ui/lab';
 import React from 'react';
 import { FC } from 'react';
 import { Columns } from '../../lib/generated/apolloComponents';
+import { NotImplementedItem } from '../../shared/NotImplementedItem';
 import { IssueComments } from './IssueComments';
 
 interface IProps {
@@ -73,7 +74,9 @@ export const IssueTabs: FC<IProps> = ({ issueId, column, issueLoading }) => {
         <Tabs value={value} onChange={handleChange} aria-label="Issue tabs">
           <Tab label="Issue Status" {...a11yProps(0)} style={{ textTransform: 'none' }} />
           <Tab label="Comments" {...a11yProps(0)} style={{ textTransform: 'none' }} />
-          <Tab label="History" {...a11yProps(1)} style={{ textTransform: 'none' }} />
+          <NotImplementedItem>
+            <Tab label="History" {...a11yProps(1)} style={{ textTransform: 'none' }} />
+          </NotImplementedItem>
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>

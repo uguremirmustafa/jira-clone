@@ -183,14 +183,12 @@ export const IssueLabelsForm: FC<IProps> = ({
                   onDelete={() =>
                     confirmDialog(`Remove the ${label.name} label?`, () => handleDelete(label.id))
                   }
-                  size="small"
                 />
               ))}
               <Chip
                 label={autocompleteActive ? 'Cancel' : 'Add label'}
                 onClick={handleToggle}
                 icon={autocompleteActive ? <Cancel /> : <Add />}
-                size="small"
                 variant={autocompleteActive ? 'default' : 'outlined'}
                 color="secondary"
               />
