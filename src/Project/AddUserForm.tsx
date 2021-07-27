@@ -51,7 +51,7 @@ const AddUserForm: FC<IProps> = ({ projectId, handleClose }) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const [searchUser, { loading, error, data }] = useSearchUsersByEmailLazyQuery({
-    fetchPolicy: 'network-only',
+    // fetchPolicy: 'network-only',
   });
 
   const [addUserVariables, setAddUserVariables] = useState<AddUserToProjectMutationVariables>();
@@ -116,7 +116,15 @@ const AddUserForm: FC<IProps> = ({ projectId, handleClose }) => {
                   {...params}
                   label="Search users to add"
                   variant="filled"
-                  InputProps={{ disableUnderline: true }}
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <>
+                        {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                        {params.InputProps.endAdornment}
+                      </>
+                    ),
+                  }}
                   color="secondary"
                   onChange={(e) => searchUser({ variables: { email: e.target.value } })}
                 />

@@ -64,7 +64,7 @@ const AddUserDialog: FC<IProps> = ({ projectId }) => {
         onClick={handleClickOpen}
         startIcon={<AddCircleRoundedIcon />}
       >
-        Add User to Project
+        Add user
       </Button>
       <Dialog
         open={open}

@@ -9,15 +9,10 @@ import {
   UpdateColumnMutationVariables,
   useUpdateColumnMutation,
 } from '../lib/generated/apolloComponents';
-import { GetProjectById } from '../lib/graphql/project/queries/getProjectById';
 import { Send } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => {
   return {
-    title: {
-      width: '100%',
-      padding: theme.spacing(2, 0),
-    },
     input: {
       padding: theme.spacing(0, 0),
     },
@@ -41,7 +36,11 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
     // update:(cache,{data:{}})
   });
 
-  const { handleSubmit, control } = useForm<UpdateColumnMutationVariables>({
+  const {
+    handleSubmit,
+    control,
+    formState: { isDirty },
+  } = useForm<UpdateColumnMutationVariables>({
     defaultValues: {
       name,
       id,
@@ -90,7 +89,7 @@ const UpdateColumnForm: FC<IProps> = ({ projectId, name, id, index }) => {
             className={c.input}
             InputProps={{
               disableUnderline: !active,
-              endAdornment: active && (
+              endAdornment: active && isDirty && (
                 <InputAdornment position="end">
                   <IconButton type="submit">
                     <Send fontSize="small" />

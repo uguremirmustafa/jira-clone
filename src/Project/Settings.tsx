@@ -14,14 +14,14 @@ const useStyles = makeStyles((theme) => {
   return {
     root: {
       maxWidth: 550,
-      margin: 'auto',
+      // margin: 'auto',
     },
 
     form: {
       maxWidth: 550,
       marginTop: theme.spacing(4),
       margin: 'auto',
-      border: `1px solid ${theme.palette.primary.main}`,
+      // border: `1px solid ${theme.palette.primary.main}`,
       width: '100%',
     },
     inputBox: {
@@ -64,7 +64,7 @@ const Settings: FC<IProps> = ({ projectId, isOwner, loading, project }) => {
     control,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, isDirty },
   } = useForm<IFormInput>({ defaultValues });
 
   const [updateProjectMutation] = useUpdateProjectMutation({ variables });
@@ -129,9 +129,11 @@ const Settings: FC<IProps> = ({ projectId, isOwner, loading, project }) => {
               )}
             />
           </Box>
-          <Button type="submit" variant="contained" color="secondary">
-            {isSubmitting ? 'loading' : 'save changes'}
-          </Button>
+          {isDirty && (
+            <Button type="submit" variant="contained" color="secondary" fullWidth>
+              {isSubmitting ? 'loading' : 'save changes'}
+            </Button>
+          )}
         </form>
       ) : (
         <Box>

@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme) => {
   return {
     root: {
       margin: theme.spacing(2, 0),
+      padding: theme.spacing(2),
     },
     content: {
       display: 'flex',
@@ -153,7 +154,7 @@ const MemberCard: FC<IProps> = ({ member, id, ownerId }) => {
   let isMember = member.type_id === process.env.REACT_APP_MEMBER_TYPE_ID;
   return (
     <>
-      <Card className={c.root}>
+      <Card className={c.root} elevation={8}>
         <CardContent className={c.content}>
           <Typography gutterBottom>{member.user?.email}</Typography>
           <Chip label={isMember ? 'member' : 'viewer'} color={isMember ? 'secondary' : 'default'} />
@@ -165,10 +166,11 @@ const MemberCard: FC<IProps> = ({ member, id, ownerId }) => {
               color="secondary"
               onClick={() => handleRemove(member.id)}
               disabled={removeUserLoading}
+              variant="outlined"
             >
               Dismiss User
             </Button>
-            <Button size="small" onClick={handleClickOpen}>
+            <Button size="small" onClick={handleClickOpen} variant="contained" color="secondary">
               Edit User Type
             </Button>
           </CardActions>

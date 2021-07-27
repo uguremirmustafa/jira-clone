@@ -30,6 +30,7 @@ import { useDeleteColumnAndNotify } from '../hooks/useDeleteColumnAndNotify';
 import { useHistory } from 'react-router-dom';
 import { Add, Cancel } from '@material-ui/icons';
 import { useReorderColumnsAndNotify } from '../hooks/useReorderColumnsAndNotify';
+import DragHandle from '@material-ui/icons/DragHandle';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -42,7 +43,7 @@ const useStyles = makeStyles((theme) => {
     column: {
       backgroundColor: theme.palette.grey[200],
       borderRadius: '8px',
-      padding: theme.spacing(2, 2, 14, 2),
+      padding: theme.spacing(2, 2, 6, 2),
       display: 'flex',
       flexDirection: 'column',
       gap: '8px',
@@ -55,9 +56,12 @@ const useStyles = makeStyles((theme) => {
       transition: 'all 2s ease',
     },
     dots: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      width: '100%',
       position: 'absolute',
-      right: 0,
-      bottom: 0,
+      left: 0,
+      bottom: '.5rem',
     },
     paper: {
       backgroundColor: theme.palette.background.paper,
@@ -267,15 +271,14 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
                       key={col.id}
                       {...provided.draggableProps}
                       innerRef={provided.innerRef}
-                      {...provided.dragHandleProps}
                     >
-                      {/* <DragHandleIcon className={c.verticalDragger} /> */}
                       <UpdateColumnForm
                         projectId={projectId}
                         name={col?.name}
                         id={col?.id}
                         index={col?.index}
                       />
+
                       <div className={c.dots}>
                         <MenuButton
                           icon={<MoreVertIcon />}
@@ -296,7 +299,13 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
                             },
                           ]}
                         />
+                        <Tooltip title="Click and drag!">
+                          <IconButton {...provided.dragHandleProps} disableRipple>
+                            <DragIndicatorIcon className={c.verticalDragger} />
+                          </IconButton>
+                        </Tooltip>
                       </div>
+
                       <Droppable droppableId={col.id} key={col.id} type="issue">
                         {(provided: any) => (
                           <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -320,13 +329,16 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
                                         </CardContent>
                                       </CardActionArea>
                                       <CardActions>
-                                        <IconButton
-                                          {...provided.dragHandleProps}
-                                          className={c.dragButton}
-                                          size="small"
-                                        >
-                                          <DragIndicatorIcon fontSize="small" />
-                                        </IconButton>
+                                        <Tooltip title="Click and drag!">
+                                          <IconButton
+                                            {...provided.dragHandleProps}
+                                            className={c.dragButton}
+                                            size="small"
+                                            disableRipple
+                                          >
+                                            <DragIndicatorIcon fontSize="small" />
+                                          </IconButton>
+                                        </Tooltip>
                                       </CardActions>
                                     </Card>
                                   )}

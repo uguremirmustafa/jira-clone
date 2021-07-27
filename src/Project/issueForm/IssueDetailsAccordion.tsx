@@ -42,7 +42,7 @@ export const IssueDetailsAccordion: FC<Props> = ({
         >
           <Typography>Issue Details</Typography>
         </AccordionSummary>
-        <AccordionDetails style={{ padding: '1rem', minHeight: '150px' }}>
+        <AccordionDetails style={{ padding: '1rem', minHeight: '50px' }}>
           <Grid container>
             <Grid item xs={2}>
               <Typography color="secondary" variant="subtitle2">
@@ -50,14 +50,12 @@ export const IssueDetailsAccordion: FC<Props> = ({
               </Typography>
             </Grid>
             <Grid item xs={10}>
-              <Typography>
-                <IssueLabelsForm
-                  value={value}
-                  issueLoading={issueLoading}
-                  issueId={issueId}
-                  isOwnerOrMember={isOwnerOrMember}
-                />
-              </Typography>
+              <IssueLabelsForm
+                value={value}
+                issueLoading={issueLoading}
+                issueId={issueId}
+                isOwnerOrMember={isOwnerOrMember}
+              />
             </Grid>
 
             {/* <Grid item xs={6}>
