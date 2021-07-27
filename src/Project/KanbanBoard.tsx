@@ -9,9 +9,11 @@ import {
   CardContent,
   CardActionArea,
   CardActions,
+  Tooltip,
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import DragIndicatorIcon from '@material-ui/icons/DragIndicator';
+import DragHandleIcon from '@material-ui/icons/DragHandle';
 import clsx from 'clsx';
 // other stuff
 import { FC, useState } from 'react';
@@ -25,9 +27,9 @@ import AddIssueWithTitleForm from './AddIssueWithTitleForm';
 import { useReorderIssuesAndNotify } from '../hooks/useReorderIssuesAndNotify';
 import { IndexOfLatestColumn } from '../functions/indexOfLastColumn';
 import { useDeleteColumnAndNotify } from '../hooks/useDeleteColumnAndNotify';
-import IssueDialog from './IssueDialog';
 import { useHistory } from 'react-router-dom';
-import { Route, Switch } from 'react-router-dom';
+import { Add, Cancel } from '@material-ui/icons';
+import { useReorderColumnsAndNotify } from '../hooks/useReorderColumnsAndNotify';
 
 const useStyles = makeStyles((theme) => {
   return {
@@ -72,6 +74,7 @@ const useStyles = makeStyles((theme) => {
       alignItems: 'center',
     },
     dragButton: { cursor: 'pointer' },
+    verticalDragger: { width: '100%' },
   };
 });
 
@@ -102,14 +105,37 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
   const indexOfLastColumn = IndexOfLatestColumn(columns);
   // call custom hook with optimistic ui logic
   const update = useReorderIssuesAndNotify();
+  const updateColumns = useReorderColumnsAndNotify();
   // drag and drop logic
   const onDragEnd = async (result: DropResult) => {
-    const { destination, source, draggableId } = result;
+    const { destination, source, draggableId, type } = result;
     // exit if no destination
     if (!destination) return;
     // exit if dropped to the same place
     if (destination.droppableId === source.droppableId && destination.index === source.index)
       return;
+
+    // make typescript happy
+    if (!columns) return;
+    // if the user is dragging a column
+    if (type === 'column') {
+      //copy the columns data
+      let newColumns = [...columns];
+      // // find the dragging column
+      const draggingColumn =
+        newColumns.find((column) => column.id === draggableId) || newColumns[0];
+
+      newColumns.splice(source.index, 1);
+      newColumns.splice(destination.index, 0, { ...draggingColumn, index: destination.index });
+      const newestColumnsArray = newColumns
+        .map((col, index) => ({ ...col, index }))
+        .slice()
+        .sort((a, b) => (a.index > b.index ? 1 : -1));
+      // alert(JSON.stringify(newestColumnsArray, null, 2));
+      updateColumns(newestColumnsArray, projectId);
+      return;
+    }
+
     // make typescript happy
     if (!issues) return;
     // create array from the issues
@@ -162,6 +188,9 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
   };
 
   const deleteColumn = useDeleteColumnAndNotify();
+
+  // toggle adding
+  const [adding, setAdding] = useState(false);
 
   // handle modal state
   const handleClickOpen = (issueId: string) => {
@@ -223,86 +252,120 @@ const KanbanBoard: FC<IProps> = ({ columns, projectId, issues, isOwnerOrMember }
   return (
     <>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Grid container className={c.root}>
-          {columns?.map((col) => (
-            <Grid item xs className={c.column} key={col.id}>
-              <UpdateColumnForm
-                projectId={projectId}
-                name={col?.name}
-                id={col?.id}
-                index={col?.index}
-              />
-              <div className={c.dots}>
-                <MenuButton
-                  icon={<MoreVertIcon />}
-                  items={[
-                    {
-                      text: `Delete Column`,
-                      func: () => {
-                        confirmDialog('Are you sure?', () =>
-                          deleteColumn(col.id, columns, projectId)
-                        );
-                      },
-                    },
-                    {
-                      text: `Details of column ${col.name}`,
-                      func: () => {
-                        alert('heyy');
-                      },
-                    },
-                  ]}
-                />
-              </div>
-              <Droppable droppableId={col.id} key={col.id}>
-                {(provided: any) => (
-                  <div ref={provided.innerRef} {...provided.droppableProps}>
-                    {issues
-                      ?.filter((issue) => issue.column_id === col.id)
-                      ?.map((issue, index) => (
-                        <Draggable key={issue.id} draggableId={issue.id} index={index}>
-                          {(provided: any, snapshot: any) => (
-                            <Card
-                              {...provided.draggableProps}
-                              ref={provided.innerRef}
-                              className={clsx(
-                                c.paper,
-                                c.flex,
-                                snapshot.isDragging ? c.dragging : null
-                              )}
-                            >
-                              <CardActionArea>
-                                <CardContent onClick={() => handleClickOpen(issue.id)}>
-                                  <Typography>{issue.title}</Typography>
-                                </CardContent>
-                              </CardActionArea>
-                              <CardActions>
-                                <IconButton
-                                  {...provided.dragHandleProps}
-                                  className={c.dragButton}
-                                  size="small"
-                                >
-                                  <DragIndicatorIcon fontSize="small" />
-                                </IconButton>
-                              </CardActions>
-                            </Card>
-                          )}
-                        </Draggable>
-                      ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-              <AddIssueWithTitleForm
-                columnId={col.id}
-                projectId={projectId}
-                indexOfLastIssue={issues?.filter((issue) => issue.column_id === col.id).length || 0}
-              />
+        <Droppable droppableId="all-columns" direction="horizontal" type="column">
+          {(provided) => (
+            <Grid
+              container
+              className={c.root}
+              {...provided.droppableProps}
+              innerRef={provided.innerRef}
+            >
+              {columns?.map((col, index) => (
+                <Draggable draggableId={col.id} index={index}>
+                  {(provided) => (
+                    <Grid
+                      item
+                      xs
+                      className={c.column}
+                      key={col.id}
+                      {...provided.draggableProps}
+                      innerRef={provided.innerRef}
+                      {...provided.dragHandleProps}
+                    >
+                      {/* <DragHandleIcon className={c.verticalDragger} /> */}
+                      <UpdateColumnForm
+                        projectId={projectId}
+                        name={col?.name}
+                        id={col?.id}
+                        index={col?.index}
+                      />
+                      <div className={c.dots}>
+                        <MenuButton
+                          icon={<MoreVertIcon />}
+                          items={[
+                            {
+                              text: `Delete Column`,
+                              func: () => {
+                                confirmDialog('Are you sure?', () =>
+                                  deleteColumn(col.id, columns, projectId)
+                                );
+                              },
+                            },
+                            {
+                              text: `Details of column ${col.name}`,
+                              func: () => {
+                                alert('heyy');
+                              },
+                            },
+                          ]}
+                        />
+                      </div>
+                      <Droppable droppableId={col.id} key={col.id} type="issue">
+                        {(provided: any) => (
+                          <div ref={provided.innerRef} {...provided.droppableProps}>
+                            {issues
+                              ?.filter((issue) => issue.column_id === col.id)
+                              ?.map((issue, index) => (
+                                <Draggable key={issue.id} draggableId={issue.id} index={index}>
+                                  {(provided: any, snapshot: any) => (
+                                    <Card
+                                      {...provided.draggableProps}
+                                      ref={provided.innerRef}
+                                      className={clsx(
+                                        c.paper,
+                                        c.flex,
+                                        snapshot.isDragging ? c.dragging : null
+                                      )}
+                                    >
+                                      <CardActionArea>
+                                        <CardContent onClick={() => handleClickOpen(issue.id)}>
+                                          <Typography>{issue.title}</Typography>
+                                        </CardContent>
+                                      </CardActionArea>
+                                      <CardActions>
+                                        <IconButton
+                                          {...provided.dragHandleProps}
+                                          className={c.dragButton}
+                                          size="small"
+                                        >
+                                          <DragIndicatorIcon fontSize="small" />
+                                        </IconButton>
+                                      </CardActions>
+                                    </Card>
+                                  )}
+                                </Draggable>
+                              ))}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                      <AddIssueWithTitleForm
+                        columnId={col.id}
+                        projectId={projectId}
+                        indexOfLastIssue={
+                          issues?.filter((issue) => issue.column_id === col.id).length || 0
+                        }
+                      />
+                    </Grid>
+                  )}
+                </Draggable>
+              ))}
+              {adding && (
+                <Grid item className={c.column}>
+                  <AddColumnForm projectId={projectId} indexOfLastColumn={indexOfLastColumn} />
+                </Grid>
+              )}
+              <Grid>
+                <Tooltip title={adding ? 'cancel' : 'click to add a new column'}>
+                  <IconButton color="secondary" onClick={() => setAdding(!adding)}>
+                    {!adding ? <Add /> : <Cancel />}
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+              {provided.placeholder}
             </Grid>
-          ))}
-          <Grid item className={c.column}>
-            <AddColumnForm projectId={projectId} indexOfLastColumn={indexOfLastColumn} />
-          </Grid>
-        </Grid>
+          )}
+        </Droppable>
       </DragDropContext>
     </>
   );

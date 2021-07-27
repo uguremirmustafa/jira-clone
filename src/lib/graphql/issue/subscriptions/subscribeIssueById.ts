@@ -26,6 +26,12 @@ export const SubscribeIssueById = gql`
           name
         }
       }
+      project {
+        columns {
+          id
+          name
+        }
+      }
     }
   }
 `;

@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { RouteComponentProps } from 'react-router';
 import ProjectLayout from './ProjectLayout';
-import { Route, Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import Settings from './Settings';
 import DangerZone from './DangerZone';
 import Board from './Board';
@@ -78,10 +78,8 @@ export const Project: FC<IProps> = ({ match }) => {
             projectId={projectId}
             project={project}
             isOwner={isOwner}
-            isMember={isMember}
             isOwnerOrMember={isOwnerOrMember}
             loading={loading}
-            // subs={SubscribeToIssueUpdates}
           />
         )}
         path={`/project/${projectId}/board`}

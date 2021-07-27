@@ -35,7 +35,7 @@ const AddColumnForm: FC<IProps> = ({ projectId, name, indexOfLastColumn }) => {
         variant: 'info',
       });
       const res = await createColumnMutation({
-        variables: { ...formData, index: indexOfLastColumn },
+        variables: { ...formData, index: indexOfLastColumn + 1 },
         refetchQueries: [{ query: GetProjectById, variables: { projectId } }],
         awaitRefetchQueries: true,
         optimisticResponse: {

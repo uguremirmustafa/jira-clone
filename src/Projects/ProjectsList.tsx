@@ -40,7 +40,7 @@ export const ProjectsList = withAuthenticationRequired(() => {
     return <div>{error.message}</div>;
   }
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={2} style={{ padding: '1rem' }}>
       {data?.projects.map((i) => {
         return (
           <Grid item xs={12} md={6} lg={4} xl={3}>

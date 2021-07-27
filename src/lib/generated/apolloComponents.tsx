@@ -3716,7 +3716,13 @@ export type SubscribeIssueByIdSubscription = (
         { __typename?: 'labels' }
         & Pick<Labels, 'id' | 'name'>
       ) }
-    )> }
+    )>, project: (
+      { __typename?: 'projects' }
+      & { columns: Array<(
+        { __typename?: 'columns' }
+        & Pick<Columns, 'id' | 'name'>
+      )> }
+    ) }
   )> }
 );
 
@@ -3843,6 +3849,23 @@ export type UpdateColumnMutation = (
   & { update_columns_by_pk?: Maybe<(
     { __typename?: 'columns' }
     & Pick<Columns, 'id'>
+  )> }
+);
+
+export type UpdateColumnsOrderMutationVariables = Exact<{
+  columns: Array<Columns_Insert_Input> | Columns_Insert_Input;
+  projectId: Scalars['uuid'];
+}>;
+
+
+export type UpdateColumnsOrderMutation = (
+  { __typename?: 'mutation_root' }
+  & { insert_columns?: Maybe<(
+    { __typename?: 'columns_mutation_response' }
+    & { returning: Array<(
+      { __typename?: 'columns' }
+      & Pick<Columns, 'id' | 'index' | 'project_id' | 'name'>
+    )> }
   )> }
 );
 
@@ -4615,6 +4638,12 @@ export const SubscribeIssueByIdDocument = gql`
         name
       }
     }
+    project {
+      columns {
+        id
+        name
+      }
+    }
   }
 }
     `;
@@ -4939,6 +4968,48 @@ export function useUpdateColumnMutation(baseOptions?: Apollo.MutationHookOptions
 export type UpdateColumnMutationHookResult = ReturnType<typeof useUpdateColumnMutation>;
 export type UpdateColumnMutationResult = Apollo.MutationResult<UpdateColumnMutation>;
 export type UpdateColumnMutationOptions = Apollo.BaseMutationOptions<UpdateColumnMutation, UpdateColumnMutationVariables>;
+export const UpdateColumnsOrderDocument = gql`
+    mutation UpdateColumnsOrder($columns: [columns_insert_input!]!, $projectId: uuid!) {
+  insert_columns(
+    objects: $columns
+    on_conflict: {constraint: columns_pkey, update_columns: [index], where: {project_id: {_eq: $projectId}}}
+  ) {
+    returning {
+      id
+      index
+      project_id
+      name
+    }
+  }
+}
+    `;
+export type UpdateColumnsOrderMutationFn = Apollo.MutationFunction<UpdateColumnsOrderMutation, UpdateColumnsOrderMutationVariables>;
+
+/**
+ * __useUpdateColumnsOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateColumnsOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateColumnsOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateColumnsOrderMutation, { data, loading, error }] = useUpdateColumnsOrderMutation({
+ *   variables: {
+ *      columns: // value for 'columns'
+ *      projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useUpdateColumnsOrderMutation(baseOptions?: Apollo.MutationHookOptions<UpdateColumnsOrderMutation, UpdateColumnsOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateColumnsOrderMutation, UpdateColumnsOrderMutationVariables>(UpdateColumnsOrderDocument, options);
+      }
+export type UpdateColumnsOrderMutationHookResult = ReturnType<typeof useUpdateColumnsOrderMutation>;
+export type UpdateColumnsOrderMutationResult = Apollo.MutationResult<UpdateColumnsOrderMutation>;
+export type UpdateColumnsOrderMutationOptions = Apollo.BaseMutationOptions<UpdateColumnsOrderMutation, UpdateColumnsOrderMutationVariables>;
 export const UpdateIssuesOrderDocument = gql`
     mutation UpdateIssuesOrder($issues: [issues_insert_input!]!, $projectId: uuid!) {
   insert_issues(
