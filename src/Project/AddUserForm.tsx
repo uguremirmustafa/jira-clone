@@ -135,17 +135,14 @@ const AddUserForm: FC<IProps> = ({ projectId, handleClose }) => {
         <Controller
           name="type"
           control={control}
-          render={({
-            field: { onChange, onBlur, value, name, ref },
-            fieldState: { invalid, isTouched, isDirty, error },
-            formState,
-          }) => (
+          render={({ field }) => (
             <Select
+              {...field}
               variant="filled"
               color="secondary"
               className={c.formControl}
-              value={value}
-              onChange={onChange}
+              // value={value}
+              // onChange={onChange}
             >
               <MenuItem value={process.env.REACT_APP_MEMBER_TYPE_ID}>Member</MenuItem>
               <MenuItem value={process.env.REACT_APP_VIEWER_TYPE_ID}>Viewer</MenuItem>
